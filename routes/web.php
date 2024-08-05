@@ -26,7 +26,7 @@ Route::get('/siswa', function () {
 });
 Route::get('/disiplin', function () {
     return view('main.disiplin');
-});
+})->name('disiplin.index');
 
 Route::get('/user', function () {
     return view('main.user');

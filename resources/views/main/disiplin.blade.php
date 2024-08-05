@@ -1,5 +1,6 @@
 @extends('base.layout')
 
+@section('title','disiplin')
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
  <div class="card">

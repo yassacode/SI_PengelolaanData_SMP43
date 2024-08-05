@@ -27,12 +27,12 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Dashboard</title>
+    <title>@yield('title', 'Home')</title>
 
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{asset('assets/img/favicon/favicon.ico')}}" />
+    <link rel="icon" type="image/x-icon" href="{{asset('assets/img/favicon/favicon1.ico')}}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -82,31 +82,31 @@
 
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
-            <li class="menu-item active mb-2">
+            <li class="menu-item mb-2 {{Route::is('main')?'active':''}}">
               <a class="menu-link" href="{{url('/main')}}">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
               </a>
             </li>
-            <li class="menu-item active mb-2">
+            <li class="menu-item mb-2 {{Route::is('siswa*')?'active':''}}">
               <a href="{{url('/siswa')}}" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-group"></i>
                 <div data-i18n="Analytics">Siswa</div>
               </a>
             </li>
-            <li class="menu-item active mb-2">
+            <li class="menu-item mb-2 {{Route::is('disiplin*')?'active':''}}">
               <a href="{{url('/disiplin')}}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-error"></i>
                 <div data-i18n="Analytics">Disiplin</div>
               </a>
             </li>
-            <li class="menu-item active mb-2">
+            <li class="menu-item mb-2 {{Route::is('ekskul*')?'active':''}}">
               <a href="{{url('/ekskul')}}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-briefcase-alt-2"></i>
                 <div data-i18n="Analytics">Esktrakurikuler</div>
               </a>
             </li>
-            <li class="menu-item active">
+            <li class="menu-item {{Route::is('user*')?'active':''}}">
               <a href="{{url('/user')}}" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-user-account"></i>
                 <div data-i18n="Analytics">User</div>
