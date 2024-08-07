@@ -60,7 +60,7 @@ class EkstrakurikulerController extends Controller
     public function show(string $id)
     {
         $item = Extracurricular::find($id);
-        return view('ekskul.print',[
+        return view('cetak.cetak-ekskul',[
             'item'=>$item,
         ]);
     }

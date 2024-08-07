@@ -1,4 +1,4 @@
-@extends('base.layout-add')
+@extends('base.layout-tambah')
 @section('add')
 
 <div class="container mt-5">
@@ -56,6 +56,7 @@
                                     <label for="password_left">Anak Ke-:</label>
                                     <input type="text" id="" name="alamat" class="form-control">
                                 </div>
+                                <button type="button" class="btn btn-info ml-5 mb-2"> back </button>
                                 <button type="button" class="btn btn-primary ml-5 mb-2">Next>>></button>
                                 <button type="button" class="btn btn-danger ml-5 mb-2">Cancel</button>
                             </form>

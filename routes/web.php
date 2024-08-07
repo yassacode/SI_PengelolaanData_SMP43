@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EkstrakurikulerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,9 +22,7 @@ Route::get('/', function () {
 Route::get('/main', function () {
     return view('main.dashboard');
 });
-Route::get('/siswa', function () {
-    return view('main.siswa');
-});
+
 Route::get('/disiplin', function () {
     return view('main.disiplin');
 })->name('disiplin.index');
@@ -31,12 +30,7 @@ Route::get('/disiplin', function () {
 Route::get('/user', function () {
     return view('main.user');
 });
-Route::get('/view', function () {
-    return view('main.view-siswa');
-});
-Route::get('/cetak-siswa', function () {
-    return view('cetak.cetak-siswa');
-});
+
 Route::get('/cetak-disiplin', function () {
     return view('cetak.cetak-disiplin');
 });
@@ -51,6 +45,17 @@ Route::get('/ekskul/edit/{id}', [EkstrakurikulerController::class, 'edit'])->nam
 Route::put('/ekskul/update/{id}', [EkstrakurikulerController::class, 'update'])->name('ekskul.update');
 Route::get('/ekskul/show', [EkstrakurikulerController::class, 'show'])->name('ekskul.show');
 Route::delete('/ekskul/destroy/{id}', [EkstrakurikulerController::class, 'destroy'])->name('ekskul.destroy');
+
+//siswa
+Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
+Route::get('/siswa/create/step1', [SiswaController::class, 'createStep1'])->name('siswa.create1');
+Route::get('/siswa/create/step2', [SiswaController::class, 'createStep2'])->name('siswa.create2');
+Route::get('/siswa/create/step3', [SiswaController::class, 'createStep3'])->name('siswa.create3');
+Route::post('/siswa/store', [SiswaController::class, 'store'])->name('siswa.store');
+Route::get('/siswa/edit/{id}', [SiswaController::class, 'edit'])->name('siswa.edit');
+Route::put('/siswa/update/{id}', [SiswaController::class, 'update'])->name('siswa.update');
+Route::get('/siswa/show', [SiswaController::class, 'show'])->name('siswa.show');
+Route::delete('/siswa/destroy/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
 
 
 

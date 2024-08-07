@@ -1,4 +1,4 @@
-@extends('base.layout-add')
+@extends('base.layout-tambah')
 @section('add')
         <div class="container mt-5">
             <div class="row justify-content-center">
