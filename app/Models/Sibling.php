@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Sibling extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        "jumlah",
+        "anak_ke"
+        ];
 }

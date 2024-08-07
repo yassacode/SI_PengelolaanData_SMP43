@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('histories', function (Blueprint $table) {
             $table->id();
-            $table->string('sakit');
-            $table->string('beasiswa');
+            $table->string('sakit')->nullable();
+            $table->string('beasiswa')->nullable();
             $table->timestamps();
         });
     }

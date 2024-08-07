@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('siblings', function (Blueprint $table) {
             $table->id();
-            $table->integer('jumlah'); 
-            $table->integer('anak_ke'); 
+            $table->integer('jumlah')->nullable(); 
+            $table->integer('anak_ke')->nullable(); 
             $table->timestamps();
         });
     }

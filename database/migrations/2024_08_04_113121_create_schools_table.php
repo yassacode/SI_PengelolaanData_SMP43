@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('schools', function (Blueprint $table) {
             $table->id();
-            $table->string('asal_paud');
-            $table->string('asal_tk');
-            $table->string('asal_sd');
-            $table->integer('jrk_sklh');
+            $table->string('asal_paud')->nullable();
+            $table->string('asal_tk')->nullable();
+            $table->string('asal_sd')->nullable();
+            $table->integer('jrk_sklh')->nullable();
             $table->timestamps();
         });
     }

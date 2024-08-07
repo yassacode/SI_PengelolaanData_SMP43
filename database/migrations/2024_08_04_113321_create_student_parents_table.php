@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('no_hp_ayah')->nullable();
             $table->string('no_hp_ibu')->nullable();
             $table->string('no_hp_wali')->nullable();
+            $table->string('identitas_wali')->nullable();
             $table->timestamps();
         });
     }
