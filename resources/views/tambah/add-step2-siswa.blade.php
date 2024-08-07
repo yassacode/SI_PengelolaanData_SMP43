@@ -11,54 +11,56 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form >
+                            <form action="{{ route('siswa.store2') }}" method="POST">
+                                @csrf
                                 <div class="form-group">
-                                    <label for="name_left">Asal Paud:</label>
-                                    <input type="text" id="" name="name" class="form-control" value="{{ old('name') }}">
+                                    <label for="">Asal Paud:</label>
+                                    <input type="text" id="" name="asal_paud" class="form-control" value="{{ old('name') }}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="email_left">Asal TK:</label>
-                                    <input type="text" id="" name="email" class="form-control" value="{{ old('email') }}">
+                                    <label for="">Asal TK:</label>
+                                    <input type="text" id="" name="asal_tk" class="form-control" value="{{ old('email') }}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="password_left">Asal SD:</label>
-                                    <input type="text" id="" name="ttl" class="form-control">
+                                    <label for="">Asal SD:</label>
+                                    <input type="text" id="" name="asal_sd" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label for="password_left">Jarak Rumah Ke Sekolah:</label>
-                                    <input type="text" id="" name="alamat" class="form-control">
+                                    <label for="">Jarak Rumah Ke Sekolah:</label>
+                                    <input type="text" id="" name="jrk_sklh" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label for="password_left">Riwayat Sakit:</label>
-                                    <input type="text" id="" name="alamat" class="form-control">
+                                    <label for="">Riwayat Sakit:</label>
+                                    <input type="text" id="" name="sakit" class="form-control">
                                 </div>
-                            </form>
-                        </div>
-                        <div class="col-md-6">
-                            <form >
+                              </div>
+                             <div class="col-md-6">
+                            
                                 <div class="form-group">
-                                    <label for="name_left">Riwayat Beasiswa:</label>
-                                    <input type="text" id="" name="name" class="form-control" value="{{ old('name') }}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="email_left">Pernah Ikut Perlombaan Apa:</label>
-                                    <input type="text" id="" name="email" class="form-control" value="{{ old('email') }}">
+                                    <label for="">Riwayat Beasiswa:</label>
+                                    <input type="text" id="" name="beasiswa" class="form-control" value="">
                                 </div>
                                 <div class="form-group">
-                                    <label for="password_left">Dan Juara Berapa:</label>
-                                    <input type="text" id="" name="ttl" class="form-control">
+                                    <label for="">Pernah Ikut Perlombaan Apa:</label>
+                                    <input type="text" id="" name="kegiatan" class="form-control" value="">
                                 </div>
                                 <div class="form-group">
-                                    <label for="password_left">Jumlah Saudara:</label>
-                                    <input type="text" id="" name="alamat" class="form-control">
+                                    <label for="">Dan Juara Berapa:</label>
+                                    <input type="text" id="" name="juara" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label for="password_left">Anak Ke-:</label>
-                                    <input type="text" id="" name="alamat" class="form-control">
+                                    <label for="">Jumlah Saudara:</label>
+                                    <input type="text" id="" name="jumlah" class="form-control">
                                 </div>
-                                <button type="button" class="btn btn-info ml-5 mb-2"> back </button>
-                                <button type="button" class="btn btn-primary ml-5 mb-2">Next>>></button>
-                                <button type="button" class="btn btn-danger ml-5 mb-2">Cancel</button>
+                                <div class="form-group">
+                                    <label for="">Anak Ke-:</label>
+                                    <input type="text" id="" name="anak_ke" class="form-control">
+                                </div>
+                                <div class="mt-4">
+                                    <a href="{{ route('siswa.create1') }}" class="btn btn-warning">back</a>
+                                    <button type="submit" class="btn btn-primary">next</button>    
+                                    <a href="{{route('siswa.index')}}"><i class="btn btn-danger">cancel</i></a>
+                                </div>
                             </form>
                         </div>
                     </div>

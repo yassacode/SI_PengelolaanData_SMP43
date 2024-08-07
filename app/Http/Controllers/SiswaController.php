@@ -40,8 +40,10 @@ class SiswaController extends Controller
     public function createStep1()
     {
         $today = date('Y-m-d');
+        // $students= Student::all();
         return view('tambah.add-step1-siswa',[
             'today'=>$today,
+            // 'siswa '=> $students
         ]);
     }
     public function createStep2()
@@ -81,9 +83,10 @@ class SiswaController extends Controller
             "hobi"=>'required',
             "agama"=>'required',
             "thn_msk"=>'required',
-            "status=>'required'"
+            "status=>'nullable'"
         ]);
-
+    
+        // dd($request->all());
         session()->put('siswa', $students);
         return redirect()->route('siswa.create2');
     }
@@ -108,13 +111,14 @@ class SiswaController extends Controller
             'kegiatan'=>'nullable',
             'juara'=>'nullable'
         ]);
+
         session()->put('sekolah', $schools);
         session()->put('riwayat', $histories);
         session()->put('saudara', $siblings);
         session()->put('prestasi', $achievments);
-        return redirect()->route('siswa.create2');
+        return redirect()->route('siswa.create3');
     }
-    public function storeStep3(Request $request)
+    public function store(Request $request)
     {
     $studentParents = $request -> validate([
         "nama_ayah"=>'nullable',
@@ -132,10 +136,6 @@ class SiswaController extends Controller
         "identitas_wali"=>'nullable'
         ]);
         session()->put('ortu', $studentParents);
-        return redirect()->route('siswa.index');
-    }
-
-    public function store(Request $request){
         $students = session()->get('siswa');
         $histories = session()->get('riwayat');
         $studentParents = session()->get('ortu');
@@ -158,9 +158,35 @@ class SiswaController extends Controller
             'saudara',
             'prestasi',
         ]);
-        return redirect()->route('students.index')->with('success', 'Data Berhasil Ditambahkan');
-    
+        return redirect()->route('siswa.index')->with('success', 'Data Berhasil Ditambahkan');
     }
+
+    // public function store(Request $request){
+    //     $students = session()->get('siswa');
+    //     $histories = session()->get('riwayat');
+    //     $studentParents = session()->get('ortu');
+    //     $schools = session()->get('sekolah');
+    //     $siblings = session()->get('saudara');
+    //     $achievements = session()->get('prestasi');
+
+    //     $students = Student::create($students);
+    //     $histories = History::create($histories);
+    //     $studentParents = StudentParent::create($studentParents);
+    //     $schools = School::create($schools);
+    //     $siblings = Sibling::create($siblings);
+    //     $achievements = Achievement::create($achievements);
+
+    //     session()->forget([
+    //         'siswa',
+    //         'riwayat',
+    //         'ortu',
+    //         'sekolah',
+    //         'saudara',
+    //         'prestasi',
+    //     ]);
+    //     return redirect()->route('siswa.index')->with('success', 'Data Berhasil Ditambahkan');
+    
+    // }
 
     /**
      * Display the specified resource.
@@ -243,7 +269,7 @@ class SiswaController extends Controller
         $siblings ->delete();
         $achievements ->delete();
 
-        return redirect()->route('students.index')->with('success', 'Data Berhasil Dihapus');
+        return redirect()->route('siswa.index')->with('success', 'Data Berhasil Dihapus');
         
     }
 }

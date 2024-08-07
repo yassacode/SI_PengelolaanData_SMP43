@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('agama');
             $table->string('hobi');
             $table->integer('thn_msk');
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

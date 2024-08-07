@@ -9,7 +9,8 @@
                     <h3>Tambah Data Siswa</h3>
                 </div>
                 <div class="card-body">
-                    <form>
+                    <form action="{{ route('siswa.store') }}" method="POST">
+                        @csrf   
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -71,7 +72,7 @@
                                     <input type="text" id="no_hp_wali" name="no_hp_wali" class="form-control" value="{{ old('no_hp_wali') }}">
                                 </div>
                                 <div class="form-group text-center mt-4">
-                                    <button type="reset" class="btn btn-info">Back</button>
+                                    <a href="{{ route('siswa.create2') }}" class="btn btn-warning">back</a>
                                     <button type="reset" class="btn btn-danger">Cancel</button>
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </div>

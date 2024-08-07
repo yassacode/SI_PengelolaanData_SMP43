@@ -51,10 +51,13 @@ Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
 Route::get('/siswa/create/step1', [SiswaController::class, 'createStep1'])->name('siswa.create1');
 Route::get('/siswa/create/step2', [SiswaController::class, 'createStep2'])->name('siswa.create2');
 Route::get('/siswa/create/step3', [SiswaController::class, 'createStep3'])->name('siswa.create3');
+Route::post('/siswa/store/step1', [SiswaController::class, 'storeStep1'])->name('siswa.store1');
+Route::post('/siswa/store/step2', [SiswaController::class, 'storeStep2'])->name('siswa.store2');
 Route::post('/siswa/store', [SiswaController::class, 'store'])->name('siswa.store');
 Route::get('/siswa/edit/{id}', [SiswaController::class, 'edit'])->name('siswa.edit');
 Route::put('/siswa/update/{id}', [SiswaController::class, 'update'])->name('siswa.update');
-Route::get('/siswa/show', [SiswaController::class, 'show'])->name('siswa.show');
+Route::get('/siswa/view', [SiswaController::class, 'show1'])->name('siswa.show1');
+Route::get('/siswa/show', [SiswaController::class, 'show2'])->name('siswa.show2');
 Route::delete('/siswa/destroy/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
 
 

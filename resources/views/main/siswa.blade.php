@@ -6,11 +6,8 @@
  <div class="card">
     <h4 class="card-header">Tabel Data Siswa</h4>
     <div class="ms-2 mb-2">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exLargeModal">
-      <i class='bx bxs-user-plus' ></i>
-    </button>
-    
-    <div class="table-responsive">
+      <a class="nav-link" href="{{ route('siswa.create1')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
+           <div class="table-responsive">
       <table class="table card-table">
         <thead>
           <tr>
@@ -24,21 +21,27 @@
           </tr>
         </thead>
         <tbody>
+          @foreach ($siswa as $students)      
           <tr>
-            <td>2</td>
-            <td>Aldrian Pasha</td>
-            <td>422090293210</td>
-            <td>2012</td>
-            <td>Siti, S.Pd</td>
+            <td scope="row">{{ $loop->iteration }}</td>
+            <td>{{$students->nama ?? ''}}</td>
+            <td>{{$students->nisn ?? ''}}</td>
+            <td>{{$students->thn_msk ?? ''}}</td>
+            <td>{{$students->user_id ?? ''}}</td>
             <td><span class="badge bg-label-primary me-1">Active</span></td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                 <div class="dropdown-menu">
-                  <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit-alt me-1"></i>Edit</a>
-                  <a class="dropdown-item" href="{{url('/view')}}"><i class="bx bx-show me-1"></i>view</a>
-                  <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i>Delete</a>
-                </div>
+                  {{-- <a class="dropdown-item" href="{{ route('siswa.create1', $students->id) }} "><i class="bx bx-edit-alt me-1"></i>create</a> --}}
+                  <a class="dropdown-item" href="{{ route('siswa.show2', $students->id) }} "><i class="bx bx-edit-alt me-1"></i>view</a>
+                  <a class="dropdown-item" href="{{ route('siswa.edit', $students->id) }} "><i class="bx bx-edit-alt me-1"></i>Edit</a>
+                  <form action="{{ route('siswa.destroy', $students->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="dropdown-item"><i class="bx bx-trash me-1"></i>Delete </button>
+                  </form>
+                  
               </div>
             </td>
           </tr>
@@ -60,6 +63,7 @@
               </div>
             </td>
           </tr>
+          @endforeach
         </tbody>
       </table>
     </div>

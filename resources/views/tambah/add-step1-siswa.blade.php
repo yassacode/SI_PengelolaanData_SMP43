@@ -10,53 +10,55 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <form >
+                                    <form action="{{ route('siswa.store1') }}" method="POST">
+                                        @csrf
+                                       
                                         <div class="form-group">
-                                            <label for="name_left">Nama:</label>
-                                            <input type="text" id="" name="name" class="form-control" value="{{ old('name') }}">
+                                            <label for="">Nama:</label>
+                                            <input type="text" id="" name="nama" class="form-control" value="{{ old('name') }}">
                                         </div>
                                         <div class="form-group">
-                                            <label for="email_left">NISN:</label>
-                                            <input type="text" id="" name="email" class="form-control" value="{{ old('email') }}">
+                                            <label for="">NISN:</label>
+                                            <input type="text" id="" name="nisn" class="form-control" value="{{ old('email') }}">
                                         </div>
                                         <div class="form-group">
-                                            <label for="password_left">Tempat Tanggal Lahir:</label>
+                                            <label for="">Tempat Tanggal Lahir:</label>
                                             <input type="text" id="" name="ttl" class="form-control">
                                         </div>
                                         <div class="form-group">
-                                            <label for="password_left">No HP:</label>
+                                            <label for="">No HP:</label>
+                                            <input type="text" id="" name="no_hp" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Alamat:</label>
                                             <input type="text" id="" name="alamat" class="form-control">
                                         </div>
+                                    </div>
+                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="password_left">Alamat:</label>
-                                            <input type="text" id="" name="alamat" class="form-control">
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="col-md-6">
-                                    <form >
-                                        <div class="form-group">
-                                            <label for="name_left">Tinggi Badan:</label>
-                                            <input type="text" id="" name="name" class="form-control" value="{{ old('name') }}">
+                                            <label for="">Tinggi Badan:</label>
+                                            <input type="text" id="" name="tb" class="form-control" value="{{ old('name') }}">
                                         </div>
                                         <div class="form-group">
-                                            <label for="email_left">Berat Badan:</label>
-                                            <input type="text" id="" name="email" class="form-control" value="{{ old('email') }}">
+                                            <label for="">Berat Badan:</label>
+                                            <input type="text" id="" name="bb" class="form-control" value="{{ old('email') }}">
                                         </div>
                                         <div class="form-group">
-                                            <label for="password_left">Agama:</label>
-                                            <input type="text" id="" name="ttl" class="form-control">
+                                            <label for="">Agama:</label>
+                                            <input type="text" id="" name="agama" class="form-control">
                                         </div>
                                         <div class="form-group">
-                                            <label for="password_left">Hobi dan Cita Cita:</label>
-                                            <input type="text" id="" name="alamat" class="form-control">
+                                            <label for="">Hobi dan Cita Cita:</label>
+                                            <input type="text" id="" name="hobi" class="form-control">
                                         </div>
                                         <div class="form-group">
-                                            <label for="password_left">Tahun Masuk:</label>
-                                            <input type="text" id="" name="alamat" class="form-control">
+                                            <label for="">Tahun Masuk:</label>
+                                            <input type="text" id="" name="thn_msk" class="form-control">
                                         </div>
-                                        <button type="button" class="btn btn-primary ml-5 mb-2">Next>>></button>
-                                        <button type="button" class="btn btn-danger ml-5 mb-2">Cancel</button>
+                                        <div class="form-group text-center mt-3">
+                                            <button type="submit" class="btn btn-primary">Next</button>
+                                            <a href="{{route('siswa.index')}}"><i class="btn btn-danger">cancel</i></a>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
