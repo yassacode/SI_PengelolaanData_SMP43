@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DisiplinController;
 use App\Http\Controllers\EkstrakurikulerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiswaController;
@@ -23,17 +24,10 @@ Route::get('/main', function () {
     return view('main.dashboard');
 });
 
-Route::get('/disiplin', function () {
-    return view('main.disiplin');
-})->name('disiplin.index');
-
 Route::get('/user', function () {
     return view('main.user');
 });
 
-Route::get('/cetak-disiplin', function () {
-    return view('cetak.cetak-disiplin');
-});
 
 
 
@@ -45,6 +39,15 @@ Route::get('/ekskul/edit/{id}', [EkstrakurikulerController::class, 'edit'])->nam
 Route::put('/ekskul/update/{id}', [EkstrakurikulerController::class, 'update'])->name('ekskul.update');
 Route::get('/ekskul/show', [EkstrakurikulerController::class, 'show'])->name('ekskul.show');
 Route::delete('/ekskul/destroy/{id}', [EkstrakurikulerController::class, 'destroy'])->name('ekskul.destroy');
+
+//disipline
+Route::get('/disiplin', [DisiplinController::class, 'index'])->name('disiplin.index');
+Route::get('/disiplin/create', [DisiplinController::class, 'create'])->name('disiplin.create');
+Route::post('/disiplin/store', [DisiplinController::class, 'store'])->name('disiplin.store');
+Route::get('/disiplin/edit/{id}', [DisiplinController::class, 'edit'])->name('disiplin.edit');
+Route::put('/disiplin/update/{id}', [DisiplinController::class, 'update'])->name('disiplin.update');
+Route::get('/disiplin/show', [DisiplinController::class, 'show'])->name('disiplin.show');
+Route::delete('/disiplin/destroy/{id}', [DisiplinController::class, 'destroy'])->name('disiplin.destroy');
 
 //siswa
 Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');

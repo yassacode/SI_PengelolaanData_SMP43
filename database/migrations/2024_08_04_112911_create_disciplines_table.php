@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('foto');
             $table->string('solusi');
             $table->string('keterangan');
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

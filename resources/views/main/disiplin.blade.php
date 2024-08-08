@@ -5,7 +5,7 @@
 <div class="container-xxl flex-grow-1 container-p-y">
  <div class="card">
     <h4 class="card-header">Tabel Data Disiplin</h4>
-    <a class="nav-link" href="#"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
+    <a class="nav-link" href="{{route('disiplin.create')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
     <div class="table-responsive">
       <table class="table card-table">
         <thead>
@@ -23,15 +23,16 @@
           </tr>
         </thead>
         <tbody>
+          @foreach ( $disiplin as $dicipline )        
           <tr>
-            <td>1</td>
-            <td>Siti,S.Pd</td>
-            <td>Aldrian Pasha</td>
-            <td>422090293210</td>
-            <td>2012</td>
-            <td>2012</td>
-            <td>2012</td>
-            <td>08442424328</td>
+            <td scope="row">{{ $loop->iteration }}</td>
+            <td>{{$dicipline->user_id??''}}</td>
+            <td>{{$dicipline->student_id??''}}</td>
+            <td>{{$dicipline->kelas??''}}</td>
+            <td>{{$dicipline->masalah??''}}</td>
+            <td>{{$dicipline->tanggal??''}}</td>
+            <td>{{$dicipline->foto??''}}</td>
+            <td>{{$dicipline->keterangan??''}}</td>
             <td><span class="badge bg-label-primary me-1">Active</span></td>
             <td>
               <div class="dropdown">
@@ -43,6 +44,7 @@
               </div>
             </td>
           </tr>
+          @endforeach
         </tbody>
       </table>
     </div>

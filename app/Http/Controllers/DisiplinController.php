@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Discipline;
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class DisiplinController extends Controller
@@ -11,7 +13,12 @@ class DisiplinController extends Controller
      */
     public function index()
     {
-        //
+        $dicipline =Discipline::all();
+        $students = Student::all();
+        return view('main.disiplin',[
+            'disiplin'=>$dicipline,
+            'siswa' => $students
+        ]);
     }
 
     /**
@@ -19,7 +26,10 @@ class DisiplinController extends Controller
      */
     public function create()
     {
-        //
+        $today = date('Y-m-d');
+        return view('tambah.add-disiplin',[
+            'today'=>$today,
+        ]);
     }
 
     /**
@@ -27,7 +37,19 @@ class DisiplinController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $dicipline = $request-> validate([
+            "user_id"=>'nullable',
+            "student_id"=>'nullable',
+            "masalah",
+            "kelas",
+            "tanggal",
+            "foto",
+            "solusi",
+            "keterangan",
+            "status"=>'nullable'
+        ]);
+        $dicipline=Discipline::create($dicipline);
+        return redirect()->route('disiplin.index')->with('success', 'Data Berhasil Ditambahkan');
     }
 
     /**
@@ -35,7 +57,10 @@ class DisiplinController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $dicipline = Discipline::find($id);
+        return view('cetak.cetak-disiplin',[
+            'disiplin'=>$dicipline
+            ]);
     }
 
     /**
@@ -43,7 +68,12 @@ class DisiplinController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $dicipline = Discipline::find($id);
+        $today = date('Y-m-d');
+        return view('tambah.edit-disiplin',[
+            'disiplin'=>$dicipline,
+            'today'=>$today
+            ]);
     }
 
     /**
@@ -51,14 +81,18 @@ class DisiplinController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
-    }
+        $dicipline = Discipline::findOrFail($id);
+        $dicipline->update($dicipline);
+
+        return redirect()->route('disiplin.index')->with('success', 'Data Berhasil Diperbarui');
+   }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        $dicipline = Discipline::findOrFail($id);
+        $dicipline->delete();
+        return redirect()->route('siswa.index')->with('success', 'Data Berhasil Dihapus');            }
     }
-}
