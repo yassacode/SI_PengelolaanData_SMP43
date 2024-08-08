@@ -9,16 +9,22 @@
                         </div>
                         <div class="card-body">
                             <form action="{{ route('disiplin.store') }}" method="POST">
-                                @csrf>
+                                @csrf
                              <div class="row">
                                  <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="exampleFormControlSelect1" class="form-label">Nama siswa</label>
-                                            <select name="category" id="category">
-                                                @foreach($disiplin as $dicipline)
-                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        <div class="form-group ">
+                                            <label for="student_id">Nama Siswa:</label>
+                                                <select name="student_id" id="student_id" class="form-control">
+                                                    @foreach ($siswa as $student)
+                                                        <option value="{{ $student->id }}">{{ $student->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            {{-- <label for="student_id" class="form-label">Nama siswa</label>
+                                            <select name="student_id" id="student_id">
+                                                @foreach($siswa as $students)
+                                                    <option value="{{ $students->id }}">{{ $students->name }}</option>
                                                 @endforeach
-                                            </select> 
+                                            </select>  --}}
                                         </div>
                                         <div class="form-group">
                                             <label for="">Kelas:</label>

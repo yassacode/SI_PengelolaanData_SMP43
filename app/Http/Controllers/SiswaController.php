@@ -94,7 +94,7 @@ class SiswaController extends Controller
     public function storeStep2(Request $request)
     {
         $schools = $request -> validate([
-        "asal_paud"=>'required',
+        "asal_paud"=>'nullable',
         "asal_tk"=>'required',
         "asal_sd"=>'required',
         "jrk_sklh"=>'required'

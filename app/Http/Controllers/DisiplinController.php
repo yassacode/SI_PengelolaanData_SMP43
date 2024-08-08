@@ -13,10 +13,11 @@ class DisiplinController extends Controller
      */
     public function index()
     {
-        $dicipline =Discipline::all();
+        $disciplines = Discipline::with('student')->get();
         $students = Student::all();
-        return view('main.disiplin',[
-            'disiplin'=>$dicipline,
+    
+        return view('main.disiplin', [
+            'disiplin' => $disciplines,
             'siswa' => $students
         ]);
     }
@@ -26,9 +27,11 @@ class DisiplinController extends Controller
      */
     public function create()
     {
+        $students=Student::all();
         $today = date('Y-m-d');
         return view('tambah.add-disiplin',[
             'today'=>$today,
+            'siswa'=>$students
         ]);
     }
 

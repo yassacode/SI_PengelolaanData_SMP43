@@ -27,7 +27,7 @@
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
             <td>{{$dicipline->user_id??''}}</td>
-            <td>{{$dicipline->student_id??''}}</td>
+            <td>{{$dicipline->student_id->nama??''}}</td>
             <td>{{$dicipline->kelas??''}}</td>
             <td>{{$dicipline->masalah??''}}</td>
             <td>{{$dicipline->tanggal??''}}</td>
