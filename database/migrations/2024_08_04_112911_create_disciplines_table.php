@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('masalah');
             $table->string('kelas');
             $table->date('tanggal');
-            $table->string('foto');
+            $table->string('foto')->nullable();
             $table->string('solusi');
             $table->string('keterangan');
             $table->string('status')->nullable();

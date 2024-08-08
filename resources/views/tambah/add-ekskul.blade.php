@@ -8,7 +8,7 @@
                             <h3>Tambah Kegiatan Ekstrakurikuler</h3>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('ekskul.store') }}" method="POST">
+                            <form action="{{ route('ekskul.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
 
                             <div class="row">

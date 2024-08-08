@@ -8,9 +8,9 @@
                             <h3>Tambah Kegiatan Ekstrakurikuler</h3>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('ekskul.store') }}" method="POST">
+                            <form action="{{ route('ekskul.update',$item->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
-
+                                @method('PUT')
                             <div class="row">
                                 <div class="col-md-6">
                                         <div class="form-group">
@@ -39,10 +39,22 @@
                                             <label for="name_left">Tanggal Kegiatan:</label>
                                             <input type="date" id="" name="tanggal" class="form-control" value="{{$item->tanggal}}">
                                         </div>
-                                        <div class="form-group">
-                                            <label for="formFile" class="form-label">Foto Kegiatan</label>
-                                            <input class="form-control" type="file" id="formFile" name="foto">    
-                                        </div>
+                                            <div class="form-group">
+                                                <!-- Input lain -->
+        
+                                                <!-- Menampilkan gambar yang sudah ada -->
+                                                @if ($item->foto)
+                                                <div>
+                                                    <img src="{{ Storage::url($item->foto) }}" alt="Foto Bukti" style="width: 150px;">
+                                                </div>
+                                            @endif
+    
+                                            <!-- Input untuk unggah gambar baru -->
+                                            <div>
+                                                <label for="foto">Unggah Foto Baru (Opsional)</label>
+                                                <input type="file" name="foto" id="foto">
+                                            </div>   
+                                            </div>
                                         <div class="form-group">
                                             <label for="formFile" class="form-label">Keterangan</label>
                                             <input class="form-control" type="text" id="formFile" name="keterangan" value="{{$item->keterangan}}">    

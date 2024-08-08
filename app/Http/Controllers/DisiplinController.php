@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Discipline;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DisiplinController extends Controller
 {
@@ -43,14 +44,17 @@ class DisiplinController extends Controller
         $dicipline = $request-> validate([
             "user_id"=>'nullable',
             "student_id"=>'nullable',
-            "masalah",
-            "kelas",
-            "tanggal",
-            "foto",
-            "solusi",
-            "keterangan",
+            "masalah"=>'required',
+            "kelas"=>'required',
+            "tanggal"=>'required',
+            "foto"=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            "solusi"=>'required',
+            "keterangan"=>'required',
             "status"=>'nullable'
         ]);
+        if($request->file('foto')){
+            $dicipline['foto'] = $request->file('foto')->store('fotoBuktiDisiplin', 'public');
+        }
         $dicipline=Discipline::create($dicipline);
         return redirect()->route('disiplin.index')->with('success', 'Data Berhasil Ditambahkan');
     }
@@ -71,11 +75,13 @@ class DisiplinController extends Controller
      */
     public function edit(string $id)
     {
+        $students=Student::all();
         $dicipline = Discipline::find($id);
         $today = date('Y-m-d');
         return view('tambah.edit-disiplin',[
             'disiplin'=>$dicipline,
-            'today'=>$today
+            'today'=>$today,
+            'siswa'=>$students
             ]);
     }
 
@@ -84,8 +90,32 @@ class DisiplinController extends Controller
      */
     public function update(Request $request, string $id)
     {
+     
+
         $dicipline = Discipline::findOrFail($id);
-        $dicipline->update($dicipline);
+
+        $validatedData = $request->validate([
+            "user_id" => 'nullable',
+            // "student_id" => 'nullable',
+            "masalah" => 'required',
+            "kelas" => 'required',
+            "tanggal" => 'required',
+            "foto" => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            "solusi" => 'required',
+            "keterangan" => 'required',
+            "status" => 'nullable'
+        ]);
+
+        if ($request->hasFile('foto')) {
+            if ($dicipline->foto) {
+                Storage::disk('public')->delete($dicipline->foto);
+            }
+            $validatedData['foto'] = $request->file('foto')->store('fotoBuktiDisiplin', 'public');
+        } else {
+            $validatedData['foto'] = $dicipline->foto;
+        }
+    
+        $dicipline->update($validatedData);
 
         return redirect()->route('disiplin.index')->with('success', 'Data Berhasil Diperbarui');
    }
@@ -97,5 +127,5 @@ class DisiplinController extends Controller
     {
         $dicipline = Discipline::findOrFail($id);
         $dicipline->delete();
-        return redirect()->route('siswa.index')->with('success', 'Data Berhasil Dihapus');            }
+        return redirect()->route('disiplin.index')->with('success', 'Data Berhasil Dihapus');            }
     }

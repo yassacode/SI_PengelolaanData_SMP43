@@ -41,12 +41,12 @@ class EkstrakurikulerController extends Controller
             'tanggal'=>'required',
             'lokasi'=>'required',
             'keterangan'=>'required',
-            'foto'=>'image|nullable',
+            'foto'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         if($request->file('foto')){
-            $data['foto'] = $request->file('foto')->store('asset/scanKegiatan', 'public');
+            $data['foto'] = $request->file('foto')->store('fotoBuktiEkskul', 'public');
         }
-        Extracurricular::create($data);
+        $data= Extracurricular::create($data);
 
         return redirect()->route('ekskul.index')->with([
             'success' => 'Data Berhasil Ditambahkan',
@@ -93,7 +93,7 @@ class EkstrakurikulerController extends Controller
             'foto'=>'image|nullable',
         ]);
         if($request->file('foto')){
-            $data['foto'] = $request->file('foto')->store('asset/scanKegiatan', 'public');
+            $data['foto'] = $request->file('foto')->store('fotoBuktiEkskul', 'public');
         }
 
         $item->update($data);

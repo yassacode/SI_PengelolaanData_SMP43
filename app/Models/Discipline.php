@@ -19,5 +19,10 @@ class Discipline extends Model
         "solusi",
         "keterangan",
         "status"
-    ];  
+    ];
+    
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id');
+    }
 }

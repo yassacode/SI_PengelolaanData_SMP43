@@ -30,7 +30,16 @@
             <td>{{ $item->kegiatan ?? '' }}</td>
             <td>{{ $item->tanggal ?? '' }}</td>
             <td>{{ $item->lokasi ?? '' }}</td>
-            <td>{{ $item->foto ?? '' }}</td>
+            <td>
+              @if($item->foto)
+              <a href="{{ Storage::url($item->foto) }}" target="_blank">
+                <img src="{{ Storage::url($item->foto ?? '') }}" alt="" class="img img-fluid" width="150" height="150"></td>
+              </a>
+              {{-- <img src="{{ Storage::url($dicipline->foto) }}, 'public' }}" alt="Foto" style="width: 100px; height: auto;"> --}}
+               @else
+              <span>No Image</span>
+              @endif
+            </td>
             <td>{{ $item->keterangan ?? '' }}</td>
             <td>
               <div class="dropdown">
