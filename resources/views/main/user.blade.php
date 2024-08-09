@@ -3,8 +3,8 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
  <div class="card">
-    <h4 class="card-header">Tabel Data Siswa</h4>
-    <a class="nav-link" href="#"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
+    <h4 class="card-header">Tabel Data User</h4>
+    <a class="nav-link" href="{{ route('user.create')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
     <div class="table-responsive">
       <table class="table card-table">
         <thead>
@@ -22,16 +22,17 @@
           </tr>
         </thead>
         <tbody>
+          @foreach ($user as $users) 
           <tr>
-            <td>1</td>
-            <td>Aldrian Pasha</td>
-            <td>422090293210</td>
-            <td>2012</td>
-            <td>08442424328</td>
-            <td>08442424328</td>
-            <td>08442424328</td>
-            <td>08442424328</td>
-            <td>08442424328</td>
+            <td scope="row">{{ $loop->iteration }}</td>
+            <td>{{$users->name ?? ''}}</td>
+            <td>{{$users->level ?? ''}}</td>
+            <td>{{$users->email ?? ''}}</td>
+            <td>{{$users->password ?? ''}}</td>
+            <td>{{$users->nip ?? ''}}</td>
+            <td>{{$users->jabatan ?? ''}}</td>
+            <td>{{$users->alamat ?? ''}}</td>
+            <td>{{$users->no_hp ?? ''}}</td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -42,6 +43,7 @@
               </div>
             </td>
           </tr>
+          @endforeach
         </tbody>
       </table>
     </div>
