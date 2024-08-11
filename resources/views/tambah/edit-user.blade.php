@@ -15,16 +15,16 @@
                         <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Nama :</label>
-                                    <input type="text" id="" name="name" class="form-control" value="{{$users->nama}}">
+                                    <input type="text" id="" name="name" class="form-control" value="{{$user->name}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="">username:</label>
-                                    <input type="text" id="" name="email" class="form-control" value="{{$users->email}}">>
+                                    <input type="text" id="" name="email" class="form-control" value="{{$user->email}}">
                                 </div>
                                 <div class="form-password-toggle">
                                     <label class="form-label" for="basic-default-password12">Password</label>
                                     <div class="input-group">
-                                      <input name="password" type="password" class="form-control" id="basic-default-password12" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="basic-default-password2" />
+                                      <input name="password" type="password" class="form-control" id="basic-default-password12" placeholder="Silahkan Masukan Password" aria-describedby="basic-default-password2" />
                                       <span id="basic-default-password2" class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                                     </div>
                                 </div>
@@ -44,19 +44,19 @@
                              
                                 <div class="form-group">
                                     <label for="">Jabatan:</label>
-                                    <input type="text" id="" name="jabatan" class="form-control"value="{{$users->jabatan}}">>
+                                    <input type="text" id="" name="jabatan" class="form-control"value="{{$user->jabatan}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="" class="form-label">NIP:</label>
-                                    <input class="form-control" type="text" id="" name="nip"value="{{$users->nip}}">>    
+                                    <input class="form-control" type="text" id="" name="nip"value="{{$user->nip}}">   
                                 </div>
                                 <div class="form-group">
                                     <label for="" class="form-label">Alamat:</label>
-                                    <input class="form-control" type="text" id="" name="alamat"value="{{$users->alamat}}">>    
+                                    <input class="form-control" type="text" id="" name="alamat"value="{{$user->alamat}}">  
                                 </div>
                                 <div class="form-group">
                                     <label for="" class="form-label">Nomor HP:</label>
-                                    <input class="form-control" type="text" id="" name="no_hp "value="{{$users->no_hp}}">>    
+                                    <input class="form-control" type="text" id="" name="no_hp "value="{{$user->no_hp}}">   
                                 </div>
                          </div>
                                 <div class="mt-4 text-center">

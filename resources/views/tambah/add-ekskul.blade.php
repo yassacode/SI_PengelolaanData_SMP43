@@ -27,17 +27,17 @@
                                           </div>
                                         <div class="form-group">
                                             <label for="">Nama Kegiatan:</label>
-                                            <input type="text" id="" name="kegiatan" class="form-control" value="">
+                                            <input type="text" id="" name="kegiatan" class="form-control" placeholder="Kegoatan yang diikuti">
                                         </div>
                                         <div class="form-group">
                                             <label for="">Lokasi:</label>
-                                            <input type="text" id="" name="lokasi" class="form-control">
+                                            <input type="text" id="" name="lokasi" class="form-control"placeholder="Lokasi Kegiatan">
                                         </div>
                                 </div>
                                 <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="name_left">Tanggal Kegiatan:</label>
-                                            <input type="date" id="" name="tanggal" class="form-control" value="{{ old('name') }}">
+                                            <input type="date" id="" name="tanggal" class="form-control" >
                                         </div>
                                         <div class="form-group">
                                             <label for="formFile" class="form-label">Foto Kegiatan</label>

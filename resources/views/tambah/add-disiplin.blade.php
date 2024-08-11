@@ -23,26 +23,26 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="">Kelas:</label>
-                                            <input type="text" id="" name="kelas" class="form-control" value="">
+                                            <input type="text" id="" name="kelas" class="form-control" placeholder="Masukan nama kelas, contoh: 7 1">
                                         </div>
                                         <div class="form-group">
                                             <label for="">Bentuk Pelanggaran:</label>
-                                            <input type="text" id="" name="masalah" class="form-control" value="">
+                                            <input type="text" id="" name="masalah" class="form-control" placeholder="Masukan pelanggaran yang dilakukan, contohnya: bolos">
                                         </div>
                                         <div class="form-group">
                                             <label for=""> solusi</label>
-                                            <input type="text" id="" name="solusi" class="form-control" value="">
+                                            <input type="text" id="" name="solusi" class="form-control" placeholder="masukan solusi atau sanksi akibat pelanggaran yang dilakukan">
                                         </div>
                                         
                                     </div>
                                      <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Tanggal Kejadian:</label>
-                                            <input type="date" id="" name="tanggal" class="form-control" value="">
+                                            <input type="date" id="" name="tanggal" class="form-control" placeholder="masukan tanggal kejadian pelanggaran">
                                         </div>
                                         <div class="form-group">
                                             <label for="">Fotu Bukti:</label>
-                                            <input type="file" id="" name="foto" class="form-control" value="">
+                                            <input type="file" id="" name="foto" class="form-control" placeholder="masukan foto bukti">
                                         </div>
                                         <div class="form-group">
                                             <label for="">Keterangan:</label>

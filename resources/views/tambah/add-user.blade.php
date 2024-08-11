@@ -15,16 +15,16 @@
                         <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Nama :</label>
-                                    <input type="text" id="" name="name" class="form-control">
+                                    <input type="text" id="" name="name" class="form-control" placeholder="Masukan Nama lengkap beserta gelar..">
                                 </div>
                                 <div class="form-group">
                                     <label for="">username:</label>
-                                    <input type="text" id="" name="email" class="form-control">
+                                    <input type="text" id="" name="email" class="form-control"placeholder="masukan username anda sebagai username login">
                                 </div>
                                 <div class="form-password-toggle">
                                     <label class="form-label" for="basic-default-password12">Password</label>
                                     <div class="input-group">
-                                      <input name="password" type="password" class="form-control" id="basic-default-password12" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="basic-default-password2" />
+                                      <input name="password" type="password" class="form-control" id="basic-default-password12" placeholder="Silahkan Masukan Password" aria-describedby="basic-default-password2" />
                                       <span id="basic-default-password2" class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                                     </div>
                                 </div>
@@ -44,19 +44,19 @@
                              
                                 <div class="form-group">
                                     <label for="">Jabatan:</label>
-                                    <input type="text" id="" name="jabatan" class="form-control">
+                                    <input type="text" id="" name="jabatan" class="form-control"placeholder="Silahkan masukan jabatan anda">
                                 </div>
                                 <div class="form-group">
                                     <label for="" class="form-label">NIP:</label>
-                                    <input class="form-control" type="text" id="" name="nip">    
+                                    <input class="form-control" type="text" id="" name="nip"placeholder="masukan NIP anda">    
                                 </div>
                                 <div class="form-group">
                                     <label for="" class="form-label">Alamat:</label>
-                                    <input class="form-control" type="text" id="" name="alamat">    
+                                    <input class="form-control" type="text" id="" name="alamat"placeholder="Masukan Alamat domisili anda">    
                                 </div>
                                 <div class="form-group">
                                     <label for="" class="form-label">Nomor HP:</label>
-                                    <input class="form-control" type="text" id="" name="no_hp">    
+                                    <input class="form-control" type="text" id="" name="no_hp"placeholder="masukan no hp yang bisa dihubungi">    
                                 </div>
                          </div>
                                 <div class="mt-4 text-center">

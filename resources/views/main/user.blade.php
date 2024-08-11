@@ -37,9 +37,12 @@
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                 <div class="dropdown-menu">
-                  <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit-alt me-1"></i>Edit</a>
-                  <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i>Delete</a>
-                </div>
+                  <a class="dropdown-item" href="{{ route('user.edit', $users->id) }} "><i class="bx bx-edit-alt me-1"></i>Edit</a>
+                  <form action="{{ route('user.destroy', $users->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="dropdown-item"><i class="bx bx-trash me-1"></i>Delete </button>
+                  </form>
               </div>
             </td>
           </tr>
