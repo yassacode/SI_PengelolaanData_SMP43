@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -33,24 +34,36 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $users = $request->validate([
-            'name'=>'required',
-            'email'=>'required',
-            'password'=>'required',
-            'level'=>'required',
-            'jabatan'=>'required',
-            'nip'=>'required',
-            'no_hp'=>'required',
-            'alamat'=>'required',
-        ]);
+{
+    
+    $users = $request->validate([
+        'name' => 'required',
+        'email' => 'required|unique:users,email',
+        'password' => 'required',
+        'level' => 'required',
+        'jabatan' => 'required',
+        'nip' => 'required',
+        'no_hp' => 'required',
+        'alamat' => 'required',
+    ]);
 
-        $users=User::create($users);
+    // Buat dan simpan pengguna dalam satu baris
+    $users = User::create([
+        'name' => $users['name'],
+        'email' => $users['email'],
+        'level'=> $users['level'],
+        'jabatan'=> $users['jabatan'],
+        'nip'=> $users['nip'],
+        'no_hp'=> $users['no_hp'],
+        'alamat'=>$users['alamat'],
+        'password' => Hash::make($users['password']),
         
-        return redirect()->route('user.index')->with([
-            'success' => 'Data Berhasil Ditambahkan'
-        ]);
-    }
+    ]);
+
+    return redirect()->route('user.index')->with('success', 'Data Berhasil Ditambahkan');
+
+}
+
 
     /**
      * Display the specified resource.

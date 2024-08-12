@@ -18,16 +18,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/main', function () {
-    return view('main.dashboard');
-});
-
-Route::get('/user', function () {
-    return view('main.user');
-});
 
 
 
@@ -60,8 +50,8 @@ Route::post('/siswa/store/step2', [SiswaController::class, 'storeStep2'])->name(
 Route::post('/siswa/store', [SiswaController::class, 'store'])->name('siswa.store');
 Route::get('/siswa/edit/{id}', [SiswaController::class, 'edit'])->name('siswa.edit');
 Route::put('/siswa/update/{id}', [SiswaController::class, 'update'])->name('siswa.update');
-Route::get('/siswa/view', [SiswaController::class, 'show1'])->name('siswa.show1');
-Route::get('/siswa/show', [SiswaController::class, 'show2'])->name('siswa.show2');
+Route::get('/siswa/view/{id}', [SiswaController::class, 'show1'])->name('siswa.show1');
+Route::get('/siswa/show{id}', [SiswaController::class, 'show2'])->name('siswa.show2');
 Route::delete('/siswa/destroy/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
 
 //user
@@ -79,9 +69,9 @@ Route::delete('/user/destroy/{id}', [UserController::class, 'destroy'])->name('u
 
 
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/main', function () {
+    return view('main.dashboard');
+})->middleware(['auth', 'verified'])->name('main');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

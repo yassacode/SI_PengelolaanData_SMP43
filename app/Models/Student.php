@@ -28,4 +28,30 @@ class Student extends Model
         "thn_msk",
         "status"
         ];
+
+        public function history()
+    {
+        return $this->belongsTo(History::class, 'history_id');
+    }
+        public function achievement()
+    {
+        return $this->belongsTo(Achievement::class, 'achievement_id');
+    }
+        public function school()
+    {
+        return $this->belongsTo(School::class, 'school_id');
+    }
+        public function sibling()
+    {
+        return $this->belongsTo(Sibling::class, 'sibling_id');
+    }
+        public function studentparent()
+    {
+        return $this->belongsTo(StudentParent::class, 'student_parent_id');
+    }
+        public function dicipline()
+    {
+        return $this->hasMany(Discipline::class, 'dicipline_id');
+    }
+
 }
