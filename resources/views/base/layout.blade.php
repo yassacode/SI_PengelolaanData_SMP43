@@ -80,9 +80,10 @@
           </div>
 
           <div class="menu-inner-shadow"></div>
-
+          @if(auth()->user()->level == 'admin')
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
+           
             <li class="menu-item mb-2 {{Route::is('main')?'active':''}}">
               <a class="menu-link" href="{{url('/main')}}">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
@@ -115,6 +116,36 @@
             </li>
 
           </ul>
+          @else
+          <ul class="menu-inner py-1">
+            <!-- Dashboard -->
+           
+            <li class="menu-item mb-2 {{Route::is('main')?'active':''}}">
+              <a class="menu-link" href="{{url('/main')}}">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Analytics">Dashboard</div>
+              </a>
+            </li>
+            <li class="menu-item mb-2 {{Route::is('siswa*')?'active':''}}">
+              <a href="{{url('/siswa')}}" class="menu-link">
+                <i class="menu-icon tf-icons bx bxs-group"></i>
+                <div data-i18n="Analytics">Siswa</div>
+              </a>
+            </li>
+            <li class="menu-item mb-2 {{Route::is('disiplin*')?'active':''}}">
+              <a href="{{url('/disiplin')}}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-error"></i>
+                <div data-i18n="Analytics">Disiplin</div>
+              </a>
+            </li>
+            <li class="menu-item mb-2 {{Route::is('ekskul*')?'active':''}}">
+              <a href="{{url('/ekskul')}}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-briefcase-alt-2"></i>
+                <div data-i18n="Analytics">Esktrakurikuler</div>
+              </a>
+            </li>
+          </ul>
+          @endif
         </aside>
         <!-- / Menu -->
 

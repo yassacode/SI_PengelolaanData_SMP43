@@ -33,7 +33,7 @@
                                     <select name="level" class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
                                      <option selected>...</option>
                                      <option value="admin">admin</option>
-                                     <option value="Kepala sekolah">Kepala Sekolah</option>
+                                     <option value="kepala sekolah">Kepala Sekolah</option>
                                      <option value="waka kesiswaan">Waka Kesiswaan</option>
                                      <option value="staff waka kesiswaan">Staff Waka Kesiswaan</option>
                                      <option value="guru">Guru</option>
