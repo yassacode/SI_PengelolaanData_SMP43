@@ -18,6 +18,12 @@
     <h4 class="card-header">Tabel Data Disiplin</h4>
     <div class="table-responsive">
       <table class="table card-table">
+        <div class="d-flex justify-content-end me-3">
+          <form action="{{ route('disiplin.index') }}" method="GET">
+              <input class="me-2" type="text" name="search" placeholder="cari nama dan masalah" value="{{ request()->input('search') }}">
+              <button type="submit" class="btn btn-primary">Cari</button>
+          </form>
+        </div>
         @if(auth()->user()->level == 'admin')
         <a class="nav-link" href="{{route('disiplin.create')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
         <thead>
@@ -35,6 +41,11 @@
           </tr>
         </thead>
         <tbody>
+          @if($disiplin->isEmpty())
+          <tr>
+              <td colspan="7" class="text-center">Tidak ada data yang ditemukan.</td>
+          </tr>
+          @else
           @foreach ( $disiplin as $dicipline )        
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
@@ -42,7 +53,7 @@
             <td>{{$dicipline->student->nama??''}}</td>
             <td>{{$dicipline->kelas??''}}</td>
             <td>{{$dicipline->masalah??''}}</td>
-            <td>{{$dicipline->tanggal??''}}</td>
+            <td>{{ \Carbon\Carbon::parse($dicipline->tanggal)->format('d-m-Y')??'' }}</td>
             <td>
               @if($dicipline->foto)
               <a href="{{ Storage::url($dicipline->foto) }}" target="_blank">
@@ -54,7 +65,22 @@
               @endif
             </td>
             <td>{{$dicipline->keterangan??''}}</td>
-            <td><span class="badge bg-label-primary me-1">Active</span></td>
+              <td>
+                @if ($dicipline->status == 'WAITING')
+                <form action="{{route('disiplin/update/status.updateStts', $dicipline->id)}}" method="POST">
+                  @csrf
+                  @method('PUT')
+                  <button type="submit" class="btn btn-sm btn-primary" value="ACCEPTED" name="status">TERIMA</button>
+                  <button type="submit" class="btn btn-sm btn-danger" value="DENIED" name="status">TOLAK</button>
+                </form>
+                @elseif ($dicipline->status == 'ACCEPTED')
+                  <span class="badge bg-label-success me-1">DITERIMA</span>
+                @elseif ($dicipline->status == 'DENIED')
+                  <span class="badge bg-label-danger me-1">DITOLAK</span>
+                @else
+                  <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
+                @endif
+              </td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -69,6 +95,7 @@
             </td>
           </tr>
           @endforeach
+          @endif
         </tbody>
         @elseif(auth()->user()->level == 'kepala sekolah')
         <thead>
@@ -85,6 +112,11 @@
           </tr>
         </thead>
         <tbody>
+          @if($disiplin->isEmpty())
+          <tr>
+              <td colspan="7" class="text-center">Tidak ada data yang ditemukan.</td>
+          </tr>
+          @else
           @foreach ( $disiplin as $dicipline )        
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
@@ -104,9 +136,20 @@
               @endif
             </td>
             <td>{{$dicipline->keterangan??''}}</td>
-            <td><span class="badge bg-label-primary me-1">Active</span></td>
+            <td>
+              @if ($dicipline->status == 'WAITING')
+                <span class="badge bg-label-warning me-1">MENUNGGU</span>
+              @elseif ($dicipline->status == 'ACCEPTED')
+                <span class="badge bg-label-success me-1">DITERIMA</span>
+              @elseif ($dicipline->status == 'DENIED')
+                <span class="badge bg-label-danger me-1">DITOLAK</span>
+              @else
+                <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
+              @endif
+            </td>
           </tr>
           @endforeach
+          @endif
         </tbody>
         @elseif(auth()->user()->level == 'waka kesiswaan')
         <a class="nav-link" href="{{route('disiplin.create')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
@@ -125,6 +168,11 @@
           </tr>
         </thead>
         <tbody>
+          @if($disiplin->isEmpty())
+          <tr>
+              <td colspan="7" class="text-center">Tidak ada data yang ditemukan.</td>
+          </tr>
+          @else
           @foreach ( $disiplin as $dicipline )        
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
@@ -144,7 +192,22 @@
               @endif
             </td>
             <td>{{$dicipline->keterangan??''}}</td>
-            <td><span class="badge bg-label-primary me-1">Active</span></td>
+            <td>
+                @if ($dicipline->status == 'WAITING')
+                <form action="{{route('disiplin/update/status.updateStts', $dicipline->id)}}" method="POST">
+                  @csrf
+                  @method('PUT')
+                  <button type="submit" class="btn btn-sm btn-primary" value="ACCEPTED" name="status">TERIMA</button>
+                  <button type="submit" class="btn btn-sm btn-danger" value="DENIED" name="status">TOLAK</button>
+                </form>
+                @elseif ($dicipline->status == 'ACCEPTED')
+                  <span class="badge bg-label-success me-1">DITERIMA</span>
+                @elseif ($dicipline->status == 'DENIED')
+                  <span class="badge bg-label-danger me-1">DITOLAK</span>
+                @else
+                  <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
+                @endif
+            </td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -159,6 +222,7 @@
             </td>
           </tr>
           @endforeach
+          @endif
         </tbody>
         @elseif(auth()->user()->level == 'staff waka kesiswaan')
         <a class="nav-link" href="{{route('disiplin.create')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
@@ -177,6 +241,11 @@
           </tr>
         </thead>
         <tbody>
+          @if($disiplin->isEmpty())
+          <tr>
+              <td colspan="7" class="text-center">Tidak ada data yang ditemukan.</td>
+          </tr>
+          @else
           @foreach ( $disiplin as $dicipline )        
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
@@ -196,7 +265,17 @@
               @endif
             </td>
             <td>{{$dicipline->keterangan??''}}</td>
-            <td><span class="badge bg-label-primary me-1">Active</span></td>
+            <td>
+                @if ($dicipline->status == 'WAITING')
+                  <span class="badge bg-label-warning me-1">MENUNGGU</span>
+                @elseif ($dicipline->status == 'ACCEPTED')
+                  <span class="badge bg-label-success me-1">DITERIMA</span>
+                @elseif ($dicipline->status == 'DENIED')
+                  <span class="badge bg-label-danger me-1">DITOLAK</span>
+                @else
+                  <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
+                @endif
+            </td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -211,6 +290,7 @@
             </td>
           </tr>
           @endforeach
+          @endif
         </tbody>
         @else
         <a class="nav-link" href="{{route('disiplin.create')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
@@ -229,6 +309,11 @@
           </tr>
         </thead>
         <tbody>
+          @if($disiplin->isEmpty())
+          <tr>
+              <td colspan="7" class="text-center">Tidak ada data yang ditemukan.</td>
+          </tr>
+          @else
           @foreach ( $disiplin as $dicipline )        
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
@@ -248,7 +333,15 @@
               @endif
             </td>
             <td>{{$dicipline->keterangan??''}}</td>
-            <td><span class="badge bg-label-primary me-1">Active</span></td>
+            @if ($dicipline->status == 'WAITING')
+              <span class="badge bg-label-warning me-1">MENUNGGU</span>
+            @elseif ($dicipline->status == 'ACCEPTED')
+              <span class="badge bg-label-success me-1">DITERIMA</span>
+            @elseif ($dicipline->status == 'DENIED')
+              <span class="badge bg-label-danger me-1">DITOLAK</span>
+            @else
+              <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
+            @endif
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -263,6 +356,7 @@
             </td>
           </tr>
           @endforeach
+          @endif
         </tbody>
         @endif
       </table>

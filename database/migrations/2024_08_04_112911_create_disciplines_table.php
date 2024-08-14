@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('foto')->nullable();
             $table->string('solusi');
             $table->string('keterangan');
-            $table->string('status')->nullable();
+            $table->enum('status', ['WAITING', 'ACCEPTED', 'DENIED'])->default('WAITING');
             $table->timestamps();
         });
     }

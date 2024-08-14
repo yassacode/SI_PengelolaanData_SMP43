@@ -7,6 +7,12 @@
     <h4 class="card-header">Tabel Data Kegiatan Ekstrakurikuler</h4>
     <div class="table-responsive">
       <table class="table card-table">
+        <div class="d-flex justify-content-end me-3">
+          <form action="{{ route('ekskul.index') }}" method="GET">
+              <input class="me-2" type="text" name="search" placeholder="cari nama dan masalah" value="{{ request()->input('search') }}">
+              <button type="submit" class="btn btn-primary">Cari</button>
+          </form>
+        </div>
         @if(auth()->user()->level == 'admin')
         <a class="nav-link" href="{{ route('ekskul.create')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
         <thead>
@@ -23,6 +29,11 @@
           </tr>
         </thead>
         <tbody>
+          @if($data->isEmpty())
+          <tr>
+              <td colspan="7" class="text-center">Tidak ada data yang ditemukan.</td>
+          </tr>
+          @else
           @foreach ($data as $item)  
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
@@ -55,6 +66,7 @@
             </td>
           </tr>
           @endforeach
+          @endif
         </tbody>
         @elseif(auth()->user()->level == 'kepala sekolah')
         <thead>
@@ -70,6 +82,11 @@
           </tr>
         </thead>
         <tbody>
+          @if($data->isEmpty())
+          <tr>
+              <td colspan="7" class="text-center">Tidak ada data yang ditemukan.</td>
+          </tr>
+          @else
           @foreach ($data as $item)  
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
@@ -90,6 +107,7 @@
             <td>{{ $item->keterangan ?? '' }}</td>
           </tr>
           @endforeach
+          @endif
         </tbody>
         @elseif(auth()->user()->level == 'waka kesiswaan')
         <a class="nav-link" href="{{ route('ekskul.create')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
@@ -107,6 +125,11 @@
           </tr>
         </thead>
         <tbody>
+          @if($data->isEmpty())
+          <tr>
+              <td colspan="7" class="text-center">Tidak ada data yang ditemukan.</td>
+          </tr>
+          @else
           @foreach ($data as $item)  
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
@@ -139,6 +162,7 @@
             </td>
           </tr>
           @endforeach
+          @endif
         </tbody>
         @elseif(auth()->user()->level == 'staff waka kesiswaan')
         <a class="nav-link" href="{{ route('ekskul.create')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
@@ -156,6 +180,11 @@
           </tr>
         </thead>
         <tbody>
+          @if($data->isEmpty())
+          <tr>
+              <td colspan="7" class="text-center">Tidak ada data yang ditemukan.</td>
+          </tr>
+          @else
           @foreach ($data as $item)  
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
@@ -188,6 +217,7 @@
             </td>
           </tr>
           @endforeach
+          @endif
         </tbody>
         @else
         <a class="nav-link" href="{{ route('ekskul.create')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
@@ -205,6 +235,11 @@
           </tr>
         </thead>
         <tbody>
+          @if($data->isEmpty())
+          <tr>
+              <td colspan="7" class="text-center">Tidak ada data yang ditemukan.</td>
+          </tr>
+          @else
           @foreach ($data as $item)  
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
@@ -237,6 +272,7 @@
             </td>
           </tr>
           @endforeach
+          @endif
         </tbody>
         @endif
       </table>

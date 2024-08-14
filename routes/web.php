@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Route;
 
 
 
-
 //ekstrakurikuler
 Route::get('/ekskul', [EkstrakurikulerController::class, 'index'])->name('ekskul.index');
 Route::get('/ekskul/create', [EkstrakurikulerController::class, 'create'])->name('ekskul.create');
@@ -37,11 +36,13 @@ Route::get('/disiplin/create', [DisiplinController::class, 'create'])->name('dis
 Route::post('/disiplin/store', [DisiplinController::class, 'store'])->name('disiplin.store');
 Route::get('/disiplin/edit/{id}', [DisiplinController::class, 'edit'])->name('disiplin.edit');
 Route::put('/disiplin/update/{id}', [DisiplinController::class, 'update'])->name('disiplin.update');
+Route::put('/disiplin/update/status/{id}', [DisiplinController::class, 'updateStts'])->name('disiplin/update/status.updateStts');
 Route::get('/disiplin/show', [DisiplinController::class, 'show'])->name('disiplin.show');
 Route::delete('/disiplin/destroy/{id}', [DisiplinController::class, 'destroy'])->name('disiplin.destroy');
 
 //siswa
 Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
+// Route::get('/siswa', [SiswaController::class, 'search'])->name('siswa.search');
 Route::get('/siswa/create/step1', [SiswaController::class, 'createStep1'])->name('siswa.create1');
 Route::get('/siswa/create/step2', [SiswaController::class, 'createStep2'])->name('siswa.create2');
 Route::get('/siswa/create/step3', [SiswaController::class, 'createStep3'])->name('siswa.create3');
@@ -50,6 +51,7 @@ Route::post('/siswa/store/step2', [SiswaController::class, 'storeStep2'])->name(
 Route::post('/siswa/store', [SiswaController::class, 'store'])->name('siswa.store');
 Route::get('/siswa/edit/{id}', [SiswaController::class, 'edit'])->name('siswa.edit');
 Route::put('/siswa/update/{id}', [SiswaController::class, 'update'])->name('siswa.update');
+Route::put('/siswa/update/status/{id}', [SiswaController::class, 'updateStts'])->name('siswa/update/status.updateStts');
 Route::get('/siswa/view/{id}', [SiswaController::class, 'show1'])->name('siswa.show1');
 Route::get('/siswa/show{id}', [SiswaController::class, 'show2'])->name('siswa.show2');
 Route::delete('/siswa/destroy/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
@@ -69,7 +71,7 @@ Route::delete('/user/destroy/{id}', [UserController::class, 'destroy'])->name('u
 
 
 
-Route::get('/main', function () {
+Route::get('/', function () {
     return view('main.dashboard');
 })->middleware(['auth', 'verified'])->name('main');
 

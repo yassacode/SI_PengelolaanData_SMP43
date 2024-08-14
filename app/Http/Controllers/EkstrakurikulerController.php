@@ -10,11 +10,15 @@ class EkstrakurikulerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data =Extracurricular::all();
+        $search = $request->input("search");
+        $data = Extracurricular::when($search, function ($query, $search) {
+            return $query->where('ekskul', 'like', "%{$search}%");
+        })->get();
         return view('main.ekskul',[
             'data'=>$data,
+            'search'=>$search
         ]);
     }
 

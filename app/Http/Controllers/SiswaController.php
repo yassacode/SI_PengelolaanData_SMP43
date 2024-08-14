@@ -8,16 +8,25 @@
     use App\Models\Sibling;
     use App\Models\Student;
     use App\Models\StudentParent;
+    use Exception;
+    use Illuminate\Database\Eloquent\ModelNotFoundException;
     use Illuminate\Http\Request;
+    use Illuminate\Validation\ValidationException;
 
     class SiswaController extends Controller
     {
         /**
          * Display a listing of the resource.
          */
-        public function index()
+        public function index(Request $request)
         {
-            $students = Student::with('history','school','studentparent','sibling','achievement')->get();
+
+            $search = $request->input('search');
+            $students = Student::with('history','school','studentparent','sibling','achievement')
+            ->when($search, function ($query, $search) {
+                return $query->where('nama', 'like', "%{$search}%");
+            })
+            ->get();
             $histories = History::all();
             $schools = School::all();
             $studentParents = StudentParent::all();
@@ -31,6 +40,7 @@
             'ortu' => $studentParents,
             'saudara' => $siblings,
             'prestasi' => $achievements,
+            'search' => $search,
         ]);
         }
 
@@ -269,5 +279,26 @@
 
             return redirect()->route('siswa.index')->with('success', 'Data Berhasil Dihapus');
             
+        }
+        public function updateStts(Request $request, $id){
+            try {
+                $item = Student::findOrFail($id);
+                $validatedData = $request->validate([
+                    'status' => 'required|in:WAITING,ACCEPTED,DENIED',
+                ]);
+        
+                $item->update([
+                    'status' => $validatedData['status'],
+                    // 'status' => $request->status,
+                ]);
+        
+                return back()->with('success','Berhasil Diperbarui');
+            } catch (Exception $e) {
+                return back()->with('error',$e->getMessage());
+            } catch (ValidationException $va) {
+                return back()->with('error',$va->getMessage());
+            } catch (ModelNotFoundException $mn) {
+                return back()->with('error',$mn->getMessage());
+            }
         }
     }
