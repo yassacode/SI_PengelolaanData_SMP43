@@ -53,5 +53,8 @@ class Student extends Model
     {
         return $this->hasMany(Discipline::class, 'dicipline_id');
     }
-
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

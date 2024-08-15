@@ -42,15 +42,18 @@ Route::delete('/disiplin/destroy/{id}', [DisiplinController::class, 'destroy'])-
 
 //siswa
 Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
-// Route::get('/siswa', [SiswaController::class, 'search'])->name('siswa.search');
 Route::get('/siswa/create/step1', [SiswaController::class, 'createStep1'])->name('siswa.create1');
 Route::get('/siswa/create/step2', [SiswaController::class, 'createStep2'])->name('siswa.create2');
 Route::get('/siswa/create/step3', [SiswaController::class, 'createStep3'])->name('siswa.create3');
 Route::post('/siswa/store/step1', [SiswaController::class, 'storeStep1'])->name('siswa.store1');
 Route::post('/siswa/store/step2', [SiswaController::class, 'storeStep2'])->name('siswa.store2');
-Route::post('/siswa/store', [SiswaController::class, 'store'])->name('siswa.store');
-Route::get('/siswa/edit/{id}', [SiswaController::class, 'edit'])->name('siswa.edit');
-Route::put('/siswa/update/{id}', [SiswaController::class, 'update'])->name('siswa.update');
+Route::post('/siswa/store/step3', [SiswaController::class, 'store'])->name('siswa.store');
+Route::get('/siswa/edit/step1/{id}', [SiswaController::class, 'editStep1'])->name('siswa.edit1');
+Route::get('/siswa/edit/step2/{id}', [SiswaController::class, 'editStep2'])->name('siswa.edit2');
+Route::get('/siswa/edit/step3/{id}', [SiswaController::class, 'editStep3'])->name('siswa.edit3');
+Route::put('/siswa/update/step1/{id}', [SiswaController::class, 'updateStep1'])->name('siswa.update1');
+Route::put('/siswa/update/step2/{id}', [SiswaController::class, 'updateStep2'])->name('siswa.update2');
+Route::put('/siswa/update/step3/{id}', [SiswaController::class, 'update'])->name('siswa.update');
 Route::put('/siswa/update/status/{id}', [SiswaController::class, 'updateStts'])->name('siswa/update/status.updateStts');
 Route::get('/siswa/view/{id}', [SiswaController::class, 'show1'])->name('siswa.show1');
 Route::get('/siswa/show{id}', [SiswaController::class, 'show2'])->name('siswa.show2');
@@ -71,6 +74,9 @@ Route::delete('/user/destroy/{id}', [UserController::class, 'destroy'])->name('u
 
 
 
+Route::get('/main', function () {
+    return view('main.dashboard');
+})->middleware(['auth', 'verified'])->name('main');
 Route::get('/', function () {
     return view('main.dashboard');
 })->middleware(['auth', 'verified'])->name('main');

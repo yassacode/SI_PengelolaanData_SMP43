@@ -13,7 +13,8 @@ class EkstrakurikulerController extends Controller
     public function index(Request $request)
     {
         $search = $request->input("search");
-        $data = Extracurricular::when($search, function ($query, $search) {
+        $data = Extracurricular::with('user')
+        ->when($search, function ($query, $search) {
             return $query->where('ekskul', 'like', "%{$search}%");
         })->get();
         return view('main.ekskul',[
@@ -47,6 +48,7 @@ class EkstrakurikulerController extends Controller
             'keterangan'=>'required',
             'foto'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+        $data['user_id'] = auth()->user()->id;
         if($request->file('foto')){
             $data['foto'] = $request->file('foto')->store('fotoBuktiEkskul', 'public');
         }

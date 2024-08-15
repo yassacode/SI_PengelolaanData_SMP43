@@ -17,4 +17,9 @@ class Extracurricular extends Model
         'foto',
         'keterangan',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

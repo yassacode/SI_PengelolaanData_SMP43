@@ -8,9 +8,11 @@
     use App\Models\Sibling;
     use App\Models\Student;
     use App\Models\StudentParent;
+    use App\Models\User;
     use Exception;
     use Illuminate\Database\Eloquent\ModelNotFoundException;
     use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Auth;
     use Illuminate\Validation\ValidationException;
 
     class SiswaController extends Controller
@@ -18,30 +20,21 @@
         /**
          * Display a listing of the resource.
          */
-        public function index(Request $request)
+        public function index(Request $request )
         {
 
             $search = $request->input('search');
-            $students = Student::with('history','school','studentparent','sibling','achievement')
-            ->when($search, function ($query, $search) {
-                return $query->where('nama', 'like', "%{$search}%");
-            })
-            ->get();
-            $histories = History::all();
-            $schools = School::all();
-            $studentParents = StudentParent::all();
-            $siblings = Sibling::all();
-            $achievements = Achievement::all();
-            
+    
+            // Mendapatkan daftar siswa dengan eager loading untuk relasi
+            $students = Student::with('history', 'school', 'studentparent', 'sibling', 'achievement', 'user')
+                ->when($search, function ($query, $search) {
+                    return $query->where('nama', 'like', "%{$search}%");
+                })
+                ->get();
             return view('main.siswa', [
-            'siswa' => $students,
-            'riwayat' => $histories,
-            'sekolah' => $schools,
-            'ortu' => $studentParents,
-            'saudara' => $siblings,
-            'prestasi' => $achievements,
-            'search' => $search,
-        ]);
+                'siswa' => $students,
+                'search' => $search,
+            ]);
         }
 
         /**
@@ -146,6 +139,7 @@
             "identitas_wali"=>'nullable'
             ]);
             session()->put('ortu', $studentParents);
+            session()->put('siswa.user_id', auth()->user()->id);
             $students = session()->get('siswa');
             $histories = session()->get('riwayat');
             // $studentParents = session()->get('ortu');
@@ -217,35 +211,153 @@
             ]);
         }
 
-        public function edit(string $id)
+        public function editStep1(string $id)
         {
-            $students = Student::find($id);
-            $today = date ('Y-m-d');
-            return view('tambah.edit-siswa',[
-                'siswa'=>$students,
-                'today'=>$today,
+            $student = Student::find($id);
+            $today = date('Y-m-d');
+            return view('tambah.edit-step1-siswa', [
+                'siswa' => $student,
+                'today' => $today,
+            ]);
+        }
+
+        public function editStep2(string $id)
+        {
+            $student = Student::find($id);
+            $today = date('Y-m-d');
+            return view('tambah.edit-step2-siswa', [
+                'siswa' => $student,
+                'today' => $today,
+            ]);
+        }
+
+        public function editStep3(string $id)
+        {
+            $student = Student::find($id);
+            $today = date('Y-m-d');
+            return view('tambah.edit-step3-siswa', [
+                'siswa' => $student,
+                'today' => $today,
             ]);
         }
 
         /**
          * Update the specified resource in storage.
          */
-        public function update(Request $request, string $id)
+        public function updateStep1(Request $request, $id)
         {
-            $students = Student::findOrFail($id);
-            $histories = History::findOrFail($id);
-            $studentParents= StudentParent::findOrFail($id);
-            $schools = School::findOrFail($id);
-            $achievements = Achievement::findOrFail($id);
-            $siblings = Sibling::findOrFail($id);
-
-            $students -> update($students);
-            $histories ->update($histories);
-            $studentParents ->update($studentParents);
-            $schools ->update($schools);
-            $siblings ->update($siblings);
-            $achievements ->update($achievements);  
-            
+            $students = $request->validate([
+                "school_id" => 'nullable',
+                "student_parent_id" => 'nullable',
+                "sibling_id" => 'nullable',
+                "history_id" => 'nullable',
+                "user_id" => 'nullable',
+                "nama" => 'required',
+                "nisn" => 'required',
+                "ttl" => 'required',
+                "alamat" => 'required',
+                "no_hp" => 'required',
+                "tb" => 'required',
+                "bb" => 'required',
+                "hobi" => 'required',
+                "agama" => 'required',
+                "thn_msk" => 'required',
+                "status" => 'nullable',
+            ]);
+        
+            session()->put('siswa', $students);
+            return redirect()->route('siswa.edit2', $id);
+        }
+        
+        public function updateStep2(Request $request, $id)
+        {
+            $schools = $request->validate([
+                "asal_paud" => 'nullable',
+                "asal_tk" => 'required',
+                "asal_sd" => 'required',
+                "jrk_sklh" => 'required'
+            ]);
+        
+            $histories = $request->validate([
+                "sakit" => "nullable",
+                "beasiswa" => "nullable",
+            ]);
+        
+            $siblings = $request->validate([
+                "jumlah" => 'required',
+                "anak_ke" => 'required'
+            ]);
+        
+            $achievements = $request->validate([
+                'kegiatan' => 'nullable',
+                'juara' => 'nullable'
+            ]);
+        
+            session()->put('sekolah', $schools);
+            session()->put('riwayat', $histories);
+            session()->put('saudara', $siblings);
+            session()->put('prestasi', $achievements);
+            return redirect()->route('siswa.edit3', $id);
+        }
+        
+        public function update(Request $request, Student $student)
+        {
+            $studentParents = $request->validate([
+                "nama_ayah" => 'nullable',
+                "nama_ibu" => 'nullable',
+                "nama_wali" => 'nullable',
+                "pekerjaan_ayah" => 'nullable',
+                "pekerjaan_ibu" => 'nullable',
+                "pekerjaan_wali" => 'nullable',
+                "alamat_ayah" => 'nullable',
+                "alamat_ibu" => 'nullable',
+                "alamat_wali" => 'nullable',
+                "no_hp_ayah" => 'nullable',
+                "no_hp_ibu" => 'nullable',
+                "no_hp_wali" => 'nullable',
+                "identitas_wali" => 'nullable'
+            ]);
+        
+            session()->put('ortu', $studentParents);
+            session()->put('siswa.user_id', auth()->user()->id);
+        
+            $students = session()->get('siswa');
+            $histories = session()->get('riwayat');
+            $schools = session()->get('sekolah');
+            $siblings = session()->get('saudara');
+            $achievements = session()->get('prestasi');
+        
+            // Pastikan model yang terkait ada sebelum melakukan update
+            if ($student->history) {
+                $student->history->update($histories);
+            }
+        
+            if ($student->studentParent) {
+                $student->studentParent->update($studentParents);
+            }
+        
+            if ($student->school) {
+                $student->school->update($schools);
+            }
+        
+            if ($student->sibling) {
+                $student->sibling->update($siblings);
+            }
+        
+            if ($student->achievement) {
+                $student->achievement->update($achievements);
+            }
+        
+            // Update data siswa
+            $student->update(array_merge($students, [
+                'history_id' => $student->history ? $student->history->id : null,
+                'school_id' => $student->school ? $student->school->id : null,
+                'student_parent_id' => $student->studentParent ? $student->studentParent->id : null,
+                'sibling_id' => $student->sibling ? $student->sibling->id : null,
+                'achievement_id' => $student->achievement ? $student->achievement->id : null,
+            ]));
+        
+            // Hapus session
             session()->forget([
                 'siswa',
                 'riwayat',
@@ -254,9 +366,10 @@
                 'saudara',
                 'prestasi',
             ]);
-
+        
             return redirect()->route('siswa.index')->with('success', 'Data Berhasil Diperbarui');
         }
+
 
         /**
          * Remove the specified resource from storage.

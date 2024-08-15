@@ -41,18 +41,18 @@
                   <td>{{$students->nama ?? ''}}</td>
                   <td>{{$students->nisn ?? ''}}</td>
                   <td>{{$students->thn_msk ?? ''}}</td>
-                  <td>{{$students->user_id ?? ''}}</td>
+                  <td>{{$students->user->name ?? ''}}</td>
                   <td>
-                    @if ($dicipline->status == 'WAITING')
-                    <form action="{{route('siswa/update/status.updateStts', $dicipline->id)}}" method="POST">
+                    @if ($students->status == 'WAITING')
+                    <form action="{{route('siswa/update/status.updateStts', $students->id)}}" method="POST">
                       @csrf
                       @method('PUT')
                       <button type="submit" class="btn btn-sm btn-primary" value="ACCEPTED" name="status">TERIMA</button>
                       <button type="submit" class="btn btn-sm btn-danger" value="DENIED" name="status">TOLAK</button>
                     </form>
-                    @elseif ($dicipline->status == 'ACCEPTED')
+                    @elseif ($students->status == 'ACCEPTED')
                       <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($dicipline->status == 'DENIED')
+                    @elseif ($students->status == 'DENIED')
                       <span class="badge bg-label-danger me-1">DITOLAK</span>
                     @else
                       <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
@@ -63,7 +63,7 @@
                           <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                           <div class="dropdown-menu">
                               <a class="dropdown-item" href="{{ route('siswa.show1', $students->id) }} "><i class="bx bxs-show"></i>view</a>
-                              <a class="dropdown-item" href="{{ route('siswa.edit', $students->id) }} "><i class="bx bx-edit-alt me-1"></i>Edit</a>
+                              <a class="dropdown-item" href="{{ route('siswa.edit1', $students->id) }} "><i class="bx bx-edit-alt me-1"></i>Edit</a>
                               <form action="{{ route('siswa.destroy', $students->id) }}" method="POST">
                                   @csrf
                                   @method('DELETE')
@@ -100,13 +100,13 @@
                   <td>{{$students->nama ?? ''}}</td>
                   <td>{{$students->nisn ?? ''}}</td>
                   <td>{{$students->thn_msk ?? ''}}</td>
-                  <td>{{$students->user_id ?? ''}}</td>
+                  <td>{{$students->user->name ?? ''}}</td>
                   <td>
-                    @if ($dicipline->status == 'WAITING')
+                    @if ($students->status == 'WAITING')
                       <span class="badge bg-label-warning me-1">MENUNGGU</span>
-                    @elseif ($dicipline->status == 'ACCEPTED')
+                    @elseif ($students->status == 'ACCEPTED')
                       <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($dicipline->status == 'DENIED')
+                    @elseif ($students->status == 'DENIED')
                       <span class="badge bg-label-danger me-1">DITOLAK</span>
                     @else
                       <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
@@ -142,18 +142,18 @@
                   <td>{{$students->nama ?? ''}}</td>
                   <td>{{$students->nisn ?? ''}}</td>
                   <td>{{$students->thn_msk ?? ''}}</td>
-                  <td>{{$students->user_id ?? ''}}</td>
+                  <td>{{$students->user->name ?? ''}}</td>
                   <td>
-                    @if ($dicipline->status == 'WAITING')
-                    <form action="{{route('disiplin/update/status.updateStts', $dicipline->id)}}" method="POST">
+                    @if ($students->status == 'WAITING')
+                    <form action="{{route('disiplin/update/status.updateStts', $students->id)}}" method="POST">
                       @csrf
                       @method('PUT')
                       <button type="submit" class="btn btn-sm btn-primary" value="ACCEPTED" name="status">TERIMA</button>
                       <button type="submit" class="btn btn-sm btn-danger" value="DENIED" name="status">TOLAK</button>
                     </form>
-                    @elseif ($dicipline->status == 'ACCEPTED')
+                    @elseif ($students->status == 'ACCEPTED')
                       <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($dicipline->status == 'DENIED')
+                    @elseif ($students->status == 'DENIED')
                       <span class="badge bg-label-danger me-1">DITOLAK</span>
                     @else
                       <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
@@ -164,7 +164,7 @@
                           <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                           <div class="dropdown-menu">
                               <a class="dropdown-item" href="{{ route('siswa.show1', $students->id) }} "><i class="bx bxs-show"></i>view</a>
-                              <a class="dropdown-item" href="{{ route('siswa.edit', $students->id) }} "><i class="bx bx-edit-alt me-1"></i>Edit</a>
+                              <a class="dropdown-item" href="{{ route('siswa.edit1', $students->id) }} "><i class="bx bx-edit-alt me-1"></i>Edit</a>
                               <form action="{{ route('siswa.destroy', $students->id) }}" method="POST">
                                   @csrf
                                   @method('DELETE')
@@ -203,13 +203,13 @@
                   <td>{{$students->nama ?? ''}}</td>
                   <td>{{$students->nisn ?? ''}}</td>
                   <td>{{$students->thn_msk ?? ''}}</td>
-                  <td>{{$students->user_id ?? ''}}</td>
+                  <td>{{$students->user->name ?? ''}}</td>
                   <td>
-                    @if ($dicipline->status == 'WAITING')
+                    @if ($students->status == 'WAITING')
                       <span class="badge bg-label-warning me-1">MENUNGGU</span>
-                    @elseif ($dicipline->status == 'ACCEPTED')
+                    @elseif ($students->status == 'ACCEPTED')
                       <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($dicipline->status == 'DENIED')
+                    @elseif ($students->status == 'DENIED')
                       <span class="badge bg-label-danger me-1">DITOLAK</span>
                     @else
                       <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
@@ -220,7 +220,7 @@
                           <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                           <div class="dropdown-menu">
                               <a class="dropdown-item" href="{{ route('siswa.show1', $students->id) }} "><i class="bx bxs-show"></i>view</a>
-                              <a class="dropdown-item" href="{{ route('siswa.edit', $students->id) }} "><i class="bx bx-edit-alt me-1"></i>Edit</a>
+                              <a class="dropdown-item" href="{{ route('siswa.edit1', $students->id) }} "><i class="bx bx-edit-alt me-1"></i>Edit</a>
                               <form action="{{ route('siswa.destroy', $students->id) }}" method="POST">
                                   @csrf
                                   @method('DELETE')
@@ -259,13 +259,13 @@
                   <td>{{$students->nama ?? ''}}</td>
                   <td>{{$students->nisn ?? ''}}</td>
                   <td>{{$students->thn_msk ?? ''}}</td>
-                  <td>{{$students->user_id ?? ''}}</td>
+                  <td>{{$students->user->name ?? ''}}</td>
                   <td>
-                    @if ($dicipline->status == 'WAITING')
+                    @if ($students->status == 'WAITING')
                       <span class="badge bg-label-warning me-1">MENUNGGU</span>
-                    @elseif ($dicipline->status == 'ACCEPTED')
+                    @elseif ($students->status == 'ACCEPTED')
                       <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($dicipline->status == 'DENIED')
+                    @elseif ($students->status == 'DENIED')
                       <span class="badge bg-label-danger me-1">DITOLAK</span>
                     @else
                       <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
@@ -276,7 +276,7 @@
                           <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                           <div class="dropdown-menu">
                               <a class="dropdown-item" href="{{ route('siswa.show1', $students->id) }} "><i class="bx bxs-show"></i>view</a>
-                              <a class="dropdown-item" href="{{ route('siswa.edit', $students->id) }} "><i class="bx bx-edit-alt me-1"></i>Edit</a>
+                              <a class="dropdown-item" href="{{ route('siswa.edit1', $students->id) }} "><i class="bx bx-edit-alt me-1"></i>Edit</a>
                               <form action="{{ route('siswa.destroy', $students->id) }}" method="POST">
                                   @csrf
                                   @method('DELETE')

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Discipline;
 use App\Models\Student;
+use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -18,16 +19,16 @@ class DisiplinController extends Controller
     public function index(Request $request)
     {
         $search = $request->input("search");
-        $disciplines = Discipline::with('student')->when($search, function ($query, $search) {
+        $disciplines = Discipline::with('student','user')
+        ->when($search, function ($query, $search) {
             return $query->whereHas('student', function ($query) use ($search) {
                 $query->where('nama', 'like', "%{$search}%");
             })->orWhere('masalah', 'like', "%{$search}%");
         })->get();
-        $students = Student::all();
+       
     
         return view('main.disiplin', [
             'disiplin' => $disciplines,
-            'siswa' => $students,
             'search'=> $search,
         ]);
     }
@@ -61,6 +62,8 @@ class DisiplinController extends Controller
             "keterangan"=>'required',
             "status"=>'nullable'
         ]);
+
+        $dicipline['user_id'] = auth()->user()->id;
         if($request->file('foto')){
             $dicipline['foto'] = $request->file('foto')->store('fotoBuktiDisiplin', 'public');
         }

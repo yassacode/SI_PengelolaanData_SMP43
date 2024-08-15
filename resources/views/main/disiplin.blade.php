@@ -49,7 +49,7 @@
           @foreach ( $disiplin as $dicipline )        
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
-            <td>{{$dicipline->user_id??''}}</td>
+            <td>{{$dicipline->user->name??''}}</td>
             <td>{{$dicipline->student->nama??''}}</td>
             <td>{{$dicipline->kelas??''}}</td>
             <td>{{$dicipline->masalah??''}}</td>
