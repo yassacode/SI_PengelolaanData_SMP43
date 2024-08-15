@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\DisiplinController;
 use App\Http\Controllers\EkstrakurikulerController;
 use App\Http\Controllers\ProfileController;
@@ -53,7 +54,7 @@ Route::get('/siswa/edit/step2/{id}', [SiswaController::class, 'editStep2'])->nam
 Route::get('/siswa/edit/step3/{id}', [SiswaController::class, 'editStep3'])->name('siswa.edit3');
 Route::put('/siswa/update/step1/{id}', [SiswaController::class, 'updateStep1'])->name('siswa.update1');
 Route::put('/siswa/update/step2/{id}', [SiswaController::class, 'updateStep2'])->name('siswa.update2');
-Route::put('/siswa/update/step3/{id}', [SiswaController::class, 'update'])->name('siswa.update');
+Route::put('/siswa/update/step3/ss{id}', [SiswaController::class, 'update'])->name('siswa.update');
 Route::put('/siswa/update/status/{id}', [SiswaController::class, 'updateStts'])->name('siswa/update/status.updateStts');
 Route::get('/siswa/view/{id}', [SiswaController::class, 'show1'])->name('siswa.show1');
 Route::get('/siswa/show{id}', [SiswaController::class, 'show2'])->name('siswa.show2');
@@ -73,10 +74,9 @@ Route::delete('/user/destroy/{id}', [UserController::class, 'destroy'])->name('u
 
 
 
-
-Route::get('/main', function () {
-    return view('main.dashboard');
-})->middleware(['auth', 'verified'])->name('main');
+Route::get('/main', [ChartController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('charts.index');
 Route::get('/', function () {
     return view('main.dashboard');
 })->middleware(['auth', 'verified'])->name('main');
