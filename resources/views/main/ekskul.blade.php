@@ -14,7 +14,14 @@
           </form>
         </div>
         @if(auth()->user()->level == 'admin')
-        <a class="nav-link" href="{{ route('ekskul.create')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
+        <div class="d-flex justify-content-start">
+          <a href="{{route('ekskul.create')}}" class="ms-5 ">
+              <button type="button" class="btn btn-primary"><i class='bx bxs-user-plus'></i></button>
+          </a>
+          <a href="{{route('ekskul.show')}}" class="ms-2">
+              <button type="button" class="btn btn-info"><i class='bx bx-printer'></i></button>
+          </a>
+       </div>
         <thead>
           <tr>
             <th>No</th>

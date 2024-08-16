@@ -3,7 +3,8 @@
     namespace App\Http\Controllers;
 
     use App\Models\Achievement;
-    use App\Models\History;
+use App\Models\Discipline;
+use App\Models\History;
     use App\Models\School;
     use App\Models\Sibling;
     use App\Models\Student;
@@ -174,43 +175,39 @@
 
         public function show1(string $id)
         {
+            $dicipline = Discipline::all();
             $histories = History::all();
             $schools = School::all();
             $studentParents = StudentParent::all();
             $siblings = Sibling::all();
             $achievements = Achievement::all();
-            $students = Student::with('history', 'school', 'studentparent', 'sibling', 'achievement')->find($id);
+            $students = Student::with('history', 'school', 'studentparent', 'sibling', 'achievement','dicipline')->find($id);
             return view('main.view-siswa',[
                 'students'=>$students,
                 'school'=>$schools,
                 'studentparent'=>$studentParents,
                 'sibling'=>$siblings,
                 'achievement'=>$achievements,
-                'history'=>$histories
-                
+                'history'=>$histories,
+                'dicipline'=>$dicipline
             ]);
         }
 
         public function show2(string $id)
         {
+            $student = Student::with(['history', 'school', 'studentparent', 'sibling', 'achievement', 'dicipline'])
+                ->findOrFail($id);
         
-            $histories = History::all();
-            $schools = School::all();
-            $studentParents = StudentParent::all();
-            $siblings = Sibling::all();
-            $achievements = Achievement::all();
-            $students = Student::with('history', 'school', 'studentparent', 'sibling', 'achievement')->find($id);
-            return view('cetak.cetak-siswa',[
-                'students'=>$students,
-                'school'=>$schools,
-                'studentparent'=>$studentParents,
-                'sibling'=>$siblings,
-                'achievement'=>$achievements,
-                'history'=>$histories
-                
+            // Ambil data disiplin terbaru sebagai objek tunggal
+            $discipline = Discipline::where('student_id', $student->id)
+                ->latest('created_at')
+                ->get();
+        
+            return view('cetak.cetak-siswa', [
+                'student' => $student,
+                'discipline' => $discipline
             ]);
         }
-
         public function editStep1(string $id)
         {
             $student = Student::find($id);

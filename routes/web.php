@@ -41,6 +41,7 @@ Route::put('/disiplin/update/status/{id}', [DisiplinController::class, 'updateSt
 Route::get('/disiplin/show', [DisiplinController::class, 'show'])->name('disiplin.show');
 Route::delete('/disiplin/destroy/{id}', [DisiplinController::class, 'destroy'])->name('disiplin.destroy');
 
+
 //siswa
 Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
 Route::get('/siswa/create/step1', [SiswaController::class, 'createStep1'])->name('siswa.create1');
@@ -77,9 +78,9 @@ Route::delete('/user/destroy/{id}', [UserController::class, 'destroy'])->name('u
 Route::get('/main', [ChartController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('charts.index');
-Route::get('/', function () {
-    return view('main.dashboard');
-})->middleware(['auth', 'verified'])->name('main');
+Route::get('/', [ChartController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('charts.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

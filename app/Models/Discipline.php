@@ -18,7 +18,8 @@ class Discipline extends Model
         "foto",
         "solusi",
         "keterangan",
-        "status"
+        "status",
+        "comment"
     ];
     
     public function student()

@@ -63,9 +63,9 @@ class EkstrakurikulerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
-        $item = Extracurricular::find($id);
+        $item = Extracurricular::all();
         return view('cetak.cetak-ekskul',[
             'item'=>$item,
         ]);

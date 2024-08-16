@@ -16,7 +16,7 @@
                 <tr>
                     <td>User</td>
                     <td>:</td>
-                    <td></td>
+                    <td>{{$students->user->name}}</td>
                 </tr>
                 <tr>
                     <td>Nama Lengkap</td>

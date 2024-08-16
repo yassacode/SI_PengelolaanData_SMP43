@@ -74,12 +74,16 @@ class DisiplinController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
-        $dicipline = Discipline::find($id);
-        return view('cetak.cetak-disiplin',[
-            'disiplin'=>$dicipline
-            ]);
+        $dicipline = Discipline::with('student', 'user')
+        ->where('status', 'ACCEPTED') // Filter berdasarkan status
+        ->get();
+
+    // Kirim data ke view
+    return view('cetak.cetak-disiplin', [
+        'disiplin' => $dicipline
+        ]);
     }
 
     /**

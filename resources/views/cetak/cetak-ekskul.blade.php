@@ -1,35 +1,84 @@
 @extends('base.layout-cetak')
 
 @section('cetak')
-<div class="container-xxl flex-grow-1 container-p-y">
-       <h4 class="text-center mb-5">Kegiatan Ekstrakurikuler</h4>
-        <h6>Hari dan tanggal: </h6>
-        <div class="table-responsive">
-         <table class="table card-table">
-            <thead>
-             <tr>
-               <th>No</th>
-               <th>Nama Ekstrakurikuler</th>
-               <th>Nama Kegiatan</th>
-               <th>Tanggal</th>
-               <th>Lokasi</th>
-               <th>Foto</th>
-               <th>Keterangan</th>
-             </tr>
-           </thead>
-           <tbody>
-             <tr>
-               <td>1</td>
-               <td>Aldrian Pasha</td>
-               <td>422090293210</td>
-               <td>422090293210</td>
-               <td>2012</td>
-               <td>08442424328</td>
-               <td>08442424328</td>
-             </tr>
-           </tbody>
-         </table>
-       </div>
-     </div>
-   </div>
+<div class="container p-5">
+    <h4 class="text-center mb-5">Kegiatan Ekstrakurikuler</h4>
+    <h6>Hari dan tanggal: </h6>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th style="padding: 5px; width: 5%;">No</th>
+                <th style="padding: 10px; width: 15%;">Nama Ekstrakurikuler</th>
+                <th>Nama Kegiatan</th>
+                <th>Tanggal</th>
+                <th>Lokasi</th>
+                <th>Foto</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($item as $item)
+            <tr>
+                <td scope="row">{{ $loop->iteration }}</td>
+                <td>{{ $item->ekskul ?? '' }}</td>
+                <td>{{ $item->kegiatan ?? '' }}</td>
+                <td>{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l, d F Y') ?? '' }}</td>
+                <td>{{ $item->lokasi ?? '' }}</td>
+                <td>
+                    @if($item->foto)
+                    <a href="{{ Storage::url($item->foto) }}" target="_blank">
+                        <img src="{{ Storage::url($item->foto ?? '') }}" alt="" class="img img-fluid" width="150" height="150">
+                    </a>
+                    @else
+                    <span>No Image</span>
+                    @endif
+                </td>
+                <td>{{ $item->keterangan ?? '' }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+<style>
+    /* Mengatur tabel agar tidak responsif dan mengatur tampilan untuk cetak */
+    table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 8px;
+        margin: 0;
+        font-size: 12px; /* Sesuaikan ukuran font untuk cetak */
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    th {
+        text-align: left;
+    }
+
+    img {
+        max-width: 100px;
+        height: auto;
+    }
+
+    @media print {
+        .container {
+            width: 100%;
+            padding: 0;
+        }
+
+        table {
+            font-size: 10px; /* Sesuaikan ukuran font untuk cetak */
+        }
+
+        img {
+            max-width: 80px;
+            height: auto;
+        }
+    }
+</style>
 @endsection

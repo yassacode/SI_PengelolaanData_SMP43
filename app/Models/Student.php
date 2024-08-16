@@ -51,7 +51,7 @@ class Student extends Model
     }
         public function dicipline()
     {
-        return $this->hasMany(Discipline::class, 'dicipline_id');
+        return $this->hasMany(Discipline::class);
     }
     public function user()
     {
