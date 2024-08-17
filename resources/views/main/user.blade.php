@@ -1,6 +1,11 @@
 @extends('base.layout')
 
 @section('content')
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 <div class="container-xxl flex-grow-1 container-p-y">
  <div class="card">
     <h4 class="card-header">Tabel Data User</h4>

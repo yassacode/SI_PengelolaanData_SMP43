@@ -1,4 +1,5 @@
 @extends('base.layout-tambah')
+@section('title','add user')
 @section('add')
 
 <div class="container mt-5">

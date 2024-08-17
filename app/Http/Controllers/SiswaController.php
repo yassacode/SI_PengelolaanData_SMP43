@@ -78,13 +78,14 @@ use App\Models\History;
                 "user_id"=>'nullable',
                 "achievement_id"=>'nullable',
                 "nama"=>'required',
-                "nisn"=>'required',
+                "nisn"=>'nullable',
                 "ttl"=>'required',
                 "alamat"=>'required',
                 "no_hp"=>'required',
                 "tb"=>'required',
                 "bb"=>'required',
                 "hobi"=>'required',
+                "citacita"=>'required',
                 "agama"=>'required',
                 "thn_msk"=>'required',
                 "status=>'nullable'"
@@ -99,7 +100,7 @@ use App\Models\History;
         {
             $schools = $request -> validate([
             "asal_paud"=>'nullable',
-            "asal_tk"=>'required',
+            "asal_tk"=>'nullable',
             "asal_sd"=>'required',
             "jrk_sklh"=>'required'
             ]);
@@ -112,8 +113,16 @@ use App\Models\History;
                 "anak_ke"=>'required'
             ]);
             $achievments = $request-> validate([
-                'kegiatan'=>'nullable',
-                'juara'=>'nullable'
+                'kegiatan1'=>'nullable',
+                'juara1'=>'nullable',
+                'kegiatan2'=>'nullable',
+                'juara2'=>'nullable',
+                'kegiatan3'=>'nullable',
+                'juara3'=>'nullable',
+                'kegiatan4'=>'nullable',
+                'juara4'=>'nullable',
+                'kegiatan5'=>'nullable',
+                'juara5'=>'nullable',
             ]);
 
             session()->put('sekolah', $schools);

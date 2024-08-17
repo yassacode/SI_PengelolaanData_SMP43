@@ -91,8 +91,9 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $users = User::find($id);
-        $this->validate($request,[
+        $users = User::findOrFail($id);
+        
+        $user =$request->validate([
             'name'=>'required',
             'email'=>'required',
             'password'=>'required',
@@ -102,10 +103,11 @@ class UserController extends Controller
             'no_hp'=>'required',
             'alamat'=>'required',
         ]);
-
-        $users->update($users);
+        
+        $user['password'] = bcrypt($request->input('password'));
+        $users->update($user);
         return redirect()->route('user.index')->with([
-            'success'=> 'Data Berhasil Ditambahkan',
+            'success'=> 'Data Berhasil diupdate',
             ]);
     }
 

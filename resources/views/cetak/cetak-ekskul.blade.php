@@ -1,9 +1,13 @@
 @extends('base.layout-cetak')
-
+@section('title','cetak ekskul')
 @section('cetak')
 <div class="container p-5">
     <h4 class="text-center mb-5">Kegiatan Ekstrakurikuler</h4>
-    <h6>Hari dan tanggal: </h6>
+    
+    @if($item->isNotEmpty() && $month)
+    <h5>Bulan : {{ \Carbon\Carbon::parse($month)->locale('id')->translatedFormat('F Y') ?? '' }}</h5>
+    
+    @endif
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -38,6 +42,14 @@
             @endforeach
         </tbody>
     </table>
+    <div class="text-end">
+        <p style="font-size:14px">Padang,<span class="ms-5 me-4">&nbsp; </span>{{ \Carbon\Carbon::now()->year }}</p>
+        <p style="margin-top: -10px;font-size:14px;margin-right:8px">Wakil kepala Kesiswaan</p>
+        <br>
+        <br>
+        <span>.........................................</span>
+      </div>
+    </div>
 </div>
 
 <style>

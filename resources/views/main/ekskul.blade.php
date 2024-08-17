@@ -2,6 +2,11 @@
 @section('title','ekskul')
 
 @section('content')
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 <div class="container-xxl flex-grow-1 container-p-y">
  <div class="card">
     <h4 class="card-header">Tabel Data Kegiatan Ekstrakurikuler</h4>
@@ -9,18 +14,19 @@
       <table class="table card-table">
         <div class="d-flex justify-content-end me-3">
           <form action="{{ route('ekskul.index') }}" method="GET">
-              <input class="me-2" type="text" name="search" placeholder="cari nama dan masalah" value="{{ request()->input('search') }}">
+              <input class="me-2" type="text" name="search" placeholder="cari ekskul" value="{{ request()->input('search') }}">
+              <input class="me-2" type="month" name="month" value="{{ request()->input('month') }}">
               <button type="submit" class="btn btn-primary">Cari</button>
           </form>
-        </div>
+      </div>
         @if(auth()->user()->level == 'admin')
         <div class="d-flex justify-content-start">
           <a href="{{route('ekskul.create')}}" class="ms-5 ">
               <button type="button" class="btn btn-primary"><i class='bx bxs-user-plus'></i></button>
           </a>
-          <a href="{{route('ekskul.show')}}" class="ms-2">
-              <button type="button" class="btn btn-info"><i class='bx bx-printer'></i></button>
-          </a>
+          <a href="{{ route('ekskul.show', ['month' => request()->input('month')]) }}" class="ms-2">
+            <button type="button" class="btn btn-info"><i class='bx bx-printer'></i></button>
+        </a>
        </div>
         <thead>
           <tr>
@@ -47,7 +53,7 @@
             <td>{{ $item->user->name ?? '' }}</td>
             <td>{{ $item->ekskul ?? '' }}</td>
             <td>{{ $item->kegiatan ?? '' }}</td>
-            <td>{{ $item->tanggal ?? '' }}</td>
+            <td>{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l, d F Y') ?? '' }}</td>
             <td>{{ $item->lokasi ?? '' }}</td>
             <td>
               @if($item->foto)
@@ -100,7 +106,7 @@
             <td>{{ $item->user_id ?? '' }}</td>
             <td>{{ $item->ekskul ?? '' }}</td>
             <td>{{ $item->kegiatan ?? '' }}</td>
-            <td>{{ $item->tanggal ?? '' }}</td>
+            <td>{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l, d F Y') ?? '' }}</td>
             <td>{{ $item->lokasi ?? '' }}</td>
             <td>
               @if($item->foto)
@@ -117,7 +123,14 @@
           @endif
         </tbody>
         @elseif(auth()->user()->level == 'waka kesiswaan')
-        <a class="nav-link" href="{{ route('ekskul.create')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
+          <div class="d-flex justify-content-start">
+            <a href="{{route('ekskul.create')}}" class="ms-5 ">
+                <button type="button" class="btn btn-primary"><i class='bx bxs-user-plus'></i></button>
+            </a>
+            <a href="{{ route('ekskul.show', ['month' => request()->input('month')]) }}" class="ms-2">
+              <button type="button" class="btn btn-info"><i class='bx bx-printer'></i></button>
+            </a>
+          </div>
         <thead>
           <tr>
             <th>No</th>
@@ -143,7 +156,7 @@
             <td>{{ $item->user_id ?? '' }}</td>
             <td>{{ $item->ekskul ?? '' }}</td>
             <td>{{ $item->kegiatan ?? '' }}</td>
-            <td>{{ $item->tanggal ?? '' }}</td>
+            <td>{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l, d F Y') ?? '' }}</td>
             <td>{{ $item->lokasi ?? '' }}</td>
             <td>
               @if($item->foto)
@@ -172,8 +185,15 @@
           @endif
         </tbody>
         @elseif(auth()->user()->level == 'staff waka kesiswaan')
-        <a class="nav-link" href="{{ route('ekskul.create')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
-        <thead>
+        <div class="d-flex justify-content-start">
+          <a href="{{route('ekskul.create')}}" class="ms-5 ">
+              <button type="button" class="btn btn-primary"><i class='bx bxs-user-plus'></i></button>
+          </a>
+          <a href="{{ route('ekskul.show', ['month' => request()->input('month')]) }}" class="ms-2">
+            <button type="button" class="btn btn-info"><i class='bx bx-printer'></i></button>
+        </a>
+       </div>
+       <thead>
           <tr>
             <th>No</th>
             <th>User</th>
@@ -198,7 +218,7 @@
             <td>{{ $item->user_id ?? '' }}</td>
             <td>{{ $item->ekskul ?? '' }}</td>
             <td>{{ $item->kegiatan ?? '' }}</td>
-            <td>{{ $item->tanggal ?? '' }}</td>
+            <td>{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l, d F Y') ?? '' }}</td>
             <td>{{ $item->lokasi ?? '' }}</td>
             <td>
               @if($item->foto)
@@ -253,7 +273,7 @@
             <td>{{ $item->user_id ?? '' }}</td>
             <td>{{ $item->ekskul ?? '' }}</td>
             <td>{{ $item->kegiatan ?? '' }}</td>
-            <td>{{ $item->tanggal ?? '' }}</td>
+            <td>{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l, d F Y') ?? '' }}</td>
             <td>{{ $item->lokasi ?? '' }}</td>
             <td>
               @if($item->foto)

@@ -28,6 +28,7 @@ return new class extends Migration
             $table->integer('bb')->nullable();;
             $table->string('agama')->nullable();;
             $table->string('hobi')->nullable();;
+            $table->string('citacita')->nullable();;
             $table->integer('thn_msk')->nullable();;
             $table->enum('status', ['WAITING', 'ACCEPTED', 'DENIED'])->default('WAITING');
             $table->timestamps();

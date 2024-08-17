@@ -1,5 +1,5 @@
 @extends('base.layout-cetak')
-
+@section('title','cetak siswa')
 @section('cetak')
 <div class=" container-xxl flex-grow-1 container-p-y">
  <div class="card">
@@ -251,9 +251,9 @@
  </div>
 
 
-{{-- <script>
+<script>
     window.onload = function() {
         window.print();
     };
-    </script> --}}
+    </script>
 @endsection

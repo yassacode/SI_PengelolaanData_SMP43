@@ -18,18 +18,32 @@ class DisiplinController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->input("search");
-        $disciplines = Discipline::with('student','user')
-        ->when($search, function ($query, $search) {
-            return $query->whereHas('student', function ($query) use ($search) {
-                $query->where('nama', 'like', "%{$search}%");
-            })->orWhere('masalah', 'like', "%{$search}%");
-        })->get();
-       
+        $search = $request->input('search');
+        $month = $request->input('month');
+    
+        $disciplines = Discipline::with('student', 'user')
+            ->when($search, function ($query) use ($search) {
+                return $query->where(function ($query) use ($search) {
+                    $query->where('masalah', 'like', "%{$search}%")
+                        ->orWhere('tanggal', 'like', "%{$search}%")
+                        ->orWhereHas('student', function ($query) use ($search) {
+                            $query->where('nama', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('user', function ($query) use ($search) {
+                            $query->where('name', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->when($month, function ($query) use ($month) {
+                $query->whereMonth('tanggal', \Carbon\Carbon::parse($month)->month)
+                      ->whereYear('tanggal', \Carbon\Carbon::parse($month)->year);
+            })
+            ->get();
     
         return view('main.disiplin', [
             'disiplin' => $disciplines,
-            'search'=> $search,
+            'search' => $search,
+            'month' => $month,
         ]);
     }
 
@@ -74,15 +88,32 @@ class DisiplinController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show()
+    public function show(Request $request)
     {
+        // Ambil parameter bulan dari permintaan
+        $month = $request->input('month');
+        
+        // Pisahkan tahun dan bulan dari format YYYY-MM
+        $year = null;
+        $monthNumber = null;
+        
+        if ($month) {
+            list($year, $monthNumber) = explode('-', $month);
+        }
+        
+        // Query dengan filter bulan dan tahun opsional
         $dicipline = Discipline::with('student', 'user')
-        ->where('status', 'ACCEPTED') // Filter berdasarkan status
-        ->get();
-
-    // Kirim data ke view
-    return view('cetak.cetak-disiplin', [
-        'disiplin' => $dicipline
+            ->where('status', 'ACCEPTED') // Filter berdasarkan status
+            ->when($monthNumber, function ($query, $monthNumber) use ($year) {
+                return $query->whereMonth('tanggal', $monthNumber)
+                             ->whereYear('tanggal', $year);
+            })
+            ->get();
+    
+        // Kirim data ke view
+        return view('cetak.cetak-disiplin', [
+            'disiplin' => $dicipline,
+            'month'=>$month
         ]);
     }
 

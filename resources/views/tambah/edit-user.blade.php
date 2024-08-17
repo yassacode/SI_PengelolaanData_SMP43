@@ -6,11 +6,12 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h3>Tambah User</h3>
+                    <h3>edit User</h3>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('user.store') }}" method="POST">
+                    <form action="{{ route('user.update',$user->id) }}" method="POST">
                         @csrf
+                        @method('put')
                      <div class="row">
                         <div class="col-md-6">
                                 <div class="form-group">
@@ -56,7 +57,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="" class="form-label">Nomor HP:</label>
-                                    <input class="form-control" type="text" id="" name="no_hp "value="{{$user->no_hp}}">   
+                                    <input class="form-control" type="text" id="" name="no_hp" value="{{$user->no_hp}}">   
                                 </div>
                          </div>
                                 <div class="mt-4 text-center">

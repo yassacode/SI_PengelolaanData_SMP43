@@ -24,6 +24,7 @@ class Student extends Model
         "tb",
         "bb",
         "hobi",
+        "citacita",
         "agama",
         "thn_msk",
         "status"

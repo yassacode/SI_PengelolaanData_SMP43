@@ -16,46 +16,82 @@
                                 @method('PUT')
                                 <div class="form-group">
                                     <label for="">Asal Paud:</label>
-                                    <input type="text" id="" name="asal_paud" class="form-control" placeholder="masukan asal paud siswa"value="{{$siswa->school->asal_paud}}">
+                                    <input type="text" id="" name="asal_paud" class="form-control" placeholder="masukan asal paud siswa"value="{{$siswa->school->asal_paud}}>
                                 </div>
                                 <div class="form-group">
                                     <label for="">Asal TK:</label>
                                     <input type="text" id="" name="asal_tk" class="form-control" placeholder="masukan asal tk siswa"value="{{$siswa->school->asal_tk}}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Asal SD:</label>
+                                    <label for="">Asal SD: <sup style="color:red">*</sup></label>
                                     <input type="text" id="" name="asal_sd" class="form-control"placeholder="masukan asal sd siswa"value="{{$siswa->school->asal_sd}}">
                                 </div>
-                                <div class="form-group">
-                                    <label for="">Jarak Rumah Ke Sekolah:</label>
-                                    <input type="text" id="" name="jrk_sklh" class="form-control"placeholder="masukan hanya angka dalam satuan KM"value="{{$siswa->school->jrk_sklh}}">
-                                </div>
+                                 <div class="form-group">
+                                    <label for="">Jarak rumah ke sekolah: <sup style="color:red">*</sup> </label>
+                                    <div class="input-group">
+                                        <input type="text" name="jrk_sklh" class="form-control" placeholder="jarak rumah ke sekolah" aria-label="Recipient's username" aria-describedby="basic-addon13"value=" {{$siswa->school->jrk_sklh}}">
+                                        <span class="input-group-text" id="basic-addon13">KM</span>
+                                    </div>
+                                  </div>
+                                
                                 <div class="form-group">
                                     <label for="">Riwayat Sakit:</label>
-                                    <input type="text" id="" name="sakit" class="form-control"placeholder="masukan riwayat sakit kalau ada" value="{{$siswa->history->sakit}}">
+                                    <input type="text" id="" name="sakit" class="form-control"placeholder="masukan riwayat sakit kalau ada"value="{{$siswa->history->sakit}}">
                                 </div>
-                              </div>
-                             <div class="col-md-6">
-                            
                                 <div class="form-group">
                                     <label for="">Riwayat Beasiswa:</label>
                                     <input type="text" id="" name="beasiswa" class="form-control" placeholder="masukan riwayat beasiswa kalau ada"value="{{$siswa->history->beasiswa}}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Pernah Ikut Perlombaan Apa:</label>
-                                    <input type="text" id="" name="kegiatan" class="form-control" placeholder="masukan perlombaan yang pernah diikuti" value="{{$siswa->achievement->kegiatan}}">
+                                    <label for="">Jumlah Saudara: <sup style="color:red">*</sup></label>
+                                    <input type="text" id="" name="jumlah" class="form-control"placeholder="jumlah saudara kandung, contoh: '1', '2'"value="{{$siswa->sibling->jumlah}}">
+                                </div>
+                                    <div class="input-group mt-2">
+                                     <span class="input-group-text" id="basic-addon13">anak ke- <sup style="color:red">*</sup></span>
+                                     <input type="text" name="jrk_sklh" class="form-control" placeholder="'1' atau '2'" aria-label="Recipient's username" aria-describedby="basic-addon13"value="{{$siswa->sibling->anak_ke}}" >
+                                    </div>
+                                <div class="form-group">
+                                    <label for="">lomba yang pernah diikuti:</label>
+                                    <input type="text" id="" name="kegiatan1" class="form-control" placeholder="masukan perlombaan yang pernah diikuti"value="{{$siswa->achievement->kegiatan1}}">
+                                </div>
+                                <div class="input-group mt-2">
+                                 <span class="input-group-text" id="basic-addon13">Juara ke-</span>
+                                 <input type="text" name="juara1" class="form-control" placeholder="contoh: '1','2'" aria-label="Recipient's username" aria-describedby="basic-addon13"value="{{$siswa->achievement->juara1}}" >
+                                </div>
+                              </div>
+                             <div class="col-md-6">
+                                
+                                <div class="form-group">
+                                    <label for="">lomba yang pernah diikuti:</label>
+                                    <input type="text" id="" name="kegiatan2" class="form-control" placeholder="masukan perlombaan yang pernah diikuti"value="{{$siswa->achievement->kegiatan2}}">
+                                </div>
+                                <div class="input-group mt-2">
+                                 <span class="input-group-text" id="basic-addon13">Juara ke-</span>
+                                 <input type="text" name="juara2" class="form-control" placeholder="contoh: '1','2'" aria-label="Recipient's username" aria-describedby="basic-addon13"value="{{$siswa->achievement->juara2}}" >
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Dan Juara Berapa:</label>
-                                    <input type="text" id="" name="juara" class="form-control" placeholder="juara ke berapa??"value="{{$siswa->achievement->juara}}">
+                                    <label for="">lomba yang pernah diikuti:</label>
+                                    <input type="text" id="" name="kegiatan3" class="form-control" placeholder="masukan perlombaan yang pernah diikuti"value="{{$siswa->achievement->kegiatan3}}">
+                                </div>
+                                <div class="input-group mt-2">
+                                 <span class="input-group-text" id="basic-addon13">Juara ke-</span>
+                                 <input type="text" name="juara3" class="form-control" placeholder="contoh: '1','2'" aria-label="Recipient's username" aria-describedby="basic-addon13"value="{{$siswa->achievement->juara3}}" >
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Jumlah Saudara:</label>
-                                    <input type="text" id="" name="jumlah" class="form-control"placeholder="jumlah saudara kandung" value="{{$siswa->sibling->jumlah}}">
+                                    <label for="">lomba yang pernah diikuti:</label>
+                                    <input type="text" id="" name="kegiatan3" class="form-control" placeholder="masukan perlombaan yang pernah diikuti"value="{{$siswa->achievement->kegiatan4}}">
+                                </div>
+                                <div class="input-group mt-2">
+                                 <span class="input-group-text" id="basic-addon13">Juara ke-</span>
+                                 <input type="text" name="juara4" class="form-control" placeholder="contoh: '1','2'" aria-label="Recipient's username" aria-describedby="basic-addon13"value="{{$siswa->achievement->juara4}}" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Anak Ke-:</label>
-                                    <input type="text" id="" name="anak_ke" class="form-control"placeholder="anak ke-" value="{{$siswa->sibling->anak_ke}}">
+                                    <label for="">lomba yang pernah diikuti:</label>
+                                    <input type="text" id="" name="kegiatan4" class="form-control" placeholder="masukan perlombaan yang pernah diikuti"value="{{$siswa->achievement->kegiatan5}}">
+                                </div>
+                                <div class="input-group mt-2">
+                                 <span class="input-group-text" id="basic-addon13">Juara ke-</span>
+                                 <input type="text" name="juara" class="form-control" placeholder="contoh: '1','2'" aria-label="Recipient's username" aria-describedby="basic-addon13"value="{{$siswa->achievement->juara5}}" />
                                 </div>
                                 <div class="mt-4">
                                     <a href="{{ route('siswa.create1') }}" class="btn btn-warning">back</a>

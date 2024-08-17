@@ -1,5 +1,7 @@
 @extends('base.layout-tambah')
+@section('title','add siswa')
 @section('add')
+
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -15,47 +17,84 @@
                                 @csrf
                                 <div class="form-group">
                                     <label for="">Asal Paud:</label>
-                                    <input type="text" id="" name="asal_paud" class="form-control" placeholder="masukan asal paud siswa">
+                                    <input type="text" id="" name="asal_paud" class="form-control" placeholder="masukan asal paud siswa"/>
                                 </div>
                                 <div class="form-group">
                                     <label for="">Asal TK:</label>
-                                    <input type="text" id="" name="asal_tk" class="form-control" placeholder="masukan asal tk siswa">
+                                    <input type="text" id="" name="asal_tk" class="form-control" placeholder="masukan asal tk siswa"/>
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Asal SD:</label>
-                                    <input type="text" id="" name="asal_sd" class="form-control"placeholder="masukan asal sd siswa">
+                                    <label for="">Asal SD: <sup style="color:red">*</sup></label>
+                                    <input type="text" id="" name="asal_sd" class="form-control"placeholder="masukan asal sd siswa"/>
                                 </div>
-                                <div class="form-group">
-                                    <label for="">Jarak Rumah Ke Sekolah:</label>
-                                    <input type="text" id="" name="jrk_sklh" class="form-control"placeholder="masukan hanya angka dalam satuan KM">
-                                </div>
+                                 <div class="form-group">
+                                    <label for="">Jarak rumah ke sekolah: <sup style="color:red">*</sup> </label>
+                                    <div class="input-group">
+                                        <input type="text" name="jrk_sklh" class="form-control" placeholder="jarak rumah ke sekolah" aria-label="Recipient's username" aria-describedby="basic-addon13"/>
+                                        <span class="input-group-text" id="basic-addon13">KM</span>
+                                    </div>
+                                  </div>
+                                
                                 <div class="form-group">
                                     <label for="">Riwayat Sakit:</label>
                                     <input type="text" id="" name="sakit" class="form-control"placeholder="masukan riwayat sakit kalau ada">
                                 </div>
-                              </div>
-                             <div class="col-md-6">
-                            
                                 <div class="form-group">
                                     <label for="">Riwayat Beasiswa:</label>
-                                    <input type="text" id="" name="beasiswa" class="form-control" placeholder="masukan riwayat beasiswa kalau ada">
+                                    <input type="text" id="" name="beasiswa" class="form-control" placeholder="masukan riwayat beasiswa kalau ada"/>
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Pernah Ikut Perlombaan Apa:</label>
-                                    <input type="text" id="" name="kegiatan" class="form-control" placeholder="masukan perlombaan yang pernah diikuti">
+                                    <label for="">Jumlah Saudara: <sup style="color:red">*</sup></label>
+                                    <input type="text" id="" name="jumlah" class="form-control"placeholder="jumlah saudara kandung, contoh: '1', '2'"/>
+                                </div>
+                                    <div class="input-group mt-2">
+                                     <span class="input-group-text" id="basic-addon13">anak ke- <sup style="color:red">*</sup></span>
+                                     <input type="text" name="anak_ke" class="form-control" placeholder="'1' atau '2'" aria-label="Recipient's username" aria-describedby="basic-addon13" />
+                                    </div>
+                                <div class="form-group">
+                                    <label for="">lomba yang pernah diikuti:</label>
+                                    <input type="text" id="" name="kegiatan1" class="form-control" placeholder="masukan perlombaan yang pernah diikuti">
+                                </div>
+                                <div class="input-group mt-2">
+                                 <span class="input-group-text" id="basic-addon13">Juara ke-</span>
+                                 <input type="text" name="juara1" class="form-control" placeholder="contoh: '1','2'" aria-label="Recipient's username" aria-describedby="basic-addon13" />
+                                </div>
+                              </div>
+                             <div class="col-md-6">
+                                
+                                <div class="form-group">
+                                    <label for="">lomba yang pernah diikuti:</label>
+                                    <input type="text" id="" name="kegiatan2" class="form-control" placeholder="masukan perlombaan yang pernah diikuti">
+                                </div>
+                                <div class="input-group mt-2">
+                                 <span class="input-group-text" id="basic-addon13">Juara ke-</span>
+                                 <input type="text" name="juara2" class="form-control" placeholder="contoh: '1','2'" aria-label="Recipient's username" aria-describedby="basic-addon13" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Dan Juara Berapa:</label>
-                                    <input type="text" id="" name="juara" class="form-control" placeholder="juara ke berapa??">
+                                    <label for="">lomba yang pernah diikuti:</label>
+                                    <input type="text" id="" name="kegiatan3" class="form-control" placeholder="masukan perlombaan yang pernah diikuti">
+                                </div>
+                                <div class="input-group mt-2">
+                                 <span class="input-group-text" id="basic-addon13">Juara ke-</span>
+                                 <input type="text" name="juara3" class="form-control" placeholder="contoh: '1','2'" aria-label="Recipient's username" aria-describedby="basic-addon13" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Jumlah Saudara:</label>
-                                    <input type="text" id="" name="jumlah" class="form-control"placeholder="jumlah saudara kandung">
+                                    <label for="">lomba yang pernah diikuti:</label>
+                                    <input type="text" id="" name="kegiatan4" class="form-control" placeholder="masukan perlombaan yang pernah diikuti">
+                                </div>
+                                <div class="input-group mt-2">
+                                 <span class="input-group-text" id="basic-addon13">Juara ke-</span>
+                                 <input type="text" name="juara4" class="form-control" placeholder="contoh: '1','2'" aria-label="Recipient's username" aria-describedby="basic-addon13" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Anak Ke-:</label>
-                                    <input type="text" id="" name="anak_ke" class="form-control"placeholder="anak ke-">
+                                    <label for="">lomba yang pernah diikuti:</label>
+                                    <input type="text" id="" name="kegiatan5" class="form-control" placeholder="masukan perlombaan yang pernah diikuti">
                                 </div>
+                                <div class="input-group mt-2">
+                                    <span class="input-group-text" id="basic-addon13">Juara ke-</span>
+                                    <input type="text" name="juara5" class="form-control" placeholder="contoh: '1','2'" aria-label="Recipient's username" aria-describedby="basic-addon13" />
+                                   </div>
+                                
                                 <div class="mt-4">
                                     <a href="{{ route('siswa.create1') }}" class="btn btn-warning">back</a>
                                     <button type="submit" class="btn btn-primary">next</button>    

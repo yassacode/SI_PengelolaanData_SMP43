@@ -2,6 +2,11 @@
 @section('title','siswa')
 
 @section('content')
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 <div class="container-xxl flex-grow-1 container-p-y">
  <div class="card">
     <h4 class="card-header">Tabel Data Siswa</h4>
@@ -149,7 +154,7 @@
                   <td>{{$students->user->name ?? ''}}</td>
                   <td>
                     @if ($students->status == 'WAITING')
-                    <form action="{{route('disiplin/update/status.updateStts', $students->id)}}" method="POST">
+                    <form action="{{route('siswa/update/status.updateStts', $students->id)}}" method="POST">
                       @csrf
                       @method('PUT')
                       <button type="submit" class="btn btn-sm btn-primary" value="ACCEPTED" name="status">TERIMA</button>
@@ -168,7 +173,11 @@
                           <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                           <div class="dropdown-menu">
                               <a class="dropdown-item" href="{{ route('siswa.show1', $students->id) }} "><i class="bx bxs-show"></i>view</a>
-                              <a class="dropdown-item" href="{{ route('siswa.edit1', $students->id) }} "><i class="bx bx-edit-alt me-1"></i>Edit</a>
+                                @if ($students->status !== 'ACCEPTED')
+                                <a class="dropdown-item" href="{{ route('siswa.edit1', $students->id) }}">
+                                    <i class="bx bx-edit-alt me-1"></i> Edit
+                                </a>
+                                @endif
                               <form action="{{ route('siswa.destroy', $students->id) }}" method="POST">
                                   @csrf
                                   @method('DELETE')

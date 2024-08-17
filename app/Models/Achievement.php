@@ -10,7 +10,15 @@ class Achievement extends Model
     use HasFactory;
 
     protected $fillable = [
-        'kegiatan',
-        'juara',
+        'kegiatan1',
+        'juara1',
+        'kegiatan2',
+        'juara2',
+        'kegiatan3',
+        'juara3',
+        'kegiatan4',
+        'juara4',
+        'kegiatan5',
+        'juara5',
     ];
 }
