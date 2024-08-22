@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Extracurricular;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class EkstrakurikulerController extends Controller
 {
@@ -54,6 +57,7 @@ class EkstrakurikulerController extends Controller
             'tanggal'=>'required',
             'lokasi'=>'required',
             'keterangan'=>'required',
+            "status"=>'nullable',
             'foto'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         $data['user_id'] = auth()->user()->id;
@@ -73,10 +77,8 @@ class EkstrakurikulerController extends Controller
      */
     public function show(Request $request)
     {
-          // Ambil parameter bulan dari permintaan
         $month = $request->input('month');
         
-        // Pisahkan tahun dan bulan dari format YYYY-MM
         $year = null;
         $monthNumber = null;
         
@@ -84,14 +86,14 @@ class EkstrakurikulerController extends Controller
             list($year, $monthNumber) = explode('-', $month);
         }
         
-        // Query data extracurricular dengan filter bulan dan tahun opsional
-        $data = Extracurricular::when($monthNumber, function ($query, $monthNumber) use ($year) {
+        $data = Extracurricular::where('status', 'ACCEPTED') 
+        ->when($monthNumber, function ($query, $monthNumber) use ($year) {
                 return $query->whereMonth('tanggal', $monthNumber)
                             ->whereYear('tanggal', $year);
             })
             ->get();
 
-        // Kirim data ke view termasuk bulan
+            // dd($request->all());
         return view('cetak.cetak-ekskul', [
             'item' => $data,
             'month' => $month
@@ -126,6 +128,7 @@ class EkstrakurikulerController extends Controller
             'tanggal' => 'required',
             'lokasi' => 'required',
             'keterangan' => 'required',
+            "status"=>'nullable',
             'foto' => 'image|nullable',
         ]);
     
@@ -154,5 +157,27 @@ class EkstrakurikulerController extends Controller
         $item = Extracurricular::find($id);
         $item->delete();
         return back()->with('success','Berhasil Dihapus');
-        }
+     }
+
+     public function updateStts(Request $request, $id){
+         try {
+                $item = Extracurricular::findOrFail($id);
+                $validatedData = $request->validate([
+                    'status' => 'required|in:WAITING,ACCEPTED,DENIED',
+                ]);
+        
+                $item->update([
+                    'status' => $validatedData['status'],
+                    // 'status' => $request->status,
+                ]);
+        
+                return back()->with('success','Berhasil Diperbarui');
+            } catch (Exception $e) {
+                return back()->with('error',$e->getMessage());
+            } catch (ValidationException $va) {
+                return back()->with('error',$va->getMessage());
+            } catch (ModelNotFoundException $mn) {
+                return back()->with('error',$mn->getMessage());
+            }
+     }
 }

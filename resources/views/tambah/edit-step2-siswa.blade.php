@@ -16,7 +16,7 @@
                                 @method('PUT')
                                 <div class="form-group">
                                     <label for="">Asal Paud:</label>
-                                    <input type="text" id="" name="asal_paud" class="form-control" placeholder="masukan asal paud siswa"value="{{$siswa->school->asal_paud}}>
+                                    <input type="text" id="" name="asal_paud" class="form-control" placeholder="masukan asal paud siswa"value="{{$siswa->school->asal_paud}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="">Asal TK:</label>
@@ -48,7 +48,7 @@
                                 </div>
                                     <div class="input-group mt-2">
                                      <span class="input-group-text" id="basic-addon13">anak ke- <sup style="color:red">*</sup></span>
-                                     <input type="text" name="jrk_sklh" class="form-control" placeholder="'1' atau '2'" aria-label="Recipient's username" aria-describedby="basic-addon13"value="{{$siswa->sibling->anak_ke}}" >
+                                     <input type="text" name="anak_ke" class="form-control" placeholder="'1' atau '2'" aria-label="Recipient's username" aria-describedby="basic-addon13"value="{{$siswa->sibling->anak_ke}}" >
                                     </div>
                                 <div class="form-group">
                                     <label for="">lomba yang pernah diikuti:</label>

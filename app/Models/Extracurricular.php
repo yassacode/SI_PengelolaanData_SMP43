@@ -15,6 +15,7 @@ class Extracurricular extends Model
         'tanggal',
         'lokasi',
         'foto',
+        'status',
         'keterangan',
     ];
 

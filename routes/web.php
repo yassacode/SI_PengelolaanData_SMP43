@@ -28,6 +28,7 @@ Route::get('/ekskul/create', [EkstrakurikulerController::class, 'create'])->name
 Route::post('/ekskul/store', [EkstrakurikulerController::class, 'store'])->name('ekskul.store');
 Route::get('/ekskul/edit/{id}', [EkstrakurikulerController::class, 'edit'])->name('ekskul.edit');
 Route::put('/ekskul/update/{id}', [EkstrakurikulerController::class, 'update'])->name('ekskul.update');
+Route::put('/ekskul/update/status/{id}', [EkstrakurikulerController::class, 'updateStts'])->name('ekskul/update/status.updateStts');
 Route::get('/ekskul/show', [EkstrakurikulerController::class, 'show'])->name('ekskul.show');
 Route::delete('/ekskul/destroy/{id}', [EkstrakurikulerController::class, 'destroy'])->name('ekskul.destroy');
 

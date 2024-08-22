@@ -35,6 +35,7 @@ class AuthenticatedSessionController extends Controller
     
             return redirect()->intended(RouteServiceProvider::HOME);
         }
+        // dd($request->all());
     
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',

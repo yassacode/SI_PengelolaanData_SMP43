@@ -82,6 +82,7 @@ class DisiplinController extends Controller
             $dicipline['foto'] = $request->file('foto')->store('fotoBuktiDisiplin', 'public');
         }
         $dicipline=Discipline::create($dicipline);
+        // dd($request->all());
         return redirect()->route('disiplin.index')->with('success', 'Data Berhasil Ditambahkan');
     }
 
@@ -90,10 +91,8 @@ class DisiplinController extends Controller
      */
     public function show(Request $request)
     {
-        // Ambil parameter bulan dari permintaan
         $month = $request->input('month');
-        
-        // Pisahkan tahun dan bulan dari format YYYY-MM
+
         $year = null;
         $monthNumber = null;
         
@@ -101,16 +100,15 @@ class DisiplinController extends Controller
             list($year, $monthNumber) = explode('-', $month);
         }
         
-        // Query dengan filter bulan dan tahun opsional
         $dicipline = Discipline::with('student', 'user')
-            ->where('status', 'ACCEPTED') // Filter berdasarkan status
+            ->where('status', 'ACCEPTED') 
             ->when($monthNumber, function ($query, $monthNumber) use ($year) {
                 return $query->whereMonth('tanggal', $monthNumber)
                              ->whereYear('tanggal', $year);
             })
             ->get();
     
-        // Kirim data ke view
+            // dd($request->all());
         return view('cetak.cetak-disiplin', [
             'disiplin' => $dicipline,
             'month'=>$month

@@ -38,6 +38,7 @@
             <th>Lokasi</th>
             <th>Foto</th>
             <th>Keterangan</th>
+            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -65,6 +66,22 @@
               @endif
             </td>
             <td>{{ $item->keterangan ?? '' }}</td>
+             <td>
+                    @if ($item->status == 'WAITING')
+                    <form action="{{ route('ekskul/update/status.updateStts', $item->id) }}" method="POST" onsubmit="return handleStatusChange(this, '{{ $item->id }}');">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit" class="btn btn-sm btn-primary" value="ACCEPTED" name="status">TERIMA</button>
+                        <button type="submit" class="btn btn-sm btn-danger" value="DENIED" name="status">TOLAK</button>
+                    </form>
+                    @elseif ($item->status == 'ACCEPTED')
+                    <span class="badge bg-label-success me-1">DITERIMA</span>
+                    @elseif ($item->status == 'DENIED')
+                    <span class="badge bg-label-danger me-1">DITOLAK</span>
+                    @else
+                    <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
+                    @endif
+                </td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -92,6 +109,7 @@
             <th>Lokasi</th>
             <th>Foto</th>
             <th>Keterangan</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -118,6 +136,16 @@
               @endif
             </td>
             <td>{{ $item->keterangan ?? '' }}</td>
+             <td>
+                    @if ($item->status == 'WAITING')
+                    @elseif ($item->status == 'ACCEPTED')
+                    <span class="badge bg-label-success me-1">DITERIMA</span>
+                    @elseif ($item->status == 'DENIED')
+                    <span class="badge bg-label-danger me-1">DITOLAK</span>
+                    @else
+                    <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
+                    @endif
+                </td>
           </tr>
           @endforeach
           @endif
@@ -141,6 +169,7 @@
             <th>Lokasi</th>
             <th>Foto</th>
             <th>Keterangan</th>
+            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -168,6 +197,22 @@
               @endif
             </td>
             <td>{{ $item->keterangan ?? '' }}</td>
+             <td>
+                    @if ($item->status == 'WAITING')
+                    <form action="{{ route('ekskul/update/status.updateStts', $item->id) }}" method="POST" onsubmit="return handleStatusChange(this, '{{ $item->id }}');">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit" class="btn btn-sm btn-primary" value="ACCEPTED" name="status">TERIMA</button>
+                        <button type="submit" class="btn btn-sm btn-danger" value="DENIED" name="status">TOLAK</button>
+                    </form>
+                    @elseif ($item->status == 'ACCEPTED')
+                    <span class="badge bg-label-success me-1">DITERIMA</span>
+                    @elseif ($item->status == 'DENIED')
+                    <span class="badge bg-label-danger me-1">DITOLAK</span>
+                    @else
+                    <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
+                    @endif
+                </td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -203,6 +248,7 @@
             <th>Lokasi</th>
             <th>Foto</th>
             <th>Keterangan</th>
+            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -230,6 +276,17 @@
               @endif
             </td>
             <td>{{ $item->keterangan ?? '' }}</td>
+             <td>
+              @if ($item->status == 'WAITING')
+              <span class="badge bg-label-warning me-1">WAITING</span>
+              @elseif ($item->status == 'ACCEPTED')
+              <span class="badge bg-label-success me-1">DITERIMA</span>
+              @elseif ($item->status == 'DENIED')
+              <span class="badge bg-label-danger me-1">DITOLAK</span>
+              @else
+              <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
+              @endif
+                </td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -258,6 +315,7 @@
             <th>Lokasi</th>
             <th>Foto</th>
             <th>Keterangan</th>
+            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -285,6 +343,17 @@
               @endif
             </td>
             <td>{{ $item->keterangan ?? '' }}</td>
+             <td>
+                    @if ($item->status == 'WAITING')
+                    <span class="badge bg-label-warning me-1">WAITING</span>
+                    @elseif ($item->status == 'ACCEPTED')
+                    <span class="badge bg-label-success me-1">DITERIMA</span>
+                    @elseif ($item->status == 'DENIED')
+                    <span class="badge bg-label-danger me-1">DITOLAK</span>
+                    @else
+                    <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
+                    @endif
+                </td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('lokasi'); 
             $table->string('foto')->nullable(); 
             $table->string('keterangan'); 
+            $table->enum('status', ['WAITING', 'ACCEPTED', 'DENIED'])->default('WAITING');
             $table->timestamps();
         });
     }

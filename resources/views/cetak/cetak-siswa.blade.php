@@ -174,17 +174,21 @@
                 <table class="table border-2 ml-auto text-center mt-2">
                     <thead>
                       <tr>
-                        <th scope="col">#</th>
+                        <th scope="col">No</th>
                         <th scope="col">kegiatan</th>
                         <th scope="col">juara</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>{{$student->achievement->kegiatan ?? ""}}</td>
-                        <td>{{$student->achievement->juara ?? ""}}</td>
-                      </tr>
+                        @for ($i = 1; $i <= 5; $i++)
+                        @if ($student->achievement->{"kegiatan$i"} && $student->achievement->{"juara$i"})
+                            <tr>
+                                <td>{{ $i }}</td>
+                                <td>{{ $student->achievement->{"kegiatan$i"} }}</td>
+                                <td>{{ $student->achievement->{"juara$i"} }}</td>
+                            </tr>
+                        @endif
+                    @endfor
                     </tbody>
                 </table>
              </tbody>

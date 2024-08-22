@@ -233,7 +233,11 @@
                           <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                           <div class="dropdown-menu">
                               <a class="dropdown-item" href="{{ route('siswa.show1', $students->id) }} "><i class="bx bxs-show"></i>view</a>
-                              <a class="dropdown-item" href="{{ route('siswa.edit1', $students->id) }} "><i class="bx bx-edit-alt me-1"></i>Edit</a>
+                              @if ($students->status !== 'ACCEPTED')
+                              <a class="dropdown-item" href="{{ route('siswa.edit1', $students->id) }}">
+                                  <i class="bx bx-edit-alt me-1"></i> Edit
+                              </a>
+                              @endif
                               <form action="{{ route('siswa.destroy', $students->id) }}" method="POST">
                                   @csrf
                                   @method('DELETE')

@@ -129,6 +129,7 @@ use App\Models\History;
             session()->put('riwayat', $histories);
             session()->put('saudara', $siblings);
             session()->put('prestasi', $achievments);
+            // dd($request->all());
             return redirect()->route('siswa.create3');
         }
         public function store(Request $request)
@@ -152,7 +153,6 @@ use App\Models\History;
             session()->put('siswa.user_id', auth()->user()->id);
             $students = session()->get('siswa');
             $histories = session()->get('riwayat');
-            // $studentParents = session()->get('ortu');
             $schools = session()->get('sekolah');
             $siblings = session()->get('saudara');
             $achievements = session()->get('prestasi');
@@ -179,6 +179,7 @@ use App\Models\History;
                 'saudara',
                 'prestasi',
             ]);
+            // dd($students);
             return redirect()->route('siswa.index')->with('success', 'Data Berhasil Ditambahkan');
         }
 
@@ -202,16 +203,16 @@ use App\Models\History;
             ]);
         }
 
-        public function show2(string $id)
+        public function show2(string $id )
         {
             $student = Student::with(['history', 'school', 'studentparent', 'sibling', 'achievement', 'dicipline'])
                 ->findOrFail($id);
         
-            // Ambil data disiplin terbaru sebagai objek tunggal
             $discipline = Discipline::where('student_id', $student->id)
                 ->latest('created_at')
                 ->get();
-        
+            // dd($discipline, $student);
+                
             return view('cetak.cetak-siswa', [
                 'student' => $student,
                 'discipline' => $discipline
@@ -279,7 +280,7 @@ use App\Models\History;
         {
             $schools = $request->validate([
                 "asal_paud" => 'nullable',
-                "asal_tk" => 'required',
+                "asal_tk" => 'nullable',
                 "asal_sd" => 'required',
                 "jrk_sklh" => 'required'
             ]);

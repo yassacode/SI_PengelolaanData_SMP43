@@ -46,8 +46,6 @@ class UserController extends Controller
         'no_hp' => 'required',
         'alamat' => 'required',
     ]);
-
-    // Buat dan simpan pengguna dalam satu baris
     $users = User::create([
         'name' => $users['name'],
         'email' => $users['email'],
@@ -59,6 +57,7 @@ class UserController extends Controller
         'password' => Hash::make($users['password']),
         
     ]);
+    dd($request->all());
 
     return redirect()->route('user.index')->with('success', 'Data Berhasil Ditambahkan');
 

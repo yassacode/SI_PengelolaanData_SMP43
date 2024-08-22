@@ -290,13 +290,14 @@
                 <td>{{ $dicipline->keterangan ?? '' }}</td>
                 <td>
                     @if ($dicipline->status == 'WAITING')
-                    @elseif ($dicipline->status == 'ACCEPTED')
+                    <span class="badge bg-label-warning me-1">MENUNGGU</span>
+                  @elseif ($dicipline->status == 'ACCEPTED')
                     <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($dicipline->status == 'DENIED')
+                  @elseif ($dicipline->status == 'DENIED')
                     <span class="badge bg-label-danger me-1">DITOLAK</span>
-                    @else
+                  @else
                     <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
-                    @endif
+                  @endif
                 </td>
                 <td>
                     <div class="dropdown">
@@ -363,12 +364,13 @@
                 <td>{{ $dicipline->keterangan ?? '' }}</td>
                 <td>
                     @if ($dicipline->status == 'WAITING')
+                      <span class="badge bg-label-warning me-1">MENUNGGU</span>
                     @elseif ($dicipline->status == 'ACCEPTED')
-                    <span class="badge bg-label-success me-1">DITERIMA</span>
+                      <span class="badge bg-label-success me-1">DITERIMA</span>
                     @elseif ($dicipline->status == 'DENIED')
-                    <span class="badge bg-label-danger me-1">DITOLAK</span>
+                      <span class="badge bg-label-danger me-1">DITOLAK</span>
                     @else
-                    <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
+                      <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
                     @endif
                 </td>
                 <td>

@@ -7,8 +7,9 @@
         <h4> SMP Negeri 43 Padang</h4>
             <br>
         <h5 class="text-center ">BIODATA DIRI SISWA </h5>
+        @if ($students->status === 'ACCEPTED')
         <a class="nav-link" href="{{ route('siswa.show2',$students->id)}}"><button type="button" class="btn btn-primary">cetak</button></a>
-         
+        @endif
     </div>
         <div>
             <table class="table-borderless">
@@ -175,17 +176,21 @@
                 <table class="table border-2 ml-auto text-center mt-2">
                     <thead>
                       <tr>
-                        <th scope="col">#</th>
+                        <th scope="col">no</th>
                         <th scope="col">kegiatan</th>
                         <th scope="col">juara</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>{{$students->achievement->kegiatan ?? ""}}</td>
-                        <td>{{$students->achievement->juara ?? ""}}</td>
-                      </tr>
+                    <tbody> 
+                        @for ($i = 1; $i <= 5; $i++)
+                            @if ($students->achievement->{"kegiatan$i"} && $students->achievement->{"juara$i"})
+                                <tr>
+                                    <td>{{ $i }}</td>
+                                    <td>{{ $students->achievement->{"kegiatan$i"} }}</td>
+                                    <td>{{ $students->achievement->{"juara$i"} }}</td>
+                                </tr>
+                            @endif
+                        @endfor
                     </tbody>
                 </table>
              </tbody>
