@@ -106,6 +106,16 @@
             </li>
             @endhasanyrole
 
+            <!-- Menu Pengesahan Laporan -->
+            @role('Kepala Sekolah')
+            <li class="menu-item mb-2 {{Route::is('laporan*')?'active':''}}">
+              <a href="{{url('/pengesahan-laporan')}}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-check-shield"></i>
+                <div data-i18n="Analytics">Pengesahan Laporan</div>
+              </a>
+            </li>
+            @endrole
+
             <!-- Menu User (Hanya Admin) -->
             @role('Admin')
             <li class="menu-item {{Route::is('user*')?'active':''}}">
@@ -162,14 +172,12 @@
                     <li>
                       <div class="dropdown-divider"></div>
                     </li>
-                   
-                      <a class="dropdown-item" href="">
-                        <form method="POST" action="{{ route('logout') }}">
+                     <li>
+                        <form method="POST" action="{{ route('logout') }}" class="px-3 py-2">
                           @csrf
-                          <button type="submit" class="btn btn-danger">Logout</button>
+                          <button type="submit" class="btn btn-danger w-100">Logout</button>
                         </form>
-                      </a>
-                    </li>
+                      </li>
                   </ul>
                 </li>
                 <!--/ User -->

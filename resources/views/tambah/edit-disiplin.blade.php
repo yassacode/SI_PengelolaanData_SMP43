@@ -1,81 +1,71 @@
 @extends('base.layout-tambah')
+@section('title','Edit Data Disiplin')
 @section('add')
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Tambah Data Kedisiplinan Siswa</h3>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Edit Data Kedisiplinan Siswa</h3>
+                </div>
+                <div class="card-body">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
-                        <div class="card-body">
-                            <form action="{{ route('disiplin.update',$disiplin->id) }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                @method('PUT')
-                             <div class="row">
-                                 <div class="col-md-6">
-                                        <div class="form-group ">
-                                            <label for="student_id">Nama Siswa:</label>
-                                                <select name="student_id" id="student_id" class="form-select">
-                                                    <option selected>...</option>
-                                                    @foreach ($siswa as $student)
-                                                        <option value="{{ $student->id }}">{{ $student->nama }}</option>
-                                                    @endforeach
-                                                </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="">Kelas:</label>
-                                            <input type="text" id="" name="kelas" class="form-control" value="{{$disiplin->kelas}}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="">Bentuk Pelanggaran:</label>
-                                            <input type="text" id="" name="masalah" class="form-control" value="{{$disiplin->masalah}}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for=""> solusi</label>
-                                            <input type="text" id="" name="solusi" class="form-control" value="{{$disiplin->solusi}}">
-                                        </div>
-                                        
-                                    </div>
-                                     <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">Tanggal Kejadian:</label>
-                                            <input type="date" id="" name="tanggal" class="form-control" value="{{$disiplin->tanggal}}">
-                                        </div>
-                                        <div class="form-group">
-                                         <!-- Input lain -->
-    
-                                            <!-- Menampilkan gambar yang sudah ada -->
-                                            @if ($disiplin->foto)
-                                            <div>
-                                                <img src="{{ Storage::url($disiplin->foto) }}" alt="Foto Bukti" style="width: 150px;">
-                                            </div>
-                                        @endif
-
-                                        <!-- Input untuk unggah gambar baru -->
-                                        <div>
-                                            <label for="foto">Unggah Foto Baru (Opsional)</label>
-                                            <input type="file" name="foto" id="foto">
-                                        </div>   
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="">Keterangan:</label>
-                                            <input type="text" id="" name="keterangan" class="form-control" value="{{$disiplin->keterangan}}">
-                                        </div>
-                                        <div class="text-center mt-3">
-                                            <button type="submit" class="btn btn-primary">Update</button>
-                                            <button type="reset" class="btn btn-danger">Cancel</button>
-                                        </div>    
-                                    </div>
+                    @endif
+                    <form action="{{ route('disiplin.update', $disiplin->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="siswa_id">Nama Siswa: <sup class="text-danger">*</sup></label>
+                                    <select name="siswa_id" id="siswa_id" class="form-select @error('siswa_id') is-invalid @enderror">
+                                        <option value="">-- Pilih Siswa --</option>
+                                        @foreach ($siswa as $student)
+                                            <option value="{{ $student->id }}" {{ $disiplin->siswa_id == $student->id ? 'selected' : '' }}>{{ $student->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('siswa_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
-                            </form>
+                                <div class="form-group mb-3">
+                                    <label for="masalah">Bentuk Pelanggaran: <sup class="text-danger">*</sup></label>
+                                    <input type="text" id="masalah" name="masalah" class="form-control @error('masalah') is-invalid @enderror" value="{{ old('masalah', $disiplin->masalah) }}">
+                                    @error('masalah')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="tanggal">Tanggal Kejadian: <sup class="text-danger">*</sup></label>
+                                    <input type="date" id="tanggal" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror" value="{{ old('tanggal', $disiplin->tanggal) }}">
+                                    @error('tanggal')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+                                <div class="form-group mb-3">
+                                    @if ($disiplin->foto)
+                                        <div class="mb-2">
+                                            <label>Foto Saat Ini:</label><br>
+                                            <img src="{{ Storage::url($disiplin->foto) }}" alt="Foto Bukti" style="width: 150px;" class="rounded">
+                                        </div>
+                                    @endif
+                                    <label for="foto">Unggah Foto Baru (Opsional):</label>
+                                    <input type="file" id="foto" name="foto" class="form-control @error('foto') is-invalid @enderror" accept="image/*">
+                                    @error('foto')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                        <div class="text-center mt-3">
+                            <button type="submit" class="btn btn-primary px-4">Update</button>
+                            <a href="{{ route('disiplin.index') }}" class="btn btn-danger px-4">Batal</a>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>  
-       @endsection
-
-
-
-
-
+        </div>
+    </div>
+</div>
+@endsection

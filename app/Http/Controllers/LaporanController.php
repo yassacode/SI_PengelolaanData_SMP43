@@ -10,12 +10,7 @@ class LaporanController extends Controller
 {
     public function index()
     {
-        $laporans = PengesahanLaporan::all();
-        // Since there is no view for it yet, we just return a simple structure or the expected view.
-        // I will assume there's a view kepsek.laporan or similar, or I can just return a basic view.
-        // From previous inspection, we don't have a view for pengesahan-laporan.
-        // Let me check if there's any view for it.
-        // I'll return it to a view 'kepsek.pengesahan-laporan' which might need to be created if not exists.
+        $laporans = PengesahanLaporan::latest()->get();
         return view('kepsek.pengesahan-laporan', compact('laporans'));
     }
 
