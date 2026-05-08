@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Discipline;
-use App\Models\Extracurricular;
-use App\Models\Student;
+use App\Models\Disiplin;
+use App\Models\Ekstrakurikuler;
+use App\Models\Siswa;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

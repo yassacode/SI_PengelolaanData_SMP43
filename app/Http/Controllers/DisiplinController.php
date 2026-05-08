@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Discipline;
-use App\Models\Student;
+use App\Models\Disiplin;
+use App\Models\Siswa;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Extracurricular;
+use App\Models\Ekstrakurikuler;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;

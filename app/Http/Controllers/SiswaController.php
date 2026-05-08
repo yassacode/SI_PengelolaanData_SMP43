@@ -2,13 +2,13 @@
 
     namespace App\Http\Controllers;
 
-    use App\Models\Achievement;
-use App\Models\Discipline;
-use App\Models\History;
-    use App\Models\School;
-    use App\Models\Sibling;
-    use App\Models\Student;
-    use App\Models\StudentParent;
+    use App\Models\Prestasi;
+use App\Models\Disiplin;
+use App\Models\Kesehatan;
+    use App\Models\Akademik;
+    use ;
+    use App\Models\Siswa;
+    use App\Models\SiswaParent;
     use App\Models\User;
     use Exception;
     use Illuminate\Database\Eloquent\ModelNotFoundException;
