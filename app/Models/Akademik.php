@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Sibling extends Model
+class Akademik extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        "jumlah",
-        "anak_ke"
-        ];
+    protected $guarded = ['id'];
+
+    public function siswa()
+    {
+        return $this->belongsTo(Siswa::class);
+    }
 }

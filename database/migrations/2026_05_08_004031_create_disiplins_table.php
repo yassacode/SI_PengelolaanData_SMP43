@@ -11,17 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('disciplines', function (Blueprint $table) {
+        Schema::create('disiplins', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable();
-            $table->foreignId('student_id')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('siswa_id')->constrained('siswas')->cascadeOnDelete();
             $table->string('masalah');
-            $table->string('kelas');
             $table->date('tanggal');
             $table->string('foto')->nullable();
-            $table->string('solusi');
-            $table->string('keterangan')->nullable();;
-            $table->enum('status', ['WAITING', 'ACCEPTED', 'DENIED'])->default('WAITING');
+            $table->string('status_validasi')->default('Pending');
+            $table->foreignId('validator_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('disciplines');
+        Schema::dropIfExists('disiplins');
     }
 };

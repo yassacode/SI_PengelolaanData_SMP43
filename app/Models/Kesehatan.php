@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class History extends Model
+class Kesehatan extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        "sakit",
-        "beasiswa"
-        ];
+    protected $guarded = ['id'];
+
+    public function siswa()
+    {
+        return $this->belongsTo(Siswa::class);
+    }
 }

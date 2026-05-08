@@ -38,6 +38,7 @@
                                      <option value="waka kesiswaan">Waka Kesiswaan</option>
                                      <option value="staff waka kesiswaan">Staff Waka Kesiswaan</option>
                                      <option value="guru">Guru</option>
+                                     <option value="guru">BK</option>
                                     </select>
                                 </div>
                         </div>

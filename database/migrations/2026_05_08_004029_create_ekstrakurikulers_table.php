@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('histories', function (Blueprint $table) {
+        Schema::create('ekstrakurikulers', function (Blueprint $table) {
             $table->id();
-            $table->string('sakit')->nullable();
-            $table->string('beasiswa')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('nama_kegiatan');
+            $table->date('tanggal')->nullable();
+            $table->string('lokasi')->nullable();
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('histories');
+        Schema::dropIfExists('ekstrakurikulers');
     }
 };

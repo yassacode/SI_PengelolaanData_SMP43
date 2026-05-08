@@ -57,7 +57,7 @@ class UserController extends Controller
         'password' => Hash::make($users['password']),
         
     ]);
-    dd($request->all());
+    // dd($request->all());
 
     return redirect()->route('user.index')->with('success', 'Data Berhasil Ditambahkan');
 
