@@ -12,14 +12,21 @@
     <h4 class="card-header">Tabel Data Kegiatan Ekstrakurikuler</h4>
     <div class="table-responsive">
       <table class="table card-table">
-        <div class="d-flex justify-content-end me-3">
-          <form action="{{ route('ekskul.index') }}" method="GET">
-              <input class="me-2" type="text" name="search" placeholder="cari ekskul" value="{{ request()->input('search') }}">
-              <input class="me-2" type="month" name="month" value="{{ request()->input('month') }}">
-              <button type="submit" class="btn btn-primary">Cari</button>
-          </form>
-      </div>
-        @if(auth()->user()->level == 'admin')
+          <div class="d-flex justify-content-between align-items-center mb-3 px-3">
+            <div>
+              @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Guru'))
+              <a class="btn btn-primary" href="{{ route('ekskul.create')}}"><i class='bx bxs-user-plus' ></i> Tambah</a>
+              @endif
+            </div>
+            <form action="{{ route('ekskul.index') }}" method="GET" class="d-flex">
+                <input class="form-control me-2" type="text" name="search" placeholder="Cari ekskul" value="{{ request()->input('search') }}">
+                <input class="form-control me-2" type="month" name="month" value="{{ request()->input('month') }}">
+                <button type="submit" class="btn btn-primary me-2">Cari</button>
+                <a href="{{ route('ekskul.export.pdf', ['month' => request('month')]) }}" class="btn btn-danger me-2" title="Export PDF"><i class='bx bxs-file-pdf'></i></a>
+                <a href="{{ route('ekskul.export.excel') }}" class="btn btn-success" title="Export Excel"><i class='bx bx-spreadsheet'></i></a>
+            </form>
+          </div>
+        @if(auth()->user()->hasRole('Admin'))
         <div class="d-flex justify-content-start">
           <a href="{{route('ekskul.create')}}" class="ms-5 ">
               <button type="button" class="btn btn-primary"><i class='bx bxs-user-plus'></i></button>
@@ -31,14 +38,11 @@
         <thead>
           <tr>
             <th>No</th>
-            <th>User</th>
-            <th>Nama Ekstrakurikuler</th>
+            <th>Pembina</th>
             <th>Nama Kegiatan</th>
             <th>Tanggal</th>
             <th>Lokasi</th>
             <th>Foto</th>
-            <th>Keterangan</th>
-            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -51,37 +55,19 @@
           @foreach ($data as $item)  
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
-            <td>{{ $item->user->name ?? '' }}</td>
-            <td>{{ $item->ekskul ?? '' }}</td>
-            <td>{{ $item->kegiatan ?? '' }}</td>
+            <td>{{ $item->pembina->nama ?? ($item->user->nama ?? '') }}</td>
+            <td>{{ $item->nama_kegiatan ?? '' }}</td>
             <td>{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l, d F Y') ?? '' }}</td>
             <td>{{ $item->lokasi ?? '' }}</td>
             <td>
               @if($item->foto)
               <a href="{{ Storage::url($item->foto) }}" target="_blank">
-                <img src="{{ Storage::url($item->foto ?? '') }}" alt="" class="img img-fluid" width="150" height="150"></td>
+                <img src="{{ Storage::url($item->foto ?? '') }}" alt="" class="img img-fluid" width="150" height="150">
               </a>
                @else
               <span>No Image</span>
               @endif
             </td>
-            <td>{{ $item->keterangan ?? '' }}</td>
-             <td>
-                    @if ($item->status == 'WAITING')
-                    <form action="{{ route('ekskul/update/status.updateStts', $item->id) }}" method="POST" onsubmit="return handleStatusChange(this, '{{ $item->id }}');">
-                        @csrf
-                        @method('PUT')
-                        <button type="submit" class="btn btn-sm btn-primary" value="ACCEPTED" name="status">TERIMA</button>
-                        <button type="submit" class="btn btn-sm btn-danger" value="DENIED" name="status">TOLAK</button>
-                    </form>
-                    @elseif ($item->status == 'ACCEPTED')
-                    <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($item->status == 'DENIED')
-                    <span class="badge bg-label-danger me-1">DITOLAK</span>
-                    @else
-                    <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
-                    @endif
-                </td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -98,59 +84,44 @@
           @endforeach
           @endif
         </tbody>
-        @elseif(auth()->user()->level == 'kepala sekolah')
+        @elseif(auth()->user()->hasRole('Kepala Sekolah'))
         <thead>
           <tr>
             <th>No</th>
-            <th>User</th>
-            <th>Nama Ekstrakurikuler</th>
+            <th>Pembina</th>
             <th>Nama Kegiatan</th>
             <th>Tanggal</th>
             <th>Lokasi</th>
             <th>Foto</th>
-            <th>Keterangan</th>
-            <th>Status</th>
           </tr>
         </thead>
         <tbody>
           @if($data->isEmpty())
           <tr>
-              <td colspan="7" class="text-center">Tidak ada data yang ditemukan.</td>
+              <td colspan="6" class="text-center">Tidak ada data yang ditemukan.</td>
           </tr>
           @else
           @foreach ($data as $item)  
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
-            <td>{{ $item->user_id ?? '' }}</td>
-            <td>{{ $item->ekskul ?? '' }}</td>
-            <td>{{ $item->kegiatan ?? '' }}</td>
+            <td>{{ $item->pembina->nama ?? ($item->user->nama ?? '') }}</td>
+            <td>{{ $item->nama_kegiatan ?? '' }}</td>
             <td>{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l, d F Y') ?? '' }}</td>
             <td>{{ $item->lokasi ?? '' }}</td>
             <td>
               @if($item->foto)
               <a href="{{ Storage::url($item->foto) }}" target="_blank">
-                <img src="{{ Storage::url($item->foto ?? '') }}" alt="" class="img img-fluid" width="150" height="150"></td>
+                <img src="{{ Storage::url($item->foto ?? '') }}" alt="" class="img img-fluid" width="150" height="150">
               </a>
                @else
               <span>No Image</span>
               @endif
             </td>
-            <td>{{ $item->keterangan ?? '' }}</td>
-             <td>
-                    @if ($item->status == 'WAITING')
-                    @elseif ($item->status == 'ACCEPTED')
-                    <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($item->status == 'DENIED')
-                    <span class="badge bg-label-danger me-1">DITOLAK</span>
-                    @else
-                    <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
-                    @endif
-                </td>
           </tr>
           @endforeach
           @endif
         </tbody>
-        @elseif(auth()->user()->level == 'waka kesiswaan')
+        @elseif(auth()->user()->hasRole('Waka Kesiswaan'))
           <div class="d-flex justify-content-start">
             <a href="{{route('ekskul.create')}}" class="ms-5 ">
                 <button type="button" class="btn btn-primary"><i class='bx bxs-user-plus'></i></button>
@@ -162,14 +133,11 @@
         <thead>
           <tr>
             <th>No</th>
-            <th>User</th>
-            <th>Nama Ekstrakurikuler</th>
+            <th>Pembina</th>
             <th>Nama Kegiatan</th>
             <th>Tanggal</th>
             <th>Lokasi</th>
             <th>Foto</th>
-            <th>Keterangan</th>
-            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -182,37 +150,19 @@
           @foreach ($data as $item)  
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
-            <td>{{ $item->user_id ?? '' }}</td>
-            <td>{{ $item->ekskul ?? '' }}</td>
-            <td>{{ $item->kegiatan ?? '' }}</td>
+            <td>{{ $item->pembina->nama ?? ($item->user->nama ?? '') }}</td>
+            <td>{{ $item->nama_kegiatan ?? '' }}</td>
             <td>{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l, d F Y') ?? '' }}</td>
             <td>{{ $item->lokasi ?? '' }}</td>
             <td>
               @if($item->foto)
               <a href="{{ Storage::url($item->foto) }}" target="_blank">
-                <img src="{{ Storage::url($item->foto ?? '') }}" alt="" class="img img-fluid" width="150" height="150"></td>
+                <img src="{{ Storage::url($item->foto ?? '') }}" alt="" class="img img-fluid" width="150" height="150">
               </a>
                @else
               <span>No Image</span>
               @endif
             </td>
-            <td>{{ $item->keterangan ?? '' }}</td>
-             <td>
-                    @if ($item->status == 'WAITING')
-                    <form action="{{ route('ekskul/update/status.updateStts', $item->id) }}" method="POST" onsubmit="return handleStatusChange(this, '{{ $item->id }}');">
-                        @csrf
-                        @method('PUT')
-                        <button type="submit" class="btn btn-sm btn-primary" value="ACCEPTED" name="status">TERIMA</button>
-                        <button type="submit" class="btn btn-sm btn-danger" value="DENIED" name="status">TOLAK</button>
-                    </form>
-                    @elseif ($item->status == 'ACCEPTED')
-                    <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($item->status == 'DENIED')
-                    <span class="badge bg-label-danger me-1">DITOLAK</span>
-                    @else
-                    <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
-                    @endif
-                </td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -229,7 +179,7 @@
           @endforeach
           @endif
         </tbody>
-        @elseif(auth()->user()->level == 'staff waka kesiswaan')
+        @elseif(auth()->user()->hasRole('Staff Kesiswaan'))
         <div class="d-flex justify-content-start">
           <a href="{{route('ekskul.create')}}" class="ms-5 ">
               <button type="button" class="btn btn-primary"><i class='bx bxs-user-plus'></i></button>
@@ -238,17 +188,14 @@
             <button type="button" class="btn btn-info"><i class='bx bx-printer'></i></button>
         </a>
        </div>
-       <thead>
+        <thead>
           <tr>
             <th>No</th>
-            <th>User</th>
-            <th>Nama Ekstrakurikuler</th>
+            <th>Pembina</th>
             <th>Nama Kegiatan</th>
             <th>Tanggal</th>
             <th>Lokasi</th>
             <th>Foto</th>
-            <th>Keterangan</th>
-            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -261,32 +208,19 @@
           @foreach ($data as $item)  
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
-            <td>{{ $item->user_id ?? '' }}</td>
-            <td>{{ $item->ekskul ?? '' }}</td>
-            <td>{{ $item->kegiatan ?? '' }}</td>
+            <td>{{ $item->pembina->nama ?? ($item->user->nama ?? '') }}</td>
+            <td>{{ $item->nama_kegiatan ?? '' }}</td>
             <td>{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l, d F Y') ?? '' }}</td>
             <td>{{ $item->lokasi ?? '' }}</td>
             <td>
               @if($item->foto)
               <a href="{{ Storage::url($item->foto) }}" target="_blank">
-                <img src="{{ Storage::url($item->foto ?? '') }}" alt="" class="img img-fluid" width="150" height="150"></td>
+                <img src="{{ Storage::url($item->foto ?? '') }}" alt="" class="img img-fluid" width="150" height="150">
               </a>
                @else
               <span>No Image</span>
               @endif
             </td>
-            <td>{{ $item->keterangan ?? '' }}</td>
-             <td>
-              @if ($item->status == 'WAITING')
-              <span class="badge bg-label-warning me-1">WAITING</span>
-              @elseif ($item->status == 'ACCEPTED')
-              <span class="badge bg-label-success me-1">DITERIMA</span>
-              @elseif ($item->status == 'DENIED')
-              <span class="badge bg-label-danger me-1">DITOLAK</span>
-              @else
-              <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
-              @endif
-                </td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -308,14 +242,11 @@
         <thead>
           <tr>
             <th>No</th>
-            <th>User</th>
-            <th>Nama Ekstrakurikuler</th>
+            <th>Pembina</th>
             <th>Nama Kegiatan</th>
             <th>Tanggal</th>
             <th>Lokasi</th>
             <th>Foto</th>
-            <th>Keterangan</th>
-            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -328,32 +259,19 @@
           @foreach ($data as $item)  
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
-            <td>{{ $item->user_id ?? '' }}</td>
-            <td>{{ $item->ekskul ?? '' }}</td>
-            <td>{{ $item->kegiatan ?? '' }}</td>
+            <td>{{ $item->pembina->nama ?? ($item->user->nama ?? '') }}</td>
+            <td>{{ $item->nama_kegiatan ?? '' }}</td>
             <td>{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l, d F Y') ?? '' }}</td>
             <td>{{ $item->lokasi ?? '' }}</td>
             <td>
               @if($item->foto)
               <a href="{{ Storage::url($item->foto) }}" target="_blank">
-                <img src="{{ Storage::url($item->foto ?? '') }}" alt="" class="img img-fluid" width="150" height="150"></td>
+                <img src="{{ Storage::url($item->foto ?? '') }}" alt="" class="img img-fluid" width="150" height="150">
               </a>
                @else
               <span>No Image</span>
               @endif
             </td>
-            <td>{{ $item->keterangan ?? '' }}</td>
-             <td>
-                    @if ($item->status == 'WAITING')
-                    <span class="badge bg-label-warning me-1">WAITING</span>
-                    @elseif ($item->status == 'ACCEPTED')
-                    <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($item->status == 'DENIED')
-                    <span class="badge bg-label-danger me-1">DITOLAK</span>
-                    @else
-                    <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
-                    @endif
-                </td>
             <td>
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -376,3 +294,6 @@
   </div>
 </div>
   @endsection
+
+
+

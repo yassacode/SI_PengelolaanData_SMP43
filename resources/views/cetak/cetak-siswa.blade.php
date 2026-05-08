@@ -15,7 +15,7 @@
                 <tr>
                     <td>User</td>
                     <td>:</td>
-                    <td>{{$student->user->name}}</td>
+                    <td>{{$student->user->nama}}</td>
                 </tr>
                 <tr>
                     <td>Nama Lengkap</td>
@@ -30,17 +30,17 @@
                 <tr>
                     <td>Asal SD</td>
                     <td>:</td>
-                    <td>{{$student->school->asal_sd ?? ''}}</td>
+                    <td>{{$student->akademik->asal_sd ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>Asal TK</td>
                     <td>:</td>
-                    <td>{{$student->school->asal_tk ?? ''}}</td>
+                    <td>{{$student->akademik->asal_tk ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>Asal PAUD</td>
                     <td>:</td>
-                    <td>{{$student->school->asal_paud ?? ''}}</td>
+                    <td>{{$student->akademik->asal_paud ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>Agama</td>
@@ -60,12 +60,12 @@
                 <tr>
                     <td>Penyakit yang pernah diderita</td>
                     <td>:</td>
-                    <td>{{$student->history->sakit ?? ''}}</td>
+                    <td>{{$student->kesehatan->riwayat_sakit ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>Beasiswa yang pernah diterima</td>
                     <td>:</td>
-                    <td>{{$student->history->beasiswa?? ''}}</td>
+                    <td>{{$student->kesehatan->beasiswa?? ''}}</td>
                 </tr>
                 <tr>
                     <td>Orang Tua</td>
@@ -77,39 +77,39 @@
                         <ul class=" mb-0">Nama Ayah</ul>
                     </td>
                     <td>:</td>
-                    <td>{{$student->studentparent->nama_ayah ?? ''}}</td>                
+                    <td>{{$student->wali->nama_ayah ?? ''}}</td>                
                 </tr>
                 <tr>
                     <td>
                         <ul class=" mb-0">Pekerjaan Ayah</ul>
                     </td>
                     <td>:</td>
-                    <td>{{$student->studentparent->pekerjaan_ayah ?? ''}}</td>         
+                    <td>{{$student->wali->pekerjaan_ayah ?? ''}}</td>         
                 </tr>
                 <tr>
                     <td>
                         <ul class=" mb-0">Alamat </ul>
                     </td>
                     <td>:</td>
-                    <td>{{$student->studentparent->alamat_ayah ?? ''}}</td>         
+                    <td>{{$student->wali->alamat_ayah ?? ''}}</td>         
                 </tr>
                 <tr>
                     <td>
                         <ul class=" mb-0">Nama Ibu</ul>
                     <td>:</td>
-                    <td>{{$student->studentparent->nama_ibu ?? ''}}</td>
+                    <td>{{$student->wali->nama_ibu ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>
                         <ul class=" mb-0">Pekerjaan Ibu</ul>
                     <td>:</td>
-                    <td>{{$student->studentparent->pekerjaan_ibu ?? ''}}</td>
+                    <td>{{$student->wali->pekerjaan_ibu ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>
                         <ul class=" mb-0">Alamat</ul>
                     <td>:</td>
-                    <td>{{$student->studentparent->alamat_ibu ?? ''}}</td>
+                    <td>{{$student->wali->alamat_ibu ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>Anak ke-</td>
@@ -144,7 +144,7 @@
                 <tr>
                     <td>Jarak tempuh ke sekolah</td>
                     <td>:</td>
-                    <td>{{$student->school->jrk_sklh ?? ''}}</td>
+                    <td>{{$student->akademik->jrk_sklh ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>No. HP Siswa</td>
@@ -154,12 +154,12 @@
                 <tr>
                     <td>No. HP Ayah</td>
                     <td>:</td>
-                    <td>{{$student->studentparent->no_hp_ayah ?? ""}}</td>
+                    <td>{{$student->wali->no_hp_ayah ?? ""}}</td>
                 </tr>
                 <tr>
                     <td>No. HP Ibu</td>
                     <td>:</td>
-                    <td>{{$student->studentparent->no_hp_ibu ?? ''}}</td>
+                    <td>{{$student->wali->no_hp_ibu ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>No. HP Wali</td>
@@ -181,11 +181,11 @@
                     </thead>
                     <tbody>
                         @for ($i = 1; $i <= 5; $i++)
-                        @if ($student->achievement->{"kegiatan$i"} && $student->achievement->{"juara$i"})
+                        @if ($student->prestasis->{"kegiatan$i"} && $student->prestasis->{"juara$i"})
                             <tr>
                                 <td>{{ $i }}</td>
-                                <td>{{ $student->achievement->{"kegiatan$i"} }}</td>
-                                <td>{{ $student->achievement->{"juara$i"} }}</td>
+                                <td>{{ $student->prestasis->{"kegiatan$i"} }}</td>
+                                <td>{{ $student->prestasis->{"juara$i"} }}</td>
                             </tr>
                         @endif
                     @endfor
@@ -261,3 +261,6 @@
     };
     </script>
 @endsection
+
+
+

@@ -1,424 +1,297 @@
 <?php
 
-    namespace App\Http\Controllers;
+namespace App\Http\Controllers;
 
-    use App\Models\Prestasi;
+use App\Models\Prestasi;
 use App\Models\Disiplin;
 use App\Models\Kesehatan;
-    use App\Models\Akademik;
-    use ;
-    use App\Models\Siswa;
-    use App\Models\SiswaParent;
-    use App\Models\User;
-    use Exception;
-    use Illuminate\Database\Eloquent\ModelNotFoundException;
-    use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\Auth;
-    use Illuminate\Validation\ValidationException;
+use App\Models\Akademik;
+use App\Models\Siswa;
+use App\Models\Wali;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
-    class SiswaController extends Controller
+class SiswaController extends Controller
+{
+    public function index(Request $request)
     {
-        /**
-         * Display a listing of the resource.
-         */
-        public function index(Request $request )
-        {
+        $search = $request->input('search');
 
-            $search = $request->input('search');
-    
-            // Mendapatkan daftar siswa dengan eager loading untuk relasi
-            $students = Student::with('history', 'school', 'studentparent', 'sibling', 'achievement', 'user')
-                ->when($search, function ($query, $search) {
-                    return $query->where('nama', 'like', "%{$search}%");
-                })
-                ->get();
-            return view('main.siswa', [
-                'siswa' => $students,
-                'search' => $search,
-            ]);
-        }
-
-        /**
-         * Show the form for creating a new resource.
-         */
-        public function createStep1()
-        {
-            $today = date('Y-m-d');
-            // $students= Student::all();
-            return view('tambah.add-step1-siswa',[
-                'today'=>$today,
-                // 'siswa '=> $students
-            ]);
-        }
-        public function createStep2()
-        {
-            $today = date('Y-m-d');
-            return view('tambah.add-step2-siswa',[
-                'today'=>$today,
-            ]);
-        }
-        public function createStep3()
-        {
-            $today = date('Y-m-d');
-            return view('tambah.add-step3-siswa',[
-                'today'=>$today,
-            ]);
-        }
-
-        /**
-         * Store a newly created resource in storage.
-         */
-        public function storeStep1(Request $request)
-        {
-            $students = $request -> validate([
-                "school_id"=>'nullable',
-                "student_parent_id"=>'nullable',
-                "sibling_id"=>'nullable',
-                "history_id"=>'nullable',
-                "user_id"=>'nullable',
-                "achievement_id"=>'nullable',
-                "nama"=>'required',
-                "nisn"=>'nullable',
-                "ttl"=>'required',
-                "alamat"=>'required',
-                "no_hp"=>'required',
-                "tb"=>'required',
-                "bb"=>'required',
-                "hobi"=>'required',
-                "citacita"=>'required',
-                "agama"=>'required',
-                "thn_msk"=>'required',
-                "status=>'nullable'"
-            ]);
-        
-            // dd($request->all());
-            session()->put('siswa', $students);
-            return redirect()->route('siswa.create2');
-        }
-
-        public function storeStep2(Request $request)
-        {
-            $schools = $request -> validate([
-            "asal_paud"=>'nullable',
-            "asal_tk"=>'nullable',
-            "asal_sd"=>'required',
-            "jrk_sklh"=>'required'
-            ]);
-            $histories = $request -> validate([
-            "sakit"=>"nullable",
-            "beasiswa"=>"nullable",
-            ]);
-            $siblings = $request -> validate([
-                "jumlah"=>'required',
-                "anak_ke"=>'required'
-            ]);
-            $achievments = $request-> validate([
-                'kegiatan1'=>'nullable',
-                'juara1'=>'nullable',
-                'kegiatan2'=>'nullable',
-                'juara2'=>'nullable',
-                'kegiatan3'=>'nullable',
-                'juara3'=>'nullable',
-                'kegiatan4'=>'nullable',
-                'juara4'=>'nullable',
-                'kegiatan5'=>'nullable',
-                'juara5'=>'nullable',
-            ]);
-
-            session()->put('sekolah', $schools);
-            session()->put('riwayat', $histories);
-            session()->put('saudara', $siblings);
-            session()->put('prestasi', $achievments);
-            // dd($request->all());
-            return redirect()->route('siswa.create3');
-        }
-        public function store(Request $request)
-        {
-        $studentParents = $request -> validate([
-            "nama_ayah"=>'nullable',
-            "nama_ibu"=>'nullable',
-            "nama_wali"=>'nullable',
-            "pekerjaan_ayah"=>'nullable',
-            "pekerjaan_ibu"=>'nullable',
-            "pekerjaan_wali"=>'nullable',
-            "alamat_ayah"=>'nullable',
-            "alamat_ibu"=>'nullable',
-            "alamat_wali"=>'nullable',
-            "no_hp_ayah"=>'nullable',
-            "no_hp_ibu"=>'nullable',
-            "no_hp_wali"=>'nullable',
-            "identitas_wali"=>'nullable'
-            ]);
-            session()->put('ortu', $studentParents);
-            session()->put('siswa.user_id', auth()->user()->id);
-            $students = session()->get('siswa');
-            $histories = session()->get('riwayat');
-            $schools = session()->get('sekolah');
-            $siblings = session()->get('saudara');
-            $achievements = session()->get('prestasi');
-
-            $histories = History::create($histories);
-            $studentParents = StudentParent::create($studentParents);
-            $schools = School::create($schools);
-            $siblings = Sibling::create($siblings);
-            $achievements = Achievement::create($achievements);
-
-            Student::create(array_merge($students, [
-                'history_id' => $histories->id,
-                'school_id' => $schools->id,
-                'student_parent_id' => $studentParents->id,
-                'sibling_id' => $siblings->id,
-                'achievement_id' => $achievements->id,
-            ]));
-
-            session()->forget([
-                'siswa',
-                'riwayat',
-                'ortu',
-                'sekolah',
-                'saudara',
-                'prestasi',
-            ]);
-            // dd($students);
-            return redirect()->route('siswa.index')->with('success', 'Data Berhasil Ditambahkan');
-        }
-
-        public function show1(string $id)
-        {
-            $dicipline = Discipline::all();
-            $histories = History::all();
-            $schools = School::all();
-            $studentParents = StudentParent::all();
-            $siblings = Sibling::all();
-            $achievements = Achievement::all();
-            $students = Student::with('history', 'school', 'studentparent', 'sibling', 'achievement','dicipline')->find($id);
-            return view('main.view-siswa',[
-                'students'=>$students,
-                'school'=>$schools,
-                'studentparent'=>$studentParents,
-                'sibling'=>$siblings,
-                'achievement'=>$achievements,
-                'history'=>$histories,
-                'dicipline'=>$dicipline
-            ]);
-        }
-
-        public function show2(string $id )
-        {
-            $student = Student::with(['history', 'school', 'studentparent', 'sibling', 'achievement', 'dicipline'])
-                ->findOrFail($id);
-        
-            $discipline = Discipline::where('student_id', $student->id)
-                ->latest('created_at')
-                ->get();
-            // dd($discipline, $student);
-                
-            return view('cetak.cetak-siswa', [
-                'student' => $student,
-                'discipline' => $discipline
-            ]);
-        }
-        public function editStep1(string $id)
-        {
-            $student = Student::find($id);
-            $today = date('Y-m-d');
-            return view('tambah.edit-step1-siswa', [
-                'siswa' => $student,
-                'today' => $today,
-            ]);
-        }
-
-        public function editStep2(string $id)
-        {
-            $student = Student::find($id);
-            $today = date('Y-m-d');
-            return view('tambah.edit-step2-siswa', [
-                'siswa' => $student,
-                'today' => $today,
-            ]);
-        }
-
-        public function editStep3(string $id)
-        {
-            $student = Student::find($id);
-            $today = date('Y-m-d');
-            return view('tambah.edit-step3-siswa', [
-                'siswa' => $student,
-                'today' => $today,
-            ]);
-        }
-
-        /**
-         * Update the specified resource in storage.
-         */
-        public function updateStep1(Request $request, $id)
-        {
-            $students = $request->validate([
-                "school_id" => 'nullable',
-                "student_parent_id" => 'nullable',
-                "sibling_id" => 'nullable',
-                "history_id" => 'nullable',
-                "user_id" => 'nullable',
-                "nama" => 'required',
-                "nisn" => 'required',
-                "ttl" => 'required',
-                "alamat" => 'required',
-                "no_hp" => 'required',
-                "tb" => 'required',
-                "bb" => 'required',
-                "hobi" => 'required',
-                "agama" => 'required',
-                "thn_msk" => 'required',
-                "status" => 'nullable',
-            ]);
-        
-            session()->put('siswa', $students);
-            return redirect()->route('siswa.edit2', $id);
-        }
-        
-        public function updateStep2(Request $request, $id)
-        {
-            $schools = $request->validate([
-                "asal_paud" => 'nullable',
-                "asal_tk" => 'nullable',
-                "asal_sd" => 'required',
-                "jrk_sklh" => 'required'
-            ]);
-        
-            $histories = $request->validate([
-                "sakit" => "nullable",
-                "beasiswa" => "nullable",
-            ]);
-        
-            $siblings = $request->validate([
-                "jumlah" => 'required',
-                "anak_ke" => 'required'
-            ]);
-        
-            $achievements = $request->validate([
-                'kegiatan' => 'nullable',
-                'juara' => 'nullable'
-            ]);
-        
-            session()->put('sekolah', $schools);
-            session()->put('riwayat', $histories);
-            session()->put('saudara', $siblings);
-            session()->put('prestasi', $achievements);
-            return redirect()->route('siswa.edit3', $id);
-        }
-        
-        public function update(Request $request, Student $student)
-        {
-            $studentParents = $request->validate([
-                "nama_ayah" => 'nullable',
-                "nama_ibu" => 'nullable',
-                "nama_wali" => 'nullable',
-                "pekerjaan_ayah" => 'nullable',
-                "pekerjaan_ibu" => 'nullable',
-                "pekerjaan_wali" => 'nullable',
-                "alamat_ayah" => 'nullable',
-                "alamat_ibu" => 'nullable',
-                "alamat_wali" => 'nullable',
-                "no_hp_ayah" => 'nullable',
-                "no_hp_ibu" => 'nullable',
-                "no_hp_wali" => 'nullable',
-                "identitas_wali" => 'nullable'
-            ]);
-        
-            session()->put('ortu', $studentParents);
-            session()->put('siswa.user_id', auth()->user()->id);
-        
-            $students = session()->get('siswa');
-            $histories = session()->get('riwayat');
-            $schools = session()->get('sekolah');
-            $siblings = session()->get('saudara');
-            $achievements = session()->get('prestasi');
-        
-            // Pastikan model yang terkait ada sebelum melakukan update
-            if ($student->history) {
-                $student->history->update($histories);
-            }
-        
-            if ($student->studentParent) {
-                $student->studentParent->update($studentParents);
-            }
-        
-            if ($student->school) {
-                $student->school->update($schools);
-            }
-        
-            if ($student->sibling) {
-                $student->sibling->update($siblings);
-            }
-        
-            if ($student->achievement) {
-                $student->achievement->update($achievements);
-            }
-        
-            // Update data siswa
-            $student->update(array_merge($students, [
-                'history_id' => $student->history ? $student->history->id : null,
-                'school_id' => $student->school ? $student->school->id : null,
-                'student_parent_id' => $student->studentParent ? $student->studentParent->id : null,
-                'sibling_id' => $student->sibling ? $student->sibling->id : null,
-                'achievement_id' => $student->achievement ? $student->achievement->id : null,
-            ]));
-        
-            // Hapus session
-            session()->forget([
-                'siswa',
-                'riwayat',
-                'ortu',
-                'sekolah',
-                'saudara',
-                'prestasi',
-            ]);
-        
-            return redirect()->route('siswa.index')->with('success', 'Data Berhasil Diperbarui');
-        }
-
-
-        /**
-         * Remove the specified resource from storage.
-         */
-        public function destroy(string $id)
-        {
-            $students = Student::findOrFail($id);
-            $histories = History::findOrFail($id);
-            $studentParents= StudentParent::findOrFail($id);
-            $schools = School::findOrFail($id);
-            $achievements = Achievement::findOrFail($id);
-            $siblings = Sibling::findOrFail($id);
-
-            $students -> delete();
-            $histories ->delete();
-            $studentParents ->delete();
-            $schools ->delete();
-            $siblings ->delete();
-            $achievements ->delete();
-
-            return redirect()->route('siswa.index')->with('success', 'Data Berhasil Dihapus');
+        $students = Siswa::with(['kesehatan', 'akademik', 'wali', 'prestasis', 'user'])
+            ->when($search, function ($query, $search) {
+                return $query->where('nama', 'like', "%{$search}%");
+            })
+            ->get();
             
-        }
-        public function updateStts(Request $request, $id){
-            try {
-                $item = Student::findOrFail($id);
-                $validatedData = $request->validate([
-                    'status' => 'required|in:WAITING,ACCEPTED,DENIED',
-                ]);
-        
-                $item->update([
-                    'status' => $validatedData['status'],
-                    // 'status' => $request->status,
-                ]);
-        
-                return back()->with('success','Berhasil Diperbarui');
-            } catch (Exception $e) {
-                return back()->with('error',$e->getMessage());
-            } catch (ValidationException $va) {
-                return back()->with('error',$va->getMessage());
-            } catch (ModelNotFoundException $mn) {
-                return back()->with('error',$mn->getMessage());
+        return view('main.siswa', [
+            'siswa' => $students,
+            'search' => $search,
+        ]);
+    }
+
+    public function createStep1()
+    {
+        return view('tambah.add-step1-siswa', [
+            'today' => date('Y-m-d'),
+        ]);
+    }
+
+    public function createStep2()
+    {
+        return view('tambah.add-step2-siswa', [
+            'today' => date('Y-m-d'),
+        ]);
+    }
+
+    public function createStep3()
+    {
+        return view('tambah.add-step3-siswa', [
+            'today' => date('Y-m-d'),
+        ]);
+    }
+
+    public function storeStep1(Request $request)
+    {
+        // Sesuaikan dengan input dari form UI saat ini
+        $data = $request->except('_token');
+        session()->put('siswa_step1', $data);
+        return redirect()->route('siswa.create2');
+    }
+
+    public function storeStep2(Request $request)
+    {
+        $data = $request->except('_token');
+        session()->put('siswa_step2', $data);
+        return redirect()->route('siswa.create3');
+    }
+
+    public function store(Request $request)
+    {
+        // Data step 3 (Wali) dikirim langsung via POST dari form terakhir
+        $step3 = $request->except('_token');
+        $step1 = session()->get('siswa_step1', []);
+        $step2 = session()->get('siswa_step2', []);
+
+        DB::beginTransaction();
+        try {
+            // 1. Simpan Wali
+            $wali = Wali::create([
+                'nama_ayah' => $step3['nama_ayah'] ?? null,
+                'nama_ibu' => $step3['nama_ibu'] ?? null,
+                'pekerjaan_ayah' => $step3['pekerjaan_ayah'] ?? null,
+                'pekerjaan_ibu' => $step3['pekerjaan_ibu'] ?? null,
+                'no_hp_ayah' => $step3['no_hp_ayah'] ?? null,
+                'no_hp_ibu' => $step3['no_hp_ibu'] ?? null,
+            ]);
+
+            // 2. Simpan Siswa
+            $siswa = Siswa::create([
+                'user_id' => auth()->id(), // Staff yang menginput
+                'wali_id' => $wali->id,
+                'nisn' => $step1['nisn'] ?? '-',
+                'nama' => $step1['nama'] ?? '-',
+                'ttl' => $step1['ttl'] ?? '-',
+                'agama' => $step1['agama'] ?? '-',
+                'hobi' => $step1['hobi'] ?? null,
+                'thn_msk' => $step1['thn_msk'] ?? date('Y'),
+            ]);
+
+            // 3. Simpan Akademik
+            Akademik::create([
+                'siswa_id' => $siswa->id,
+                'asal_paud' => $step2['asal_paud'] ?? null,
+                'asal_tk' => $step2['asal_tk'] ?? null,
+                'asal_sd' => $step2['asal_sd'] ?? '-',
+                'beasiswa' => $step2['beasiswa'] ?? null,
+            ]);
+
+            // 4. Simpan Kesehatan
+            Kesehatan::create([
+                'siswa_id' => $siswa->id,
+                'tb' => $step1['tb'] ?? null,
+                'bb' => $step1['bb'] ?? null,
+                'riwayat_sakit' => $step2['sakit'] ?? null,
+            ]);
+
+            // 5. Simpan Prestasi (jika ada input dari form lama, ambil loop)
+            for ($i = 1; $i <= 5; $i++) {
+                if (!empty($step2["kegiatan{$i}"]) && !empty($step2["juara{$i}"])) {
+                    Prestasi::create([
+                        'siswa_id' => $siswa->id,
+                        'kegiatan' => $step2["kegiatan{$i}"],
+                        'juara' => $step2["juara{$i}"],
+                    ]);
+                }
             }
+
+            DB::commit();
+
+            session()->forget(['siswa_step1', 'siswa_step2']);
+            return redirect()->route('siswa.index')->with('success', 'Data Siswa Berhasil Ditambahkan');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+
+    public function show1(string $id)
+    {
+        $siswa = Siswa::with(['kesehatan', 'akademik', 'wali', 'prestasis', 'disiplins'])->findOrFail($id);
+        return view('main.view-siswa', [
+            'students' => $siswa,
+        ]);
+    }
+
+    public function show2(string $id)
+    {
+        $siswa = Siswa::with(['kesehatan', 'akademik', 'wali', 'prestasis', 'disiplins'])->findOrFail($id);
+        return view('cetak.cetak-siswa', [
+            'student' => $siswa,
+            'discipline' => $siswa->disiplins,
+        ]);
+    }
+
+    public function editStep1(string $id)
+    {
+        $siswa = Siswa::with(['kesehatan'])->findOrFail($id);
+        return view('tambah.edit-step1-siswa', [
+            'siswa' => $siswa,
+            'today' => date('Y-m-d'),
+        ]);
+    }
+
+    public function editStep2(string $id)
+    {
+        $siswa = Siswa::with(['akademik', 'prestasis', 'kesehatan'])->findOrFail($id);
+        return view('tambah.edit-step2-siswa', [
+            'siswa' => $siswa,
+            'today' => date('Y-m-d'),
+        ]);
+    }
+
+    public function editStep3(string $id)
+    {
+        $siswa = Siswa::with(['wali'])->findOrFail($id);
+        return view('tambah.edit-step3-siswa', [
+            'siswa' => $siswa,
+            'today' => date('Y-m-d'),
+        ]);
+    }
+
+    public function updateStep1(Request $request, $id)
+    {
+        session()->put('siswa_edit_step1', $request->except('_token'));
+        return redirect()->route('siswa.edit2', $id);
+    }
+
+    public function updateStep2(Request $request, $id)
+    {
+        session()->put('siswa_edit_step2', $request->except('_token'));
+        return redirect()->route('siswa.edit3', $id);
+    }
+
+    public function update(Request $request, Siswa $siswa)
+    {
+        $step3 = $request->except('_token');
+        $step1 = session()->get('siswa_edit_step1', []);
+        $step2 = session()->get('siswa_edit_step2', []);
+
+        DB::beginTransaction();
+        try {
+            // Update Wali
+            if ($siswa->wali) {
+                $siswa->wali->update([
+                    'nama_ayah' => $step3['nama_ayah'] ?? $siswa->wali->nama_ayah,
+                    'nama_ibu' => $step3['nama_ibu'] ?? $siswa->wali->nama_ibu,
+                    'pekerjaan_ayah' => $step3['pekerjaan_ayah'] ?? $siswa->wali->pekerjaan_ayah,
+                    'pekerjaan_ibu' => $step3['pekerjaan_ibu'] ?? $siswa->wali->pekerjaan_ibu,
+                    'no_hp_ayah' => $step3['no_hp_ayah'] ?? $siswa->wali->no_hp_ayah,
+                    'no_hp_ibu' => $step3['no_hp_ibu'] ?? $siswa->wali->no_hp_ibu,
+                ]);
+            }
+
+            // Update Siswa
+            $siswa->update([
+                'nisn' => $step1['nisn'] ?? $siswa->nisn,
+                'nama' => $step1['nama'] ?? $siswa->nama,
+                'ttl' => $step1['ttl'] ?? $siswa->ttl,
+                'agama' => $step1['agama'] ?? $siswa->agama,
+                'hobi' => $step1['hobi'] ?? $siswa->hobi,
+                'thn_msk' => $step1['thn_msk'] ?? $siswa->thn_msk,
+            ]);
+
+            // Update Akademik
+            if ($siswa->akademik) {
+                $siswa->akademik->update([
+                    'asal_paud' => $step2['asal_paud'] ?? $siswa->akademik->asal_paud,
+                    'asal_tk' => $step2['asal_tk'] ?? $siswa->akademik->asal_tk,
+                    'asal_sd' => $step2['asal_sd'] ?? $siswa->akademik->asal_sd,
+                    'beasiswa' => $step2['beasiswa'] ?? $siswa->akademik->beasiswa,
+                ]);
+            }
+
+            // Update Kesehatan
+            if ($siswa->kesehatan) {
+                $siswa->kesehatan->update([
+                    'tb' => $step1['tb'] ?? $siswa->kesehatan->tb,
+                    'bb' => $step1['bb'] ?? $siswa->kesehatan->bb,
+                    'riwayat_sakit' => $step2['sakit'] ?? $siswa->kesehatan->riwayat_sakit,
+                ]);
+            }
+
+            // Untuk prestasi, hapus yang lama dan buat baru (opsional) atau update sesuai logic.
+            // Karena ini disederhanakan, kita biarkan saja atau buat baru jika diisi.
+            if (!empty($step2['kegiatan']) && !empty($step2['juara'])) {
+                Prestasi::create([
+                    'siswa_id' => $siswa->id,
+                    'kegiatan' => $step2['kegiatan'],
+                    'juara' => $step2['juara'],
+                ]);
+            }
+
+            DB::commit();
+            session()->forget(['siswa_edit_step1', 'siswa_edit_step2']);
+
+            return redirect()->route('siswa.index')->with('success', 'Data Siswa Berhasil Diperbarui');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy(string $id)
+    {
+        $siswa = Siswa::findOrFail($id);
+        // Cascade delete akan menghapus Akademik, Kesehatan, Prestasi, Disiplin, Pivot Ekskul
+        $siswa->delete();
+
+        return redirect()->route('siswa.index')->with('success', 'Data Berhasil Dihapus');
+    }
+
+    public function updateStts(Request $request, $id)
+    {
+        $siswa = Siswa::findOrFail($id);
+        if ($siswa->akademik) {
+            $siswa->akademik->update([
+                'status' => $request->status
+            ]);
+        }
+        return redirect()->route('siswa.index')->with('success', 'Status siswa berhasil diperbarui');
+    }
+
+    public function exportExcel()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\SiswaExport, 'Data_Siswa_SMP43.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $siswa = Siswa::with(['user', 'wali', 'akademik', 'kesehatan', 'prestasis'])->get();
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
+            ->loadView('cetak.laporan-siswa-pdf', compact('siswa'))
+            ->setPaper('a4', 'landscape');
+        
+        return $pdf->download('Laporan_Siswa_SMP43.pdf');
+    }
+}

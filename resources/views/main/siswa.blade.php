@@ -12,15 +12,23 @@
     <h4 class="card-header">Tabel Data Siswa</h4>
     
     <div class="ms-2 mb-2">
-           <div class="table-responsive">
-      <table class="table card-table">
-        <div class="d-flex justify-content-end me-3">
-          <form action="{{ route('siswa.index') }}" method="GET">
-              <input class="me-2" type="text" name="search" placeholder="Cari Nama Siswa" value="{{ request()->input('search') }}">
-              <button type="submit" class="btn btn-primary">Cari</button>
-          </form>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Staff Kesiswaan') || auth()->user()->hasRole('Waka Kesiswaan'))
+          <a class="btn btn-primary" href="{{ route('siswa.create1')}}"><i class='bx bxs-user-plus' ></i> Tambah</a>
+          @endif
         </div>
-        @if(auth()->user()->level == 'admin')
+        <form action="{{ route('siswa.index') }}" method="GET" class="d-flex pe-3">
+            <input class="form-control me-2" type="text" name="search" placeholder="Cari Nama Siswa" value="{{ request()->input('search') }}">
+            <button type="submit" class="btn btn-primary me-2">Cari</button>
+            <a href="{{ route('siswa.export.pdf') }}" class="btn btn-danger me-2" title="Export PDF"><i class='bx bxs-file-pdf'></i></a>
+            <a href="{{ route('siswa.export.excel') }}" class="btn btn-success" title="Export Excel"><i class='bx bx-spreadsheet'></i></a>
+        </form>
+      </div>
+      <div class="table-responsive">
+      <table class="table card-table">
+
+        @if(auth()->user()->hasRole('Admin'))
         <a class="" href="{{ route('siswa.create1')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
         <thead>
           <tr>
@@ -46,18 +54,18 @@
                   <td>{{$students->nama ?? ''}}</td>
                   <td>{{$students->nisn ?? ''}}</td>
                   <td>{{$students->thn_msk ?? ''}}</td>
-                  <td>{{$students->user->name ?? ''}}</td>
+                  <td>{{$students->user->nama ?? ''}}</td>
                   <td>
-                    @if ($students->status == 'WAITING')
+                    @if (($students->akademik->status ?? null) == 'WAITING')
                     <form action="{{route('siswa/update/status.updateStts', $students->id)}}" method="POST">
                       @csrf
                       @method('PUT')
                       <button type="submit" class="btn btn-sm btn-primary" value="ACCEPTED" name="status">TERIMA</button>
                       <button type="submit" class="btn btn-sm btn-danger" value="DENIED" name="status">TOLAK</button>
                     </form>
-                    @elseif ($students->status == 'ACCEPTED')
+                    @elseif (($students->akademik->status ?? null) == 'ACCEPTED')
                       <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($students->status == 'DENIED')
+                    @elseif (($students->akademik->status ?? null) == 'DENIED')
                       <span class="badge bg-label-danger me-1">DITOLAK</span>
                     @else
                       <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
@@ -68,7 +76,7 @@
                           <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                           <div class="dropdown-menu">
                               <a class="dropdown-item" href="{{ route('siswa.show1', $students->id) }} "><i class="bx bxs-show"></i>view</a>
-                                @if ($students->status !== 'ACCEPTED')
+                                @if (($students->akademik->status ?? null) !== 'ACCEPTED')
                                 <a class="dropdown-item" href="{{ route('siswa.edit1', $students->id) }}">
                                     <i class="bx bx-edit-alt me-1"></i> Edit
                                 </a>
@@ -85,7 +93,7 @@
               @endforeach
           @endif
       </tbody>
-        @elseif(auth()->user()->level == 'kepala sekolah')
+        @elseif(auth()->user()->hasRole('Kepala Sekolah'))
         <thead>
           <tr>
             <th>No</th>
@@ -109,13 +117,13 @@
                   <td>{{$students->nama ?? ''}}</td>
                   <td>{{$students->nisn ?? ''}}</td>
                   <td>{{$students->thn_msk ?? ''}}</td>
-                  <td>{{$students->user->name ?? ''}}</td>
+                  <td>{{$students->user->nama ?? ''}}</td>
                   <td>
-                    @if ($students->status == 'WAITING')
+                    @if (($students->akademik->status ?? null) == 'WAITING')
                       <span class="badge bg-label-warning me-1">MENUNGGU</span>
-                    @elseif ($students->status == 'ACCEPTED')
+                    @elseif (($students->akademik->status ?? null) == 'ACCEPTED')
                       <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($students->status == 'DENIED')
+                    @elseif (($students->akademik->status ?? null) == 'DENIED')
                       <span class="badge bg-label-danger me-1">DITOLAK</span>
                     @else
                       <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
@@ -125,7 +133,7 @@
               @endforeach
           @endif
       </tbody>
-        @elseif(auth()->user()->level == 'waka kesiswaan')
+        @elseif(auth()->user()->hasRole('Waka Kesiswaan'))
         <a class="nav-link" href="{{ route('siswa.create1')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
         <thead>
           <tr>
@@ -151,18 +159,18 @@
                   <td>{{$students->nama ?? ''}}</td>
                   <td>{{$students->nisn ?? ''}}</td>
                   <td>{{$students->thn_msk ?? ''}}</td>
-                  <td>{{$students->user->name ?? ''}}</td>
+                  <td>{{$students->user->nama ?? ''}}</td>
                   <td>
-                    @if ($students->status == 'WAITING')
+                    @if (($students->akademik->status ?? null) == 'WAITING')
                     <form action="{{route('siswa/update/status.updateStts', $students->id)}}" method="POST">
                       @csrf
                       @method('PUT')
                       <button type="submit" class="btn btn-sm btn-primary" value="ACCEPTED" name="status">TERIMA</button>
                       <button type="submit" class="btn btn-sm btn-danger" value="DENIED" name="status">TOLAK</button>
                     </form>
-                    @elseif ($students->status == 'ACCEPTED')
+                    @elseif (($students->akademik->status ?? null) == 'ACCEPTED')
                       <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($students->status == 'DENIED')
+                    @elseif (($students->akademik->status ?? null) == 'DENIED')
                       <span class="badge bg-label-danger me-1">DITOLAK</span>
                     @else
                       <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
@@ -173,7 +181,7 @@
                           <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                           <div class="dropdown-menu">
                               <a class="dropdown-item" href="{{ route('siswa.show1', $students->id) }} "><i class="bx bxs-show"></i>view</a>
-                                @if ($students->status !== 'ACCEPTED')
+                                @if (($students->akademik->status ?? null) !== 'ACCEPTED')
                                 <a class="dropdown-item" href="{{ route('siswa.edit1', $students->id) }}">
                                     <i class="bx bx-edit-alt me-1"></i> Edit
                                 </a>
@@ -190,7 +198,7 @@
               @endforeach
           @endif
       </tbody>
-        @elseif(auth()->user()->level == 'staff waka kesiswaan')
+        @elseif(auth()->user()->hasRole('Staff Kesiswaan'))
         <a class="nav-link" href="{{ route('siswa.create1')}}"><button type="button" class="btn btn-primary"><i class='bx bxs-user-plus' ></i></button></a>
         <thead>
           <tr>
@@ -216,13 +224,13 @@
                   <td>{{$students->nama ?? ''}}</td>
                   <td>{{$students->nisn ?? ''}}</td>
                   <td>{{$students->thn_msk ?? ''}}</td>
-                  <td>{{$students->user->name ?? ''}}</td>
+                  <td>{{$students->user->nama ?? ''}}</td>
                   <td>
-                    @if ($students->status == 'WAITING')
+                    @if (($students->akademik->status ?? null) == 'WAITING')
                       <span class="badge bg-label-warning me-1">MENUNGGU</span>
-                    @elseif ($students->status == 'ACCEPTED')
+                    @elseif (($students->akademik->status ?? null) == 'ACCEPTED')
                       <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($students->status == 'DENIED')
+                    @elseif (($students->akademik->status ?? null) == 'DENIED')
                       <span class="badge bg-label-danger me-1">DITOLAK</span>
                     @else
                       <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
@@ -233,7 +241,7 @@
                           <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                           <div class="dropdown-menu">
                               <a class="dropdown-item" href="{{ route('siswa.show1', $students->id) }} "><i class="bx bxs-show"></i>view</a>
-                              @if ($students->status !== 'ACCEPTED')
+                              @if (($students->akademik->status ?? null) !== 'ACCEPTED')
                               <a class="dropdown-item" href="{{ route('siswa.edit1', $students->id) }}">
                                   <i class="bx bx-edit-alt me-1"></i> Edit
                               </a>
@@ -276,13 +284,13 @@
                   <td>{{$students->nama ?? ''}}</td>
                   <td>{{$students->nisn ?? ''}}</td>
                   <td>{{$students->thn_msk ?? ''}}</td>
-                  <td>{{$students->user->name ?? ''}}</td>
+                  <td>{{$students->user->nama ?? ''}}</td>
                   <td>
-                    @if ($students->status == 'WAITING')
+                    @if (($students->akademik->status ?? null) == 'WAITING')
                       <span class="badge bg-label-warning me-1">MENUNGGU</span>
-                    @elseif ($students->status == 'ACCEPTED')
+                    @elseif (($students->akademik->status ?? null) == 'ACCEPTED')
                       <span class="badge bg-label-success me-1">DITERIMA</span>
-                    @elseif ($students->status == 'DENIED')
+                    @elseif (($students->akademik->status ?? null) == 'DENIED')
                       <span class="badge bg-label-danger me-1">DITOLAK</span>
                     @else
                       <span class="badge bg-label-danger me-1">TIDAK DIKETAHUI</span>
@@ -313,3 +321,6 @@
  </div>
 </div>
   @endsection
+
+
+

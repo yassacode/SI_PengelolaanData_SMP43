@@ -22,24 +22,15 @@ class AuthenticatedSessionController extends Controller
 
     /**
      * Handle an incoming authentication request.
+     * Mendukung login dengan email ATAU username melalui LoginRequest.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->validate([
-            'email' => ['required'],
-            'password' => ['required'],
-        ]);
+        $request->authenticate();
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $request->session()->regenerate();
-    
-            return redirect()->intended(RouteServiceProvider::HOME);
-        }
-        // dd($request->all());
-    
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
+        $request->session()->regenerate();
+
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**

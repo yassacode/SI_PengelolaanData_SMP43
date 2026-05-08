@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Disiplin;
 use App\Models\Siswa;
-use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -13,24 +12,21 @@ use Illuminate\Validation\ValidationException;
 
 class DisiplinController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $search = $request->input('search');
         $month = $request->input('month');
-    
-        $disciplines = Discipline::with('student', 'user')
+
+        $disciplines = Disiplin::with(['siswa', 'pelapor', 'validator'])
             ->when($search, function ($query) use ($search) {
                 return $query->where(function ($query) use ($search) {
                     $query->where('masalah', 'like', "%{$search}%")
                         ->orWhere('tanggal', 'like', "%{$search}%")
-                        ->orWhereHas('student', function ($query) use ($search) {
+                        ->orWhereHas('siswa', function ($query) use ($search) {
                             $query->where('nama', 'like', "%{$search}%");
                         })
-                        ->orWhereHas('user', function ($query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
+                        ->orWhereHas('pelapor', function ($query) use ($search) {
+                            $query->where('nama', 'like', "%{$search}%");
                         });
                 });
             })
@@ -39,7 +35,7 @@ class DisiplinController extends Controller
                       ->whereYear('tanggal', \Carbon\Carbon::parse($month)->year);
             })
             ->get();
-    
+
         return view('main.disiplin', [
             'disiplin' => $disciplines,
             'search' => $search,
@@ -47,153 +43,168 @@ class DisiplinController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $students=Student::all();
-        $today = date('Y-m-d');
-        return view('tambah.add-disiplin',[
-            'today'=>$today,
-            'siswa'=>$students
+        $students = Siswa::all();
+        return view('tambah.add-disiplin', [
+            'today' => date('Y-m-d'),
+            'siswa' => $students
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $dicipline = $request-> validate([
-            "user_id"=>'nullable',
-            "student_id"=>'nullable',
-            "masalah"=>'required',
-            "kelas"=>'required',
-            "tanggal"=>'required',
-            "foto"=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            "solusi"=>'required',
-            "keterangan"=>'required',
-            "status"=>'nullable'
+        $validatedData = $request->validate([
+            "siswa_id" => 'required|exists:siswas,id',
+            "masalah" => 'required',
+            "tanggal" => 'required',
+            "foto" => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $dicipline['user_id'] = auth()->user()->id;
-        if($request->file('foto')){
-            $dicipline['foto'] = $request->file('foto')->store('fotoBuktiDisiplin', 'public');
+        $validatedData['user_id'] = auth()->user()->id; // Guru BK yang melapor
+        $validatedData['status_validasi'] = 'Pending'; // Default status
+
+        if ($request->file('foto')) {
+            $validatedData['foto'] = $request->file('foto')->store('fotoBuktiDisiplin', 'public');
         }
-        $dicipline=Discipline::create($dicipline);
-        // dd($request->all());
-        return redirect()->route('disiplin.index')->with('success', 'Data Berhasil Ditambahkan');
+
+        Disiplin::create($validatedData);
+
+        return redirect()->route('disiplin.index')->with('success', 'Data Pelanggaran Berhasil Dilaporkan');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Request $request)
     {
         $month = $request->input('month');
-
         $year = null;
         $monthNumber = null;
-        
+
         if ($month) {
             list($year, $monthNumber) = explode('-', $month);
         }
-        
-        $dicipline = Discipline::with('student', 'user')
-            ->where('status', 'ACCEPTED') 
-            ->when($monthNumber, function ($query, $monthNumber) use ($year) {
+
+        $disciplines = Disiplin::with(['siswa', 'pelapor'])
+            ->where('status_validasi', 'Approved') 
+            ->when($monthNumber, function ($query) use ($monthNumber, $year) {
                 return $query->whereMonth('tanggal', $monthNumber)
                              ->whereYear('tanggal', $year);
             })
             ->get();
-    
-            // dd($request->all());
+
         return view('cetak.cetak-disiplin', [
-            'disiplin' => $dicipline,
-            'month'=>$month
+            'disiplin' => $disciplines,
+            'month' => $month
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        $students=Student::all();
-        $dicipline = Discipline::find($id);
-        $today = date('Y-m-d');
-        return view('tambah.edit-disiplin',[
-            'disiplin'=>$dicipline,
-            'today'=>$today,
-            'siswa'=>$students
-            ]);
+        $students = Siswa::all();
+        $disiplin = Disiplin::findOrFail($id);
+        
+        return view('tambah.edit-disiplin', [
+            'disiplin' => $disiplin,
+            'today' => date('Y-m-d'),
+            'siswa' => $students
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-     
-
-        $dicipline = Discipline::findOrFail($id);
+        $disiplin = Disiplin::findOrFail($id);
 
         $validatedData = $request->validate([
-            "user_id" => 'nullable',
-            // "student_id" => 'nullable',
+            "siswa_id" => 'required|exists:siswas,id',
             "masalah" => 'required',
-            "kelas" => 'required',
             "tanggal" => 'required',
             "foto" => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            "solusi" => 'required',
-            "keterangan" => 'required',
-            "status" => 'nullable'
         ]);
 
         if ($request->hasFile('foto')) {
-            if ($dicipline->foto) {
-                Storage::disk('public')->delete($dicipline->foto);
+            if ($disiplin->foto) {
+                Storage::disk('public')->delete($disiplin->foto);
             }
             $validatedData['foto'] = $request->file('foto')->store('fotoBuktiDisiplin', 'public');
-        } else {
-            $validatedData['foto'] = $dicipline->foto;
         }
-    
-        $dicipline->update($validatedData);
+
+        $disiplin->update($validatedData);
 
         return redirect()->route('disiplin.index')->with('success', 'Data Berhasil Diperbarui');
-   }
+    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        $dicipline = Discipline::findOrFail($id);
-        $dicipline->delete();
+        $disiplin = Disiplin::findOrFail($id);
+        if ($disiplin->foto) {
+            Storage::disk('public')->delete($disiplin->foto);
+        }
+        $disiplin->delete();
+        
         return redirect()->route('disiplin.index')->with('success', 'Data Berhasil Dihapus');
     }
 
-    public function updateStts(Request $request, $id){
-        try {
-            $item = Discipline::findOrFail($id);
-            $validatedData = $request->validate([
-                'status' => 'required|in:WAITING,ACCEPTED,DENIED',
-            ]);
-    
-            $item->update([
-                'status' => $validatedData['status'],
-                // 'status' => $request->status,
-            ]);
-    
-            return back()->with('success','Berhasil Diperbarui');
-        } catch (Exception $e) {
-            return back()->with('error',$e->getMessage());
-        } catch (ValidationException $va) {
-            return back()->with('error',$va->getMessage());
-        } catch (ModelNotFoundException $mn) {
-            return back()->with('error',$mn->getMessage());
+    public function pendingValidasi()
+    {
+        $disciplines = Disiplin::with(['siswa', 'pelapor'])
+            ->where('status_validasi', 'Pending')
+            ->get();
+
+        return view('waka.disiplin-approval', [
+            'disciplines' => $disciplines
+        ]);
+    }
+
+    public function approve($id)
+    {
+        if (!auth()->user()->hasRole('Waka Kesiswaan')) {
+            abort(403, 'Unauthorized action.');
         }
+
+        $disiplin = Disiplin::findOrFail($id);
+        $disiplin->update([
+            'status_validasi' => 'Approved',
+            'validator_id' => auth()->id()
+        ]);
+        return back()->with('success', 'Laporan disetujui.');
+    }
+
+    public function reject($id)
+    {
+        if (!auth()->user()->hasRole('Waka Kesiswaan')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $disiplin = Disiplin::findOrFail($id);
+        $disiplin->update([
+            'status_validasi' => 'Rejected',
+            'validator_id' => auth()->id()
+        ]);
+        return back()->with('success', 'Laporan ditolak.');
+    }
+
+    public function exportExcel()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\DisiplinExport, 'Data_Disiplin_SMP43.xlsx');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $month = $request->month; // Optional filter
+        $query = Disiplin::with(['siswa', 'pelapor', 'validator']);
+        
+        if ($month) {
+            $monthParts = explode('-', $month);
+            if (count($monthParts) == 2) {
+                $query->whereMonth('tanggal', $monthParts[1])
+                      ->whereYear('tanggal', $monthParts[0]);
+            }
+        }
+        
+        $disiplin = $query->get();
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
+            ->loadView('cetak.laporan-disiplin-pdf', compact('disiplin', 'month'))
+            ->setPaper('a4', 'landscape');
+        
+        return $pdf->download('Laporan_Disiplin_SMP43.pdf');
     }
 }

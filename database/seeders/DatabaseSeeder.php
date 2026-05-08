@@ -126,5 +126,26 @@ class DatabaseSeeder extends Seeder
             ]
         );
         $multi->assignRole(['Admin', 'Guru']);
+
+        // User Testing yang Memiliki Semua Role
+        $tester = User::firstOrCreate(
+            ['email' => 'testing@sekolah.com'],
+            [
+                'nama' => 'Super Tester',
+                'username' => 'testing',
+                'password' => Hash::make('password'),
+                'jabatan' => 'Software Tester',
+                'nip' => '99999999',
+            ]
+        );
+        $tester->assignRole($roles); // Berikan semua role agar bisa mengakses semua fitur
+
+        // 3. Panggil Seeder Data Dummy (Opsional untuk Testing)
+        $this->call([
+            SiswaSeeder::class,
+            EkskulSeeder::class,
+            DisiplinSeeder::class,
+            LaporanSeeder::class,
+        ]);
     }
 }

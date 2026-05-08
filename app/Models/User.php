@@ -32,7 +32,7 @@ class User extends Authenticatable
 
     public function disiplins()
     {
-        return $this->hasMany(Disiplin::class, 'pelapor_id');
+        return $this->hasMany(Disiplin::class, 'user_id');
     }
 
     public function ekstrakurikulers()

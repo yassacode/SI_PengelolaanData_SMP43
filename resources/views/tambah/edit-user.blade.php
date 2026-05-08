@@ -16,7 +16,7 @@
                         <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Nama :</label>
-                                    <input type="text" id="" name="name" class="form-control" value="{{$user->name}}">
+                                    <input type="text" id="" name="name" class="form-control" value="{{$user->nama}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="">username:</label>
@@ -74,3 +74,6 @@
 </div> 
 
 @endsection
+
+
+

@@ -31,7 +31,7 @@
           <tr>
             <td scope="row">{{ $loop->iteration }}</td>
             <td>{{$users->name ?? ''}}</td>
-            <td>{{$users->level ?? ''}}</td>
+            <td>{{$users->jabatan ?? ''}}</td>
             <td>{{$users->email ?? ''}}</td>
             <td>{{$users->password ?? ''}}</td>
             <td>{{$users->nip ?? ''}}</td>
@@ -58,3 +58,6 @@
   </div>
 </div>
   @endsection
+
+
+

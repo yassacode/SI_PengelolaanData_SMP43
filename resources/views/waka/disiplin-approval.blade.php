@@ -24,28 +24,33 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Contoh Data Statis / Nanti diganti foreach -->
+                                @forelse($disciplines as $disiplin)
                                 <tr class="hover:bg-gray-50">
-                                    <td class="py-2 px-4 border-b">2026-05-08</td>
-                                    <td class="py-2 px-4 border-b">Budi Santoso</td>
-                                    <td class="py-2 px-4 border-b">Bpk. Andi</td>
-                                    <td class="py-2 px-4 border-b">Terlambat masuk jam pelajaran pertama</td>
+                                    <td class="py-2 px-4 border-b">{{ \Carbon\Carbon::parse($disiplin->tanggal)->format('Y-m-d') }}</td>
+                                    <td class="py-2 px-4 border-b">{{ $disiplin->siswa->nama ?? '-' }}</td>
+                                    <td class="py-2 px-4 border-b">{{ $disiplin->pelapor->nama ?? '-' }}</td>
+                                    <td class="py-2 px-4 border-b">{{ $disiplin->masalah }}</td>
                                     <td class="py-2 px-4 border-b text-center">
                                         <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold">Pending</span>
                                     </td>
                                     <td class="py-2 px-4 border-b text-center space-x-2">
-                                        <form action="#" method="POST" class="inline">
+                                        <form action="{{ route('validasi.disiplin.approve', $disiplin->id) }}" method="POST" class="inline">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded shadow-sm text-sm">✓ Approve</button>
                                         </form>
-                                        <form action="#" method="POST" class="inline">
+                                        <form action="{{ route('validasi.disiplin.reject', $disiplin->id) }}" method="POST" class="inline">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white px-3 py-1 rounded shadow-sm text-sm">✕ Reject</button>
                                         </form>
                                     </td>
                                 </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="6" class="py-4 text-center">Tidak ada data yang menunggu validasi.</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -54,3 +59,7 @@
         </div>
     </div>
 </x-app-layout>
+
+
+
+

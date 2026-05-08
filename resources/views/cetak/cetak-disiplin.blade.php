@@ -26,7 +26,7 @@
             @foreach ($disiplin  as $dicipline )
            <tr>
             <td scope="row">{{ $loop->iteration }}</td>
-            <td>{{$dicipline->student->nama??''}}</td>
+            <td>{{$dicipline->siswa->nama??''}}</td>
             <td>{{$dicipline->kelas??''}}</td>
             <td>{{$dicipline->masalah??''}}</td>
             <td>{{ \Carbon\Carbon::parse($dicipline->tanggal)->format('d-m-Y')??'' }}</td>
@@ -60,3 +60,6 @@
   };
   </script>
 @endsection
+
+
+

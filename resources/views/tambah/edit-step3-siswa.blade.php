@@ -16,61 +16,61 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="nama_ayah">Nama Ayah:</label>
-                                    <input type="text" id="nama_ayah" name="nama_ayah" class="form-control" value="{{$siswa->studentparent->nama_ayah}}">
+                                    <input type="text" id="nama_ayah" name="nama_ayah" class="form-control" value="{{$siswa->wali->nama_ayah}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="pekerjaan_ayah">Pekerjaan Ayah:</label>
-                                    <input type="text" id="pekerjaan_ayah" name="pekerjaan_ayah" class="form-control" value="{{$siswa->studentparent->pekerjaan_ayah}}"">
+                                    <input type="text" id="pekerjaan_ayah" name="pekerjaan_ayah" class="form-control" value="{{$siswa->wali->pekerjaan_ayah}}"">
                                 </div>
                                 <div class="form-group">
                                     <label for="alamat_ayah">Alamat Ayah:</label>
-                                    <input type="text" id="alamat_ayah" name="alamat_ayah" class="form-control" value="{{$siswa->studentparent->alamat_ayah}}">
+                                    <input type="text" id="alamat_ayah" name="alamat_ayah" class="form-control" value="{{$siswa->wali->alamat_ayah}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="no_hp_ayah">No Hp Ayah:</label>
-                                    <input type="text" id="no_hp_ayah" name="no_hp_ayah" class="form-control" value="{{$siswa->studentparent->no_hp_ayah}}">
+                                    <input type="text" id="no_hp_ayah" name="no_hp_ayah" class="form-control" value="{{$siswa->wali->no_hp_ayah}}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="nama_ibu">Nama Ibu:</label>
-                                    <input type="text" id="nama_ibu" name="nama_ibu" class="form-control" value="{{$siswa->studentparent->nama_ibu}}">
+                                    <input type="text" id="nama_ibu" name="nama_ibu" class="form-control" value="{{$siswa->wali->nama_ibu}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="pekerjaan_ibu">Pekerjaan Ibu:</label>
-                                    <input type="text" id="pekerjaan_ibu" name="pekerjaan_ibu" class="form-control" value="{{$siswa->studentparent->pekerjaan_ibu}}">
+                                    <input type="text" id="pekerjaan_ibu" name="pekerjaan_ibu" class="form-control" value="{{$siswa->wali->pekerjaan_ibu}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="alamat_ibu">Alamat Ibu:</label>
-                                    <input type="text" id="alamat_ibu" name="alamat_ibu" class="form-control" value="{{$siswa->studentparent->alamat_ibu}}">
+                                    <input type="text" id="alamat_ibu" name="alamat_ibu" class="form-control" value="{{$siswa->wali->alamat_ibu}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="no_hp_ibu">No HP Ibu:</label>
-                                    <input type="text" id="no_hp_ibu" name="no_hp_ibu" class="form-control" value="{{$siswa->studentparent->no_hp_ibu}}">
+                                    <input type="text" id="no_hp_ibu" name="no_hp_ibu" class="form-control" value="{{$siswa->wali->no_hp_ibu}}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="nama_wali">Nama Wali:</label>
-                                    <input type="text" id="nama_wali" name="nama_wali" class="form-control" value="{{$siswa->studentparent->nama_wali}}">
+                                    <input type="text" id="nama_wali" name="nama_wali" class="form-control" value="{{$siswa->wali->nama_wali}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="nama_wali"> Identitas Wali:</label>
-                                    <input type="text" id="identitas_wali" name="identitas_wali" class="form-control" value="{{$siswa->studentparent->identitas_wali}}">
+                                    <input type="text" id="identitas_wali" name="identitas_wali" class="form-control" value="{{$siswa->wali->identitas_wali}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="pekerjaan_wali">Pekerjaan Wali:</label>
-                                    <input type="text" id="pekerjaan_wali" name="pekerjaan_wali" class="form-control" value="{{$siswa->studentparent->pekerjaan_wali}}">
+                                    <input type="text" id="pekerjaan_wali" name="pekerjaan_wali" class="form-control" value="{{$siswa->wali->pekerjaan_wali}}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="alamat_wali">Alamat Wali:</label>
-                                    <input type="text" id="alamat_wali" name="alamat_wali" class="form-control" value="{{$siswa->studentparent->alamat_wali}}">
+                                    <input type="text" id="alamat_wali" name="alamat_wali" class="form-control" value="{{$siswa->wali->alamat_wali}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="no_hp_wali">No HP Wali:</label>
-                                    <input type="text" id="no_hp_wali" name="no_hp_wali" class="form-control" value="{{$siswa->studentparent->no_hp_wali}}">
+                                    <input type="text" id="no_hp_wali" name="no_hp_wali" class="form-control" value="{{$siswa->wali->no_hp_wali}}">
                                 </div>
                                 <div class="form-group text-center mt-4">
                                     <a href="{{ route('siswa.create2') }}" class="btn btn-warning">back</a>
@@ -86,3 +86,6 @@
     </div>
 </div>>  
 @endsection
+
+
+

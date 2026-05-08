@@ -61,12 +61,15 @@
                   <h3 class="mb-5">Login</h3>
       
                   <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="text" name="email" id="typeEmailX-2" class="form-control form-control-lg" />
-                    <label class="form-label" for="typeEmailX-2">username</label>
+                    <input type="text" name="email" id="typeEmailX-2" class="form-control form-control-lg @error('email') is-invalid @enderror" value="{{ old('email') }}" autocomplete="username" autofocus />
+                    <label class="form-label" for="typeEmailX-2">Email atau Username</label>
+                    @error('email')
+                      <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
                   </div>
       
                   <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" id="typePasswordX-2" name="password" class="form-control form-control-lg" />
+                    <input type="password" id="typePasswordX-2" name="password" class="form-control form-control-lg @error('password') is-invalid @enderror" autocomplete="current-password" />
                     <label class="form-label" for="typePasswordX-2">Password</label>
                   </div>
       
@@ -106,3 +109,7 @@
           <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>
+
+
+
+

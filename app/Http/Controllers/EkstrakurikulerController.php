@@ -6,79 +6,63 @@ use App\Models\Ekstrakurikuler;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class EkstrakurikulerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $search = $request->input("search");
         $month = $request->input('month');
-        $data = Extracurricular::with('user')
-        ->when($search, function ($query, $search) {
-            return $query->where('ekskul', 'like', "%{$search}%");
-        })
-        ->when($month, function ($query) use ($month) {
-            $query->whereMonth('tanggal', \Carbon\Carbon::parse($month)->month)
-                  ->whereYear('tanggal', \Carbon\Carbon::parse($month)->year);
-        })
-        ->get();
-        return view('main.ekskul',[
-            'data'=>$data,
-            'search'=>$search,
-            'month' => $month,
 
+        $data = Ekstrakurikuler::with('pembina')
+            ->when($search, function ($query, $search) {
+                return $query->where('nama_kegiatan', 'like', "%{$search}%");
+            })
+            ->when($month, function ($query) use ($month) {
+                $query->whereMonth('tanggal', \Carbon\Carbon::parse($month)->month)
+                      ->whereYear('tanggal', \Carbon\Carbon::parse($month)->year);
+            })
+            ->get();
+
+        return view('main.ekskul', [
+            'data' => $data,
+            'search' => $search,
+            'month' => $month,
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $today = date('Y-m-d');
-        return view('tambah.add-ekskul',[
-            'today'=>$today,
+        return view('tambah.add-ekskul', [
+            'today' => date('Y-m-d'),
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // dd($request->all());
-        $data = $request -> validate([
-            'ekskul'=>'required',
-            'kegiatan'=>'required',
-            'tanggal'=>'required',
-            'lokasi'=>'required',
-            'keterangan'=>'required',
-            "status"=>'nullable',
-            'foto'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        $data = $request->validate([
+            'nama_kegiatan' => 'required',
+            'tanggal' => 'required|date',
+            'lokasi' => 'required',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-        $data['user_id'] = auth()->user()->id;
-        if($request->file('foto')){
+
+        $data['user_id'] = auth()->user()->id; // Guru pembina
+
+        if ($request->file('foto')) {
             $data['foto'] = $request->file('foto')->store('fotoBuktiEkskul', 'public');
         }
-        $data= Extracurricular::create($data);
 
-        return redirect()->route('ekskul.index')->with([
-            'success' => 'Data Berhasil Ditambahkan',
-        ]);
-        
+        Ekstrakurikuler::create($data);
+
+        return redirect()->route('ekskul.index')->with('success', 'Data Berhasil Ditambahkan');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Request $request)
     {
         $month = $request->input('month');
-        
         $year = null;
         $monthNumber = null;
         
@@ -86,98 +70,85 @@ class EkstrakurikulerController extends Controller
             list($year, $monthNumber) = explode('-', $month);
         }
         
-        $data = Extracurricular::where('status', 'ACCEPTED') 
-        ->when($monthNumber, function ($query, $monthNumber) use ($year) {
+        $data = Ekstrakurikuler::with('pembina')
+            ->when($monthNumber, function ($query) use ($monthNumber, $year) {
                 return $query->whereMonth('tanggal', $monthNumber)
-                            ->whereYear('tanggal', $year);
+                             ->whereYear('tanggal', $year);
             })
             ->get();
 
-            // dd($request->all());
         return view('cetak.cetak-ekskul', [
             'item' => $data,
             'month' => $month
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        $item = Extracurricular::find($id);
-        $today = date ('Y-m-d');
-        return view('tambah.edit-ekskul',[
-            'item'=>$item,
-            'today'=>$today,
+        $item = Ekstrakurikuler::findOrFail($id);
+        return view('tambah.edit-ekskul', [
+            'item' => $item,
+            'today' => date('Y-m-d'),
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        // Temukan item berdasarkan ID
-        $item = Extracurricular::find($id);
+        $item = Ekstrakurikuler::findOrFail($id);
     
-        // Validasi input
-        $this->validate($request, [
-            'ekskul' => 'required',
-            'kegiatan' => 'required',
-            'tanggal' => 'required',
+        $data = $request->validate([
+            'nama_kegiatan' => 'required',
+            'tanggal' => 'required|date',
             'lokasi' => 'required',
-            'keterangan' => 'required',
-            "status"=>'nullable',
-            'foto' => 'image|nullable',
+            'foto' => 'image|nullable|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
     
-        // Inisialisasi array $data untuk menyimpan data yang akan diupdate
-        $data = $request->only(['ekskul', 'kegiatan', 'tanggal', 'lokasi', 'keterangan']);
-    
-        // Jika ada file foto yang diunggah, tambahkan ke $data
-        if ($request->file('foto')) {
+        if ($request->hasFile('foto')) {
+            if ($item->foto) {
+                Storage::disk('public')->delete($item->foto);
+            }
             $data['foto'] = $request->file('foto')->store('fotoBuktiEkskul', 'public');
         }
     
-        // Update item dengan data yang baru
         $item->update($data);
     
-        // Redirect ke halaman index dengan pesan sukses
-        return redirect()->route('ekskul.index')->with([
-            'success' => 'Data Berhasil Diupdate',
-        ]);
+        return redirect()->route('ekskul.index')->with('success', 'Data Berhasil Diupdate');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        $item = Extracurricular::find($id);
+        $item = Ekstrakurikuler::findOrFail($id);
+        if ($item->foto) {
+            Storage::disk('public')->delete($item->foto);
+        }
         $item->delete();
-        return back()->with('success','Berhasil Dihapus');
-     }
+        
+        return back()->with('success', 'Berhasil Dihapus');
+    }
 
-     public function updateStts(Request $request, $id){
-         try {
-                $item = Extracurricular::findOrFail($id);
-                $validatedData = $request->validate([
-                    'status' => 'required|in:WAITING,ACCEPTED,DENIED',
-                ]);
+    public function exportExcel()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\EkskulExport, 'Data_Ekstrakurikuler_SMP43.xlsx');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $month = $request->month; // Optional filter
+        $query = Ekstrakurikuler::with('user');
         
-                $item->update([
-                    'status' => $validatedData['status'],
-                    // 'status' => $request->status,
-                ]);
-        
-                return back()->with('success','Berhasil Diperbarui');
-            } catch (Exception $e) {
-                return back()->with('error',$e->getMessage());
-            } catch (ValidationException $va) {
-                return back()->with('error',$va->getMessage());
-            } catch (ModelNotFoundException $mn) {
-                return back()->with('error',$mn->getMessage());
+        if ($month) {
+            $monthParts = explode('-', $month);
+            if (count($monthParts) == 2) {
+                $query->whereMonth('tanggal', $monthParts[1])
+                      ->whereYear('tanggal', $monthParts[0]);
             }
-     }
+        }
+        
+        $ekstrakurikuler = $query->get();
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
+            ->loadView('cetak.laporan-ekskul-pdf', compact('ekstrakurikuler', 'month'))
+            ->setPaper('a4', 'landscape');
+        
+        return $pdf->download('Laporan_Ekstrakurikuler_SMP43.pdf');
+    }
 }

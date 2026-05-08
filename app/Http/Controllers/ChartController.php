@@ -17,9 +17,9 @@ class ChartController extends Controller
     public function index()
     {
         // Ambil data siswa dan grup berdasarkan bulan
-        $disiplin = Discipline::all();
-        $students= Student::all();
-        $ekskul = Extracurricular::all();
+        $disiplin = Disiplin::all();
+        $students= Siswa::all();
+        $ekskul = Ekstrakurikuler::all();
         $user = User::all();
         
         $monthlyCounts = $disiplin->groupBy(function ($disiplin) {
@@ -45,51 +45,5 @@ class ChartController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    // method lain yang kosong telah dihapus
 }

@@ -7,7 +7,7 @@
         <h4> SMP Negeri 43 Padang</h4>
             <br>
         <h5 class="text-center ">BIODATA DIRI SISWA </h5>
-        @if ($students->status === 'ACCEPTED')
+        @if (($students->status ?? null) === 'ACCEPTED')
         <a class="nav-link" href="{{ route('siswa.show2',$students->id)}}"><button type="button" class="btn btn-primary">cetak</button></a>
         @endif
     </div>
@@ -17,7 +17,7 @@
                 <tr>
                     <td>User</td>
                     <td>:</td>
-                    <td>{{$students->user->name}}</td>
+                    <td>{{$students->user->nama}}</td>
                 </tr>
                 <tr>
                     <td>Nama Lengkap</td>
@@ -32,17 +32,17 @@
                 <tr>
                     <td>Asal SD</td>
                     <td>:</td>
-                    <td>{{$students->school->asal_sd ?? ''}}</td>
+                    <td>{{$students->akademik->asal_sd ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>Asal TK</td>
                     <td>:</td>
-                    <td>{{$students->school->asal_tk ?? ''}}</td>
+                    <td>{{$students->akademik->asal_tk ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>Asal PAUD</td>
                     <td>:</td>
-                    <td>{{$students->school->asal_paud ?? ''}}</td>
+                    <td>{{$students->akademik->asal_paud ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>Agama</td>
@@ -62,12 +62,12 @@
                 <tr>
                     <td>Penyakit yang pernah diderita</td>
                     <td>:</td>
-                    <td>{{$students->history->sakit ?? ''}}</td>
+                    <td>{{$students->kesehatan->riwayat_sakit ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>Beasiswa yang pernah diterima</td>
                     <td>:</td>
-                    <td>{{$students->history->beasiswa?? ''}}</td>
+                    <td>{{$students->kesehatan->beasiswa?? ''}}</td>
                 </tr>
                 <tr>
                     <td>Orang Tua</td>
@@ -79,39 +79,39 @@
                         <ul class=" mb-0">Nama Ayah</ul>
                     </td>
                     <td>:</td>
-                    <td>{{$students->studentparent->nama_ayah ?? ''}}</td>                
+                    <td>{{$students->wali->nama_ayah ?? ''}}</td>                
                 </tr>
                 <tr>
                     <td>
                         <ul class=" mb-0">Pekerjaan Ayah</ul>
                     </td>
                     <td>:</td>
-                    <td>{{$students->studentparent->pekerjaan_ayah ?? ''}}</td>         
+                    <td>{{$students->wali->pekerjaan_ayah ?? ''}}</td>         
                 </tr>
                 <tr>
                     <td>
                         <ul class=" mb-0">Alamat </ul>
                     </td>
                     <td>:</td>
-                    <td>{{$students->studentparent->alamat_ayah ?? ''}}</td>         
+                    <td>{{$students->wali->alamat_ayah ?? ''}}</td>         
                 </tr>
                 <tr>
                     <td>
                         <ul class=" mb-0">Nama Ibu</ul>
                     <td>:</td>
-                    <td>{{$students->studentparent->nama_ibu ?? ''}}</td>
+                    <td>{{$students->wali->nama_ibu ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>
                         <ul class=" mb-0">Pekerjaan Ibu</ul>
                     <td>:</td>
-                    <td>{{$students->studentparent->pekerjaan_ibu ?? ''}}</td>
+                    <td>{{$students->wali->pekerjaan_ibu ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>
                         <ul class=" mb-0">Alamat</ul>
                     <td>:</td>
-                    <td>{{$students->studentparent->alamat_ibu ?? ''}}</td>
+                    <td>{{$students->wali->alamat_ibu ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>Anak ke-</td>
@@ -146,7 +146,7 @@
                 <tr>
                     <td>Jarak tempuh ke sekolah</td>
                     <td>:</td>
-                    <td>{{$students->school->jrk_sklh ?? ''}}</td>
+                    <td>{{$students->akademik->jrk_sklh ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>No. HP Siswa</td>
@@ -156,12 +156,12 @@
                 <tr>
                     <td>No. HP Ayah</td>
                     <td>:</td>
-                    <td>{{$students->studentparent->no_hp_ayah ?? ""}}</td>
+                    <td>{{$students->wali->no_hp_ayah ?? ""}}</td>
                 </tr>
                 <tr>
                     <td>No. HP Ibu</td>
                     <td>:</td>
-                    <td>{{$students->studentparent->no_hp_ibu ?? ''}}</td>
+                    <td>{{$students->wali->no_hp_ibu ?? ''}}</td>
                 </tr>
                 <tr>
                     <td>No. HP Wali</td>
@@ -183,11 +183,11 @@
                     </thead>
                     <tbody> 
                         @for ($i = 1; $i <= 5; $i++)
-                            @if ($students->achievement->{"kegiatan$i"} && $students->achievement->{"juara$i"})
+                            @if (($students->prestasis[$i-1]->kegiatan ?? '') && ($students->prestasis[$i-1]->juara ?? ''))
                                 <tr>
                                     <td>{{ $i }}</td>
-                                    <td>{{ $students->achievement->{"kegiatan$i"} }}</td>
-                                    <td>{{ $students->achievement->{"juara$i"} }}</td>
+                                    <td>{{ ($students->prestasis[$i-1]->kegiatan ?? '') }}</td>
+                                    <td>{{ ($students->prestasis[$i-1]->juara ?? '') }}</td>
                                 </tr>
                             @endif
                         @endfor
@@ -199,3 +199,6 @@
  </div>
 </div>
 @endsection
+
+
+

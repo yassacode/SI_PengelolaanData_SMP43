@@ -67,72 +67,55 @@
           </div>
 
           <div class="menu-inner-shadow"></div>
-          @if(auth()->user()->level == 'admin')
           <ul class="menu-inner py-1">
-            <!-- Dashboard -->
-           
+            <!-- Dashboard (Semua User) -->
             <li class="menu-item mb-2 {{Route::is('main')?'active':''}}">
               <a class="menu-link" href="{{url('/main')}}">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
               </a>
             </li>
+
+            <!-- Menu Siswa -->
+            @hasanyrole('Staff Kesiswaan|Waka Kesiswaan|Kepala Sekolah|Guru')
             <li class="menu-item mb-2 {{Route::is('siswa*')?'active':''}}">
               <a href="{{url('/siswa')}}" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-group"></i>
                 <div data-i18n="Analytics">Siswa</div>
               </a>
             </li>
+            @endhasanyrole
+
+            <!-- Menu Disiplin -->
+            @hasanyrole('Guru BK|Waka Kesiswaan|Kepala Sekolah')
             <li class="menu-item mb-2 {{Route::is('disiplin*')?'active':''}}">
               <a href="{{url('/disiplin')}}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-error"></i>
                 <div data-i18n="Analytics">Disiplin</div>
               </a>
             </li>
+            @endhasanyrole
+
+            <!-- Menu Ekstrakurikuler -->
+            @hasanyrole('Guru|Waka Kesiswaan|Kepala Sekolah')
             <li class="menu-item mb-2 {{Route::is('ekskul*')?'active':''}}">
               <a href="{{url('/ekskul')}}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-briefcase-alt-2"></i>
                 <div data-i18n="Analytics">Esktrakurikuler</div>
               </a>
             </li>
+            @endhasanyrole
+
+            <!-- Menu User (Hanya Admin) -->
+            @role('Admin')
             <li class="menu-item {{Route::is('user*')?'active':''}}">
               <a href="{{url('/user')}}" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-user-account"></i>
                 <div data-i18n="Analytics">User</div>
               </a>
             </li>
-
+            @endrole
           </ul>
-          @else
-          <ul class="menu-inner py-1">
-            <!-- Dashboard -->
-           
-            <li class="menu-item mb-2 {{Route::is('main')?'active':''}}">
-              <a class="menu-link" href="{{url('/main')}}">
-                <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                <div data-i18n="Analytics">Dashboard</div>
-              </a>
-            </li>
-            <li class="menu-item mb-2 {{Route::is('siswa*')?'active':''}}">
-              <a href="{{url('/siswa')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bxs-group"></i>
-                <div data-i18n="Analytics">Siswa</div>
-              </a>
-            </li>
-            <li class="menu-item mb-2 {{Route::is('disiplin*')?'active':''}}">
-              <a href="{{url('/disiplin')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-error"></i>
-                <div data-i18n="Analytics">Disiplin</div>
-              </a>
-            </li>
-            <li class="menu-item mb-2 {{Route::is('ekskul*')?'active':''}}">
-              <a href="{{url('/ekskul')}}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-briefcase-alt-2"></i>
-                <div data-i18n="Analytics">Esktrakurikuler</div>
-              </a>
-            </li>
-          </ul>
-          @endif
         </aside>
         <!-- / Menu -->
 
@@ -170,8 +153,8 @@
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-semibold d-block">{{$user->name}}</span>
-                            <small class="text-muted">{{$user->level}}</small>
+                            <span class="fw-semibold d-block">{{$user->nama}}</span>
+                            <small class="text-muted">{{$user->jabatan}}</small>
                           </div>
                         </div>
                       </a>
@@ -261,3 +244,7 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
 </html>
+
+
+
+

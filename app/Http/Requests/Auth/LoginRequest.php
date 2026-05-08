@@ -34,15 +34,23 @@ class LoginRequest extends FormRequest
 
     /**
      * Attempt to authenticate the request's credentials.
+     * Mendukung login menggunakan email ATAU username.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
     public function authenticate(): void
     {
-       
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $loginField = $this->input('email'); // field input bernama 'email' tapi bisa berisi username
+        $isEmail    = filter_var($loginField, FILTER_VALIDATE_EMAIL);
+
+        $credentials = [
+            ($isEmail ? 'email' : 'username') => $loginField,
+            'password'                        => $this->input('password'),
+        ];
+
+        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
