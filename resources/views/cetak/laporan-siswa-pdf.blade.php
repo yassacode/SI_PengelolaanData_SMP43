@@ -20,7 +20,7 @@
         <p>Email: smp43padang@gmail.com | Telp: (0751) 123456</p>
     </div>
 
-    <h3 style="text-align: center;">LAPORAN DATA SISWA</h3>
+    <h3 style="text-align: center;">LAPORAN DATA SISWA {{ $tahun ? 'TAHUN ' . $tahun : 'KESELURUHAN' }}</h3>
 
     <table>
         <thead>

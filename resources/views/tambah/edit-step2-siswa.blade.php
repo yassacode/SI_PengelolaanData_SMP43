@@ -43,6 +43,42 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group mb-3">
+                                    <label for="sakit">Riwayat Sakit:</label>
+                                    <textarea id="sakit" name="sakit" class="form-control" rows="2"
+                                        placeholder="Masukan riwayat sakit (opsional)">{{ old('sakit', $siswa->kesehatan->riwayat_sakit ?? '') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <h5 class="mb-3">Prestasi Siswa (Opsional)</h5>
+                        @for ($i = 1; $i <= 3; $i++)
+                            @php
+                                $prestasi = $siswa->prestasis->get($i - 1);
+                            @endphp
+                            <div class="row mb-3">
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <label for="kegiatan{{ $i }}">Kegiatan {{ $i }}:</label>
+                                        <input type="text" id="kegiatan{{ $i }}" name="kegiatan{{ $i }}" class="form-control"
+                                            placeholder="Contoh: Lomba Matematika"
+                                            value="{{ old('kegiatan' . $i, $prestasi->kegiatan ?? '') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label for="juara{{ $i }}">Juara Ke-:</label>
+                                        <input type="text" id="juara{{ $i }}" name="juara{{ $i }}" class="form-control"
+                                            placeholder="Contoh: 1 / Harapan 1"
+                                            value="{{ old('juara' . $i, $prestasi->juara ?? '') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        @endfor
+
                         <div class="text-center mt-3">
                             <a href="{{ route('siswa.edit1', $siswa->id) }}" class="btn btn-warning px-4">← Kembali</a>
                             <button type="submit" class="btn btn-primary px-4">Lanjut →</button>

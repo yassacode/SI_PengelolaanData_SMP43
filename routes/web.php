@@ -78,9 +78,11 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // 5. Kepala Sekolah (Pengesahan Akhir Laporan)
-    Route::middleware(['role:Kepala Sekolah'])->group(function () {
+    Route::middleware(['role:Kepala Sekolah|Waka Kesiswaan'])->group(function () {
         Route::get('/pengesahan-laporan', [LaporanController::class, 'index'])->name('laporan.index');
+        Route::get('/pengesahan-laporan/{laporan}/preview', [LaporanController::class, 'preview'])->name('laporan.preview');
         Route::patch('/pengesahan-laporan/{laporan}/approve', [LaporanController::class, 'approveKepsek'])->name('laporan.approve');
+        Route::get('/rekapitulasi/export/pdf', [LaporanController::class, 'rekapitulasi'])->name('rekapitulasi.export.pdf');
     });
 
     // 6. Admin (Bisa akses Master User dll)

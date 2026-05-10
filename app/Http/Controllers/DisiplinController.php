@@ -58,6 +58,7 @@ class DisiplinController extends Controller
             "siswa_id" => 'required|exists:siswas,id',
             "masalah" => 'required',
             "tanggal" => 'required',
+            "keterangan" => 'required',
             "foto" => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -117,6 +118,7 @@ class DisiplinController extends Controller
             "siswa_id" => 'required|exists:siswas,id',
             "masalah" => 'required',
             "tanggal" => 'required',
+            "keterangan" => 'required',
             "foto" => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -180,6 +182,17 @@ class DisiplinController extends Controller
             'validator_id' => auth()->id()
         ]);
         return back()->with('success', 'Laporan ditolak.');
+    }
+
+    public function updateStts(Request $request, $id)
+    {
+        $disiplin = Disiplin::findOrFail($id);
+        $disiplin->update([
+            'status_validasi' => $request->status,
+            'validator_id' => auth()->id()
+        ]);
+
+        return redirect()->route('disiplin.index')->with('success', 'Status laporan disiplin berhasil diperbarui');
     }
 
     public function exportExcel()

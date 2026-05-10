@@ -9,9 +9,21 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class SiswaExport implements FromCollection, WithHeadings, WithMapping
 {
+    protected $tahun;
+    private $row = 0;
+
+    public function __construct($tahun = null)
+    {
+        $this->tahun = $tahun;
+    }
+
     public function collection()
     {
-        return Siswa::with(['wali', 'akademik'])->get();
+        return Siswa::with(['wali', 'akademik'])
+            ->when($this->tahun, function ($query) {
+                return $query->where('thn_msk', $this->tahun);
+            })
+            ->get();
     }
 
     public function headings(): array
@@ -27,8 +39,6 @@ class SiswaExport implements FromCollection, WithHeadings, WithMapping
             'No HP Ayah'
         ];
     }
-
-    private $row = 0;
 
     public function map($siswa): array
     {

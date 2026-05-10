@@ -17,16 +17,24 @@ class SiswaController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $tahun = $request->input('tahun');
 
         $students = Siswa::with(['kesehatan', 'akademik', 'wali', 'prestasis', 'user'])
             ->when($search, function ($query, $search) {
                 return $query->where('nama', 'like', "%{$search}%");
             })
+            ->when($tahun, function ($query, $tahun) {
+                return $query->where('thn_msk', $tahun);
+            })
             ->get();
+
+        $years = Siswa::select('thn_msk')->distinct()->orderBy('thn_msk', 'desc')->pluck('thn_msk');
             
         return view('main.siswa', [
             'siswa' => $students,
             'search' => $search,
+            'tahun' => $tahun,
+            'years' => $years,
         ]);
     }
 
@@ -81,6 +89,8 @@ class SiswaController extends Controller
                 'nama_ibu' => $step3['nama_ibu'] ?? null,
                 'pekerjaan_ayah' => $step3['pekerjaan_ayah'] ?? null,
                 'pekerjaan_ibu' => $step3['pekerjaan_ibu'] ?? null,
+                'alamat_ayah' => $step3['alamat_ayah'] ?? null,
+                'alamat_ibu' => $step3['alamat_ibu'] ?? null,
                 'no_hp_ayah' => $step3['no_hp_ayah'] ?? null,
                 'no_hp_ibu' => $step3['no_hp_ibu'] ?? null,
             ]);
@@ -95,6 +105,7 @@ class SiswaController extends Controller
                 'agama' => $step1['agama'] ?? '-',
                 'hobi' => $step1['hobi'] ?? null,
                 'thn_msk' => $step1['thn_msk'] ?? date('Y'),
+                'alamat' => $step1['alamat'] ?? '-',
             ]);
 
             // 3. Simpan Akademik
@@ -103,6 +114,7 @@ class SiswaController extends Controller
                 'asal_paud' => $step2['asal_paud'] ?? null,
                 'asal_tk' => $step2['asal_tk'] ?? null,
                 'asal_sd' => $step2['asal_sd'] ?? '-',
+                'jrk_sklh' => $step2['jrk_sklh'] ?? null,
                 'beasiswa' => $step2['beasiswa'] ?? null,
             ]);
 
@@ -114,8 +126,8 @@ class SiswaController extends Controller
                 'riwayat_sakit' => $step2['sakit'] ?? null,
             ]);
 
-            // 5. Simpan Prestasi (jika ada input dari form lama, ambil loop)
-            for ($i = 1; $i <= 5; $i++) {
+            // 5. Simpan Prestasi (Loop 3 kali sesuai UI)
+            for ($i = 1; $i <= 3; $i++) {
                 if (!empty($step2["kegiatan{$i}"]) && !empty($step2["juara{$i}"])) {
                     Prestasi::create([
                         'siswa_id' => $siswa->id,
@@ -205,7 +217,9 @@ class SiswaController extends Controller
                     'nama_ayah' => $step3['nama_ayah'] ?? $siswa->wali->nama_ayah,
                     'nama_ibu' => $step3['nama_ibu'] ?? $siswa->wali->nama_ibu,
                     'pekerjaan_ayah' => $step3['pekerjaan_ayah'] ?? $siswa->wali->pekerjaan_ayah,
+                    'alamat_ayah' => $step3['alamat_ayah'] ?? $siswa->wali->alamat_ayah,
                     'pekerjaan_ibu' => $step3['pekerjaan_ibu'] ?? $siswa->wali->pekerjaan_ibu,
+                    'alamat_ibu' => $step3['alamat_ibu'] ?? $siswa->wali->alamat_ibu,
                     'no_hp_ayah' => $step3['no_hp_ayah'] ?? $siswa->wali->no_hp_ayah,
                     'no_hp_ibu' => $step3['no_hp_ibu'] ?? $siswa->wali->no_hp_ibu,
                 ]);
@@ -219,6 +233,7 @@ class SiswaController extends Controller
                 'agama' => $step1['agama'] ?? $siswa->agama,
                 'hobi' => $step1['hobi'] ?? $siswa->hobi,
                 'thn_msk' => $step1['thn_msk'] ?? $siswa->thn_msk,
+                'alamat' => $step1['alamat'] ?? $siswa->alamat,
             ]);
 
             // Update Akademik
@@ -227,6 +242,7 @@ class SiswaController extends Controller
                     'asal_paud' => $step2['asal_paud'] ?? $siswa->akademik->asal_paud,
                     'asal_tk' => $step2['asal_tk'] ?? $siswa->akademik->asal_tk,
                     'asal_sd' => $step2['asal_sd'] ?? $siswa->akademik->asal_sd,
+                    'jrk_sklh' => $step2['jrk_sklh'] ?? $siswa->akademik->jrk_sklh,
                     'beasiswa' => $step2['beasiswa'] ?? $siswa->akademik->beasiswa,
                 ]);
             }
@@ -240,14 +256,16 @@ class SiswaController extends Controller
                 ]);
             }
 
-            // Untuk prestasi, hapus yang lama dan buat baru (opsional) atau update sesuai logic.
-            // Karena ini disederhanakan, kita biarkan saja atau buat baru jika diisi.
-            if (!empty($step2['kegiatan']) && !empty($step2['juara'])) {
-                Prestasi::create([
-                    'siswa_id' => $siswa->id,
-                    'kegiatan' => $step2['kegiatan'],
-                    'juara' => $step2['juara'],
-                ]);
+            // Update Prestasi: Hapus yang lama dan buat baru dari input Step 2
+            $siswa->prestasis()->delete();
+            for ($i = 1; $i <= 3; $i++) {
+                if (!empty($step2["kegiatan{$i}"]) && !empty($step2["juara{$i}"])) {
+                    Prestasi::create([
+                        'siswa_id' => $siswa->id,
+                        'kegiatan' => $step2["kegiatan{$i}"],
+                        'juara' => $step2["juara{$i}"],
+                    ]);
+                }
             }
 
             DB::commit();
@@ -280,16 +298,23 @@ class SiswaController extends Controller
         return redirect()->route('siswa.index')->with('success', 'Status siswa berhasil diperbarui');
     }
 
-    public function exportExcel()
+    public function exportExcel(Request $request)
     {
-        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\SiswaExport, 'Data_Siswa_SMP43.xlsx');
+        $tahun = $request->input('tahun');
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\SiswaExport($tahun), 'Data_Siswa_SMP43.xlsx');
     }
 
-    public function exportPdf()
+    public function exportPdf(Request $request)
     {
-        $siswa = Siswa::with(['user', 'wali', 'akademik', 'kesehatan', 'prestasis'])->get();
+        $tahun = $request->input('tahun');
+        $siswa = Siswa::with(['user', 'wali', 'akademik', 'kesehatan', 'prestasis'])
+            ->when($tahun, function ($query, $tahun) {
+                return $query->where('thn_msk', $tahun);
+            })
+            ->get();
+
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
-            ->loadView('cetak.laporan-siswa-pdf', compact('siswa'))
+            ->loadView('cetak.laporan-siswa-pdf', compact('siswa', 'tahun'))
             ->setPaper('a4', 'landscape');
         
         return $pdf->download('Laporan_Siswa_SMP43.pdf');

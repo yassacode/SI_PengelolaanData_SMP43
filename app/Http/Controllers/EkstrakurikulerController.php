@@ -126,6 +126,17 @@ class EkstrakurikulerController extends Controller
         return back()->with('success', 'Berhasil Dihapus');
     }
 
+    public function updateStts(Request $request, $id)
+    {
+        $ekskul = Ekstrakurikuler::findOrFail($id);
+        $ekskul->update([
+            'status_validasi' => $request->status,
+            'validator_id' => auth()->id()
+        ]);
+
+        return redirect()->route('ekskul.index')->with('success', 'Status kegiatan ekstrakurikuler berhasil diperbarui');
+    }
+
     public function exportExcel()
     {
         return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\EkskulExport, 'Data_Ekstrakurikuler_SMP43.xlsx');
