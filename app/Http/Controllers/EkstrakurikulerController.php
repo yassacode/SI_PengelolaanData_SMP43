@@ -3,15 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ekstrakurikuler;
-use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Requests\EkstrakurikulerRequest;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\EkskulExport;
+use Exception;
 
 class EkstrakurikulerController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * Display a listing of extracurricular activities.
+     */
+    public function index(Request $request): View
     {
         $search = $request->input("search");
         $month = $request->input('month');
@@ -21,8 +29,9 @@ class EkstrakurikulerController extends Controller
                 return $query->where('nama_kegiatan', 'like', "%{$search}%");
             })
             ->when($month, function ($query) use ($month) {
-                $query->whereMonth('tanggal', \Carbon\Carbon::parse($month)->month)
-                      ->whereYear('tanggal', \Carbon\Carbon::parse($month)->year);
+                $carbon = Carbon::parse($month);
+                $query->whereMonth('tanggal', $carbon->month)
+                      ->whereYear('tanggal', $carbon->year);
             })
             ->get();
 
@@ -33,23 +42,24 @@ class EkstrakurikulerController extends Controller
         ]);
     }
 
-    public function create()
+    /**
+     * Show form for creating a new activity.
+     */
+    public function create(): View
     {
         return view('tambah.add-ekskul', [
-            'today' => date('Y-m-d'),
+            'today' => now()->format('Y-m-d'),
         ]);
     }
 
-    public function store(Request $request)
+    /**
+     * Store a newly created activity.
+     */
+    public function store(EkstrakurikulerRequest $request): RedirectResponse
     {
-        $data = $request->validate([
-            'nama_kegiatan' => 'required',
-            'tanggal' => 'required|date',
-            'lokasi' => 'required',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
-        $data['user_id'] = auth()->user()->id; // Guru pembina
+        $data = $request->validated();
+        $data['user_id'] = auth()->id();
+        $data['status_validasi'] = Ekstrakurikuler::STATUS_PENDING;
 
         if ($request->file('foto')) {
             $data['foto'] = $request->file('foto')->store('fotoBuktiEkskul', 'public');
@@ -60,14 +70,20 @@ class EkstrakurikulerController extends Controller
         return redirect()->route('ekskul.index')->with('success', 'Data Berhasil Ditambahkan');
     }
 
-    public function show(Request $request)
+    /**
+     * Display activities for printing.
+     */
+    public function show(Request $request): View
     {
         $month = $request->input('month');
         $year = null;
         $monthNumber = null;
         
-        if ($month) {
-            list($year, $monthNumber) = explode('-', $month);
+        if ($month && $parts = explode('-', $month)) {
+            if (count($parts) == 2) {
+                $year = $parts[0];
+                $monthNumber = $parts[1];
+            }
         }
         
         $data = Ekstrakurikuler::with('pembina')
@@ -83,25 +99,25 @@ class EkstrakurikulerController extends Controller
         ]);
     }
 
-    public function edit(string $id)
+    /**
+     * Show form for editing.
+     */
+    public function edit(string $id): View
     {
         $item = Ekstrakurikuler::findOrFail($id);
         return view('tambah.edit-ekskul', [
             'item' => $item,
-            'today' => date('Y-m-d'),
+            'today' => now()->format('Y-m-d'),
         ]);
     }
 
-    public function update(Request $request, string $id)
+    /**
+     * Update the activity.
+     */
+    public function update(EkstrakurikulerRequest $request, string $id): RedirectResponse
     {
         $item = Ekstrakurikuler::findOrFail($id);
-    
-        $data = $request->validate([
-            'nama_kegiatan' => 'required',
-            'tanggal' => 'required|date',
-            'lokasi' => 'required',
-            'foto' => 'image|nullable|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+        $data = $request->validated();
     
         if ($request->hasFile('foto')) {
             if ($item->foto) {
@@ -115,7 +131,10 @@ class EkstrakurikulerController extends Controller
         return redirect()->route('ekskul.index')->with('success', 'Data Berhasil Diupdate');
     }
 
-    public function destroy(string $id)
+    /**
+     * Delete the activity.
+     */
+    public function destroy(string $id): RedirectResponse
     {
         $item = Ekstrakurikuler::findOrFail($id);
         if ($item->foto) {
@@ -126,7 +145,10 @@ class EkstrakurikulerController extends Controller
         return back()->with('success', 'Berhasil Dihapus');
     }
 
-    public function updateStts(Request $request, $id)
+    /**
+     * Update status of activity (Waka).
+     */
+    public function updateStts(Request $request, int $id): RedirectResponse
     {
         $ekskul = Ekstrakurikuler::findOrFail($id);
         $ekskul->update([
@@ -137,26 +159,31 @@ class EkstrakurikulerController extends Controller
         return redirect()->route('ekskul.index')->with('success', 'Status kegiatan ekstrakurikuler berhasil diperbarui');
     }
 
+    /**
+     * Export to Excel.
+     */
     public function exportExcel()
     {
-        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\EkskulExport, 'Data_Ekstrakurikuler_SMP43.xlsx');
+        return Excel::download(new \App\Exports\EkskulExport, 'Data_Ekstrakurikuler_SMP43.xlsx');
     }
 
+    /**
+     * Export to PDF.
+     */
     public function exportPdf(Request $request)
     {
-        $month = $request->month; // Optional filter
-        $query = Ekstrakurikuler::with('user');
+        $month = $request->month;
+        $query = Ekstrakurikuler::with('pembina');
         
-        if ($month) {
-            $monthParts = explode('-', $month);
-            if (count($monthParts) == 2) {
-                $query->whereMonth('tanggal', $monthParts[1])
-                      ->whereYear('tanggal', $monthParts[0]);
+        if ($month && $parts = explode('-', $month)) {
+            if (count($parts) == 2) {
+                $query->whereMonth('tanggal', $parts[1])
+                      ->whereYear('tanggal', $parts[0]);
             }
         }
         
         $ekstrakurikuler = $query->get();
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
+        $pdf = Pdf::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
             ->loadView('cetak.laporan-ekskul-pdf', compact('ekstrakurikuler', 'month'))
             ->setPaper('a4', 'landscape');
         

@@ -11,37 +11,37 @@ class Siswa extends Model
 
     protected $guarded = ['id'];
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function wali()
+    public function wali(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Wali::class);
     }
 
-    public function akademik()
+    public function akademik(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Akademik::class);
     }
 
-    public function kesehatan()
+    public function kesehatan(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Kesehatan::class);
     }
 
-    public function prestasis()
+    public function prestasis(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Prestasi::class);
     }
 
-    public function disiplins()
+    public function disiplins(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Disiplin::class);
     }
 
-    public function ekstrakurikulers()
+    public function ekstrakurikulers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Ekstrakurikuler::class, 'anggota_ekskuls');
     }
