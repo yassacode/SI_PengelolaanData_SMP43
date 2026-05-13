@@ -18,6 +18,7 @@ class EkstrakurikulerRequest extends FormRequest
             'tanggal' => 'required|date',
             'lokasi' => 'required|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'keterangan'=>'required|string|',
         ];
     }
 

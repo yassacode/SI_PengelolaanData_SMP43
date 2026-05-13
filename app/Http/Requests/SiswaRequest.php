@@ -27,7 +27,7 @@ class SiswaRequest extends FormRequest
         if ($this->routeIs('siswa.store1') || $this->routeIs('siswa.update1')) {
             return [
                 'nisn' => 'required|string|max:20',
-                'nama' => 'required|string|max:255',
+                'nama' => 'required|string|max:50',
                 'ttl' => 'required|string',
                 'agama' => 'required|string',
                 'thn_msk' => 'required|numeric',
@@ -43,10 +43,14 @@ class SiswaRequest extends FormRequest
 
         // Default / Step 3 / Final Store
         return [
-            'nama_ayah' => 'nullable|string|max:255',
-            'nama_ibu' => 'nullable|string|max:255',
-            'no_hp_ayah' => 'nullable|string|max:20',
-            'no_hp_ibu' => 'nullable|string|max:20',
+            'nama_ayah' => 'required|string|max:50',
+            'nama_ibu' => 'required|string|max:50',
+            'pekerjaan_ayah' => 'required|string|max:50',
+            'pekerjaan_ibu' => 'required|string|max:50',
+            'no_hp_ayah' => 'required|string|max:13',
+            'no_hp_ibu' => 'required|string|max:13',
+            'alamat_ayah'=>'required|string|max:100',
+            'alamat_ibu'=>'required|string|max:100',
         ];
     }
 
@@ -63,6 +67,12 @@ class SiswaRequest extends FormRequest
             'thn_msk.required' => 'Tahun masuk wajib diisi.',
             'alamat.required' => 'Alamat wajib diisi.',
             'asal_sd.required' => 'Asal SD wajib diisi.',
+            'nama_ayah.required' => 'Nama Ayah wajib diisi.',
+            'nama_ibu.required' => 'Nama Ibu wajib diisi.',
+            'pekerjaan_ayah.required' => 'Pekerjaan Ayah wajib diisi.',
+            'pekerjaan_ibu.required' => 'Pekerjaan Ibu wajib diisi.',
+            'no_hp_ayah.required' => 'Nomor HP Ayah wajib diisi.',
+            'no_hp_ibu.required' => 'Nomor HP Ibu wajib diisi.',
         ];
     }
 }

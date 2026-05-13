@@ -51,10 +51,57 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="{{asset('assets/js/config.js')}}"></script>
     <style>
+      :root {
+          --print-font-size: 12pt;
+          --print-line-height: 1.5;
+      }
+      body {
+          background-color: white !important;
+          color: black !important;
+      }
       @media print {
+          @page {
+              size: A4;
+              margin: 2cm;
+          }
+          .no-print {
+              display: none !important;
+          }
           .page-break {
               page-break-before: always;
           }
+          table {
+              width: 100%;
+              border-collapse: collapse !important;
+          }
+          th, td {
+              border: 1px solid #000 !important;
+              padding: 8px !important;
+          }
+          .table-borderless th, 
+          .table-borderless td {
+              border: none !important;
+              padding: 4px !important;
+          }
+          .kop-surat {
+              border-bottom: 3px solid black;
+              margin-bottom: 20px;
+              padding-bottom: 10px;
+          }
+          /* Force colors in print */
+          * {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+          }
+      }
+      /* Screen styles to simulate print preview if needed */
+      .print-container {
+          background: white;
+          width: 210mm;
+          min-height: 297mm;
+          padding: 20mm;
+          margin: 10mm auto;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
       }
   </style>
   </head>

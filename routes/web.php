@@ -60,7 +60,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // 2. Guru (Manajemen Ekskul & Logbook)
-    Route::middleware(['role:Guru|Waka Kesiswaan|Kepala Sekolah'])->group(function () {
+    Route::middleware(['role:Guru|Waka Kesiswaan|Kepala Sekolah|Staff Kesiswaan'])->group(function () {
         Route::controller(EkstrakurikulerController::class)->group(function () {
             Route::get('/ekskul/export/pdf', 'exportPdf')->name('ekskul.export.pdf');
             Route::get('/ekskul/export/excel', 'exportExcel')->name('ekskul.export.excel');
