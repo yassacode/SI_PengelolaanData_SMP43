@@ -45,4 +45,9 @@ class Siswa extends Model
     {
         return $this->belongsToMany(Ekstrakurikuler::class, 'anggota_ekskuls');
     }
+
+    public function masterEkskuls(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(MasterEkskul::class, 'siswa_master_ekskul', 'siswa_id', 'master_ekskul_id');
+    }
 }

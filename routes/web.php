@@ -68,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/ekskul/{ekskul}/updateStts', 'updateStts')->name('ekskul/update/status.updateStts');
         });
         Route::resource('ekskul', EkstrakurikulerController::class)->except(['show']);
+        Route::resource('master-ekskul', \App\Http\Controllers\MasterEkskulController::class);
     });
 
     // 3. Guru BK (Input Pelanggaran)

@@ -29,6 +29,7 @@
         <thead>
             <tr>
                 <th>No</th>
+                <th>Nama Ekskul</th>
                 <th>Nama Kegiatan Ekstrakurikuler</th>
                 <th>Tanggal</th>
                 <th>Lokasi</th>
@@ -39,6 +40,7 @@
             @foreach($ekstrakurikuler as $index => $item)
             <tr>
                 <td>{{ $index + 1 }}</td>
+                <td>{{ $item->masterEkskul->nama ?? '-' }}</td>
                 <td>{{ $item->nama_kegiatan }}</td>
                 <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d/m/Y') }}</td>
                 <td>{{ $item->lokasi }}</td>

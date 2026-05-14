@@ -24,7 +24,7 @@ class EkstrakurikulerController extends Controller
         $search = $request->input("search");
         $month = $request->input('month');
 
-        $data = Ekstrakurikuler::with('pembina')
+        $data = Ekstrakurikuler::with(['pembina', 'masterEkskul'])
             ->when($search, function ($query, $search) {
                 return $query->where('nama_kegiatan', 'like', "%{$search}%");
             })
@@ -47,8 +47,10 @@ class EkstrakurikulerController extends Controller
      */
     public function create(): View
     {
+        $masterEkskuls = \App\Models\MasterEkskul::all();
         return view('tambah.add-ekskul', [
             'today' => now()->format('Y-m-d'),
+            'masterEkskuls' => $masterEkskuls,
         ]);
     }
 
@@ -86,7 +88,7 @@ class EkstrakurikulerController extends Controller
             }
         }
         
-        $data = Ekstrakurikuler::with('pembina')
+        $data = Ekstrakurikuler::with(['pembina', 'masterEkskul'])
             ->when($monthNumber, function ($query) use ($monthNumber, $year) {
                 return $query->whereMonth('tanggal', $monthNumber)
                              ->whereYear('tanggal', $year);
@@ -105,9 +107,11 @@ class EkstrakurikulerController extends Controller
     public function edit(string $id): View
     {
         $item = Ekstrakurikuler::findOrFail($id);
+        $masterEkskuls = \App\Models\MasterEkskul::all();
         return view('tambah.edit-ekskul', [
             'item' => $item,
             'today' => now()->format('Y-m-d'),
+            'masterEkskuls' => $masterEkskuls,
         ]);
     }
 
@@ -173,7 +177,7 @@ class EkstrakurikulerController extends Controller
     public function exportPdf(Request $request)
     {
         $month = $request->month;
-        $query = Ekstrakurikuler::with('pembina');
+        $query = Ekstrakurikuler::with(['pembina', 'masterEkskul']);
         
         if ($month && $parts = explode('-', $month)) {
             if (count($parts) == 2) {

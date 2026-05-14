@@ -57,6 +57,7 @@
                         <tr>
                             <th>No</th>
                             <th>Pembina</th>
+                            <th>Nama Ekskul</th>
                             <th>Nama Kegiatan</th>
                             <th>Tanggal</th>
                             <th>Lokasi</th>
@@ -73,6 +74,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->pembina->nama ?? ($item->user->nama ?? '-') }}</td>
+                                <td>{{ $item->masterEkskul->nama ?? '-' }}</td>
                                 <td>{{ $item->nama_kegiatan ?? '-' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l, d F Y') }}
                                 </td>

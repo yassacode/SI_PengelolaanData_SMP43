@@ -23,10 +23,24 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
+                                        <label for="master_ekskul_id">Nama Ekskul: <sup class="text-danger">*</sup></label>
+                                        <select name="master_ekskul_id" id="master_ekskul_id" class="form-control @error('master_ekskul_id') is-invalid @enderror">
+                                            <option value="">-- Pilih Ekskul --</option>
+                                            @foreach($masterEkskuls as $ekskul)
+                                                <option value="{{ $ekskul->id }}" {{ old('master_ekskul_id') == $ekskul->id ? 'selected' : '' }}>
+                                                    {{ $ekskul->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('master_ekskul_id')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group mb-3">
                                         <label for="nama_kegiatan">Nama Kegiatan: <sup class="text-danger">*</sup></label>
                                         <input type="text" id="nama_kegiatan" name="nama_kegiatan"
                                             class="form-control @error('nama_kegiatan') is-invalid @enderror"
-                                            placeholder="Contoh: Latihan Pramuka, Lomba Drumband"
+                                            placeholder="Contoh: Latihan Rutin, Lomba Drumband"
                                             value="{{ old('nama_kegiatan') }}">
                                         @error('nama_kegiatan')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -67,7 +81,7 @@
                                     <div class="form-group mb-3">
                                         <label for="keterangan">Keterangan Kegiatan:</label>
                                         <textarea id="keterangan" name="keterangan" class="form-control @error('keterangan') is-invalid @enderror"
-                                            rows="3" placeholder="Masukkan detail atau keterangan kegiatan di sini...">{{ old('keterangan', $ekskul->keterangan ?? '') }}</textarea>
+                                            rows="3" placeholder="Masukkan detail atau keterangan kegiatan di sini...">{{ old('keterangan') }}</textarea>
 
                                         @error('keterangan')
                                             <div class="invalid-feedback">{{ $message }}</div>

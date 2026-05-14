@@ -27,8 +27,8 @@
                 @forelse ($item as $activity)
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
-                        <td>{{ $activity->ekskul ?? '-' }}</td>
-                        <td>{{ $activity->kegiatan ?? '-' }}</td>
+                        <td>{{ $activity->masterEkskul->nama ?? '-' }}</td>
+                        <td>{{ $activity->nama_kegiatan ?? '-' }}</td>
                         <td class="text-center">{{ \Carbon\Carbon::parse($activity->tanggal)->format('d/m/Y') }}</td>
                         <td>{{ $activity->lokasi ?? '-' }}</td>
                         <td>{{ $activity->keterangan ?? '-' }}</td>

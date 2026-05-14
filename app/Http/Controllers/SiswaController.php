@@ -61,8 +61,10 @@ class SiswaController extends Controller
      */
     public function createStep2(): View
     {
+        $masterEkskuls = \App\Models\MasterEkskul::all();
         return view('tambah.add-step2-siswa', [
             'today' => now()->format('Y-m-d'),
+            'masterEkskuls' => $masterEkskuls,
         ]);
     }
 
@@ -159,6 +161,11 @@ class SiswaController extends Controller
                 }
             }
 
+            // 6. Simpan Keanggotaan Ekskul
+            if (!empty($step2['master_ekskul_ids'])) {
+                $siswa->masterEkskuls()->sync($step2['master_ekskul_ids']);
+            }
+
             DB::commit();
 
             session()->forget(['siswa_step1', 'siswa_step2']);
@@ -185,7 +192,10 @@ class SiswaController extends Controller
      */
     public function show2(string $id): View
     {
-        $siswa = Siswa::with(['kesehatan', 'akademik', 'wali', 'prestasis', 'disiplins'])->findOrFail($id);
+        $siswa = Siswa::with(['kesehatan', 'akademik', 'wali', 'prestasis', 'disiplins' => function($query) {
+            $query->where('status_validasi', Disiplin::STATUS_APPROVED);
+        }])->findOrFail($id);
+
         return view('cetak.cetak-siswa', [
             'student' => $siswa,
             'discipline' => $siswa->disiplins,
@@ -203,10 +213,12 @@ class SiswaController extends Controller
 
     public function editStep2(string $id): View
     {
-        $siswa = Siswa::with(['akademik', 'prestasis', 'kesehatan'])->findOrFail($id);
+        $siswa = Siswa::with(['akademik', 'prestasis', 'kesehatan', 'masterEkskuls'])->findOrFail($id);
+        $masterEkskuls = \App\Models\MasterEkskul::all();
         return view('tambah.edit-step2-siswa', [
             'siswa' => $siswa,
             'today' => now()->format('Y-m-d'),
+            'masterEkskuls' => $masterEkskuls,
         ]);
     }
 
@@ -294,6 +306,11 @@ class SiswaController extends Controller
                         'juara' => $step2["juara{$i}"],
                     ]);
                 }
+            }
+
+            // Update Keanggotaan Ekskul
+            if (isset($step2['master_ekskul_ids'])) {
+                $siswa->masterEkskuls()->sync($step2['master_ekskul_ids']);
             }
 
             DB::commit();

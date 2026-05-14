@@ -24,6 +24,20 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
+                                        <label for="master_ekskul_id">Nama Ekskul: <sup class="text-danger">*</sup></label>
+                                        <select name="master_ekskul_id" id="master_ekskul_id" class="form-control @error('master_ekskul_id') is-invalid @enderror">
+                                            <option value="">-- Pilih Ekskul --</option>
+                                            @foreach($masterEkskuls as $ekskul)
+                                                <option value="{{ $ekskul->id }}" {{ old('master_ekskul_id', $item->master_ekskul_id) == $ekskul->id ? 'selected' : '' }}>
+                                                    {{ $ekskul->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('master_ekskul_id')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group mb-3">
                                         <label for="nama_kegiatan">Nama Kegiatan: <sup class="text-danger">*</sup></label>
                                         <input type="text" id="nama_kegiatan" name="nama_kegiatan"
                                             class="form-control @error('nama_kegiatan') is-invalid @enderror"

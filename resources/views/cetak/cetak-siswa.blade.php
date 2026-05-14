@@ -60,6 +60,17 @@
                         <td>:</td>
                         <td>{{ $student->kesehatan->riwayat_sakit ?? 'Tidak Ada' }}</td>
                     </tr>
+                    <tr>
+                        <td>Ekstrakurikuler</td>
+                        <td>:</td>
+                        <td>
+                            @if($student->masterEkskuls->isNotEmpty())
+                                {{ $student->masterEkskuls->pluck('nama')->implode(', ') }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 

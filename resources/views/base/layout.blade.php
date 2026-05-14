@@ -94,7 +94,13 @@
                         <li class="menu-item mb-2 {{ Route::is('ekskul*') ? 'active' : '' }}">
                             <a href="{{ url('/ekskul') }}" class="menu-link">
                                 <i class="menu-icon tf-icons bx bx-briefcase-alt-2"></i>
-                                <div data-i18n="Analytics">Esktrakurikuler</div>
+                                <div data-i18n="Analytics">Kegiatan Ekskul</div>
+                            </a>
+                        </li>
+                        <li class="menu-item mb-2 {{ Route::is('master-ekskul*') ? 'active' : '' }}">
+                            <a href="{{ url('/master-ekskul') }}" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-list-ul"></i>
+                                <div data-i18n="Analytics">Nama Ekskul</div>
                             </a>
                         </li>
                     @endhasanyrole

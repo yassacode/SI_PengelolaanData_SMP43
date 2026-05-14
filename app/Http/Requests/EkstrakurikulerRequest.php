@@ -14,6 +14,7 @@ class EkstrakurikulerRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'master_ekskul_id' => 'required|exists:master_ekskuls,id',
             'nama_kegiatan' => 'required|string|max:255',
             'tanggal' => 'required|date',
             'lokasi' => 'required|string|max:255',

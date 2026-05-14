@@ -38,6 +38,8 @@ class SiswaRequest extends FormRequest
         if ($this->routeIs('siswa.store2') || $this->routeIs('siswa.update2')) {
             return [
                 'asal_sd' => 'required|string|max:255',
+                'master_ekskul_ids' => 'nullable|array',
+                'master_ekskul_ids.*' => 'exists:master_ekskuls,id',
             ];
         }
 

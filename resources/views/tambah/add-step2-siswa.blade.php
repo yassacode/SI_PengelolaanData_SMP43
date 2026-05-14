@@ -89,6 +89,23 @@
                                 </div>
                             @endfor
 
+                            <hr>
+                            <h5 class="mb-3">Ekstrakurikuler yang Diikuti</h5>
+                            <div class="row">
+                                @foreach($masterEkskuls as $ekskul)
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="master_ekskul_ids[]" 
+                                                value="{{ $ekskul->id }}" id="ekskul_{{ $ekskul->id }}"
+                                                {{ is_array(old('master_ekskul_ids', session('siswa_step2.master_ekskul_ids'))) && in_array($ekskul->id, old('master_ekskul_ids', session('siswa_step2.master_ekskul_ids'))) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="ekskul_{{ $ekskul->id }}">
+                                                {{ $ekskul->nama }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
                             <div class="text-center mt-3">
                                 <a href="{{ route('siswa.create1') }}" class="btn btn-warning px-4">← Kembali</a>
                                 <button type="submit" class="btn btn-primary px-4">Lanjut →</button>

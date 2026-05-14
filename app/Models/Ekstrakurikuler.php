@@ -25,4 +25,9 @@ class Ekstrakurikuler extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function masterEkskul(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(MasterEkskul::class, 'master_ekskul_id');
+    }
 }
