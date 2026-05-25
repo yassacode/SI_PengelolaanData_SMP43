@@ -4,15 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Disiplin;
 use App\Models\Siswa;
-use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Requests\DisiplinRequest;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\DisiplinExport;
+use Exception;
 
 class DisiplinController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * Display a listing of disciplinary records.
+     */
+    public function index(Request $request): View
     {
         $search = $request->input('search');
         $month = $request->input('month');
@@ -31,8 +39,9 @@ class DisiplinController extends Controller
                 });
             })
             ->when($month, function ($query) use ($month) {
-                $query->whereMonth('tanggal', \Carbon\Carbon::parse($month)->month)
-                      ->whereYear('tanggal', \Carbon\Carbon::parse($month)->year);
+                $carbon = Carbon::parse($month);
+                $query->whereMonth('tanggal', $carbon->month)
+                      ->whereYear('tanggal', $carbon->year);
             })
             ->get();
 
@@ -43,27 +52,26 @@ class DisiplinController extends Controller
         ]);
     }
 
-    public function create()
+    /**
+     * Show form for creating a new record.
+     */
+    public function create(): View
     {
         $students = Siswa::all();
         return view('tambah.add-disiplin', [
-            'today' => date('Y-m-d'),
+            'today' => now()->format('Y-m-d'),
             'siswa' => $students
         ]);
     }
 
-    public function store(Request $request)
+    /**
+     * Store a newly created record.
+     */
+    public function store(DisiplinRequest $request): RedirectResponse
     {
-        $validatedData = $request->validate([
-            "siswa_id" => 'required|exists:siswas,id',
-            "masalah" => 'required',
-            "tanggal" => 'required',
-            "keterangan" => 'required',
-            "foto" => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
-        $validatedData['user_id'] = auth()->user()->id; // Guru BK yang melapor
-        $validatedData['status_validasi'] = 'Pending'; // Default status
+        $validatedData = $request->validated();
+        $validatedData['user_id'] = auth()->id();
+        $validatedData['status_validasi'] = Disiplin::STATUS_PENDING;
 
         if ($request->file('foto')) {
             $validatedData['foto'] = $request->file('foto')->store('fotoBuktiDisiplin', 'public');
@@ -74,18 +82,24 @@ class DisiplinController extends Controller
         return redirect()->route('disiplin.index')->with('success', 'Data Pelanggaran Berhasil Dilaporkan');
     }
 
-    public function show(Request $request)
+    /**
+     * Display report for printing.
+     */
+    public function show(Request $request): View
     {
         $month = $request->input('month');
         $year = null;
         $monthNumber = null;
 
-        if ($month) {
-            list($year, $monthNumber) = explode('-', $month);
+        if ($month && $parts = explode('-', $month)) {
+            if (count($parts) == 2) {
+                $year = $parts[0];
+                $monthNumber = $parts[1];
+            }
         }
 
         $disciplines = Disiplin::with(['siswa', 'pelapor'])
-            ->where('status_validasi', 'Approved') 
+            ->where('status_validasi', Disiplin::STATUS_APPROVED) 
             ->when($monthNumber, function ($query) use ($monthNumber, $year) {
                 return $query->whereMonth('tanggal', $monthNumber)
                              ->whereYear('tanggal', $year);
@@ -98,29 +112,28 @@ class DisiplinController extends Controller
         ]);
     }
 
-    public function edit(string $id)
+    /**
+     * Show form for editing.
+     */
+    public function edit(string $id): View
     {
         $students = Siswa::all();
         $disiplin = Disiplin::findOrFail($id);
         
         return view('tambah.edit-disiplin', [
             'disiplin' => $disiplin,
-            'today' => date('Y-m-d'),
+            'today' => now()->format('Y-m-d'),
             'siswa' => $students
         ]);
     }
 
-    public function update(Request $request, string $id)
+    /**
+     * Update the record.
+     */
+    public function update(DisiplinRequest $request, string $id): RedirectResponse
     {
         $disiplin = Disiplin::findOrFail($id);
-
-        $validatedData = $request->validate([
-            "siswa_id" => 'required|exists:siswas,id',
-            "masalah" => 'required',
-            "tanggal" => 'required',
-            "keterangan" => 'required',
-            "foto" => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+        $validatedData = $request->validated();
 
         if ($request->hasFile('foto')) {
             if ($disiplin->foto) {
@@ -134,7 +147,10 @@ class DisiplinController extends Controller
         return redirect()->route('disiplin.index')->with('success', 'Data Berhasil Diperbarui');
     }
 
-    public function destroy(string $id)
+    /**
+     * Delete the record.
+     */
+    public function destroy(string $id): RedirectResponse
     {
         $disiplin = Disiplin::findOrFail($id);
         if ($disiplin->foto) {
@@ -145,10 +161,13 @@ class DisiplinController extends Controller
         return redirect()->route('disiplin.index')->with('success', 'Data Berhasil Dihapus');
     }
 
-    public function pendingValidasi()
+    /**
+     * Show pending validation list (Waka).
+     */
+    public function pendingValidasi(): View
     {
         $disciplines = Disiplin::with(['siswa', 'pelapor'])
-            ->where('status_validasi', 'Pending')
+            ->where('status_validasi', Disiplin::STATUS_PENDING)
             ->get();
 
         return view('waka.disiplin-approval', [
@@ -156,7 +175,10 @@ class DisiplinController extends Controller
         ]);
     }
 
-    public function approve($id)
+    /**
+     * Approve a record (Waka).
+     */
+    public function approve(int $id): RedirectResponse
     {
         if (!auth()->user()->hasRole('Waka Kesiswaan')) {
             abort(403, 'Unauthorized action.');
@@ -164,13 +186,16 @@ class DisiplinController extends Controller
 
         $disiplin = Disiplin::findOrFail($id);
         $disiplin->update([
-            'status_validasi' => 'Approved',
+            'status_validasi' => Disiplin::STATUS_APPROVED,
             'validator_id' => auth()->id()
         ]);
         return back()->with('success', 'Laporan disetujui.');
     }
 
-    public function reject($id)
+    /**
+     * Reject a record (Waka).
+     */
+    public function reject(int $id): RedirectResponse
     {
         if (!auth()->user()->hasRole('Waka Kesiswaan')) {
             abort(403, 'Unauthorized action.');
@@ -178,13 +203,16 @@ class DisiplinController extends Controller
 
         $disiplin = Disiplin::findOrFail($id);
         $disiplin->update([
-            'status_validasi' => 'Rejected',
+            'status_validasi' => Disiplin::STATUS_REJECTED,
             'validator_id' => auth()->id()
         ]);
         return back()->with('success', 'Laporan ditolak.');
     }
 
-    public function updateStts(Request $request, $id)
+    /**
+     * Manual status update.
+     */
+    public function updateStts(Request $request, int $id): RedirectResponse
     {
         $disiplin = Disiplin::findOrFail($id);
         $disiplin->update([
@@ -195,26 +223,31 @@ class DisiplinController extends Controller
         return redirect()->route('disiplin.index')->with('success', 'Status laporan disiplin berhasil diperbarui');
     }
 
+    /**
+     * Export to Excel.
+     */
     public function exportExcel()
     {
-        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\DisiplinExport, 'Data_Disiplin_SMP43.xlsx');
+        return Excel::download(new \App\Exports\DisiplinExport, 'Data_Disiplin_SMP43.xlsx');
     }
 
+    /**
+     * Export to PDF.
+     */
     public function exportPdf(Request $request)
     {
-        $month = $request->month; // Optional filter
+        $month = $request->month;
         $query = Disiplin::with(['siswa', 'pelapor', 'validator']);
         
-        if ($month) {
-            $monthParts = explode('-', $month);
-            if (count($monthParts) == 2) {
-                $query->whereMonth('tanggal', $monthParts[1])
-                      ->whereYear('tanggal', $monthParts[0]);
+        if ($month && $parts = explode('-', $month)) {
+            if (count($parts) == 2) {
+                $query->whereMonth('tanggal', $parts[1])
+                      ->whereYear('tanggal', $parts[0]);
             }
         }
         
         $disiplin = $query->get();
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
+        $pdf = Pdf::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
             ->loadView('cetak.laporan-disiplin-pdf', compact('disiplin', 'month'))
             ->setPaper('a4', 'landscape');
         

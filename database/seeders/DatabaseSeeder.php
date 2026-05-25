@@ -138,7 +138,7 @@ class DatabaseSeeder extends Seeder
                 'nip' => '99999999',
             ]
         );
-        $tester->assignRole($roles); // Berikan semua role agar bisa mengakses semua fitur
+        $tester->assignRole(['admin','guru','kepala sekolah','guru bk','waka kesiswaan','staff kesiswaan']); // Berikan semua role agar bisa mengakses semua fitur
 
         // 3. Panggil Seeder Data Dummy (Opsional untuk Testing)
         $this->call([

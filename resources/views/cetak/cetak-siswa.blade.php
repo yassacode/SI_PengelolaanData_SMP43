@@ -1,223 +1,192 @@
 @extends('base.layout-cetak')
 @section('title', 'cetak siswa')
 @section('cetak')
-    <div class=" container-xxl flex-grow-1 container-p-y">
-        <div class="card">
-            <div class="header mt-3">
-                <h4> SMP Negeri 43 Padang</h4>
-                <br>
-                <h5 class="text-center ">BIODATA DIRI SISWA </h5>
+    <div class="print-container">
+        @include('components.kop-surat')
 
-            </div>
-            <div>
-                <table class="table-borderless">
-                    <tbody>
-                        <tr>
-                            <td>User</td>
-                            <td>:</td>
-                            <td>{{ $student->user->nama }}</td>
-                        </tr>
-                        <tr>
-                            <td>Nama Lengkap</td>
-                            <td>:</td>
-                            <td>{{ $student->nama ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Tempat/tanggal lahir</td>
-                            <td>:</td>
-                            <td>{{ $student->ttl ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Asal SD</td>
-                            <td>:</td>
-                            <td>{{ $student->akademik->asal_sd ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Asal TK</td>
-                            <td>:</td>
-                            <td>{{ $student->akademik->asal_tk ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Asal PAUD</td>
-                            <td>:</td>
-                            <td>{{ $student->akademik->asal_paud ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Agama</td>
-                            <td>:</td>
-                            <td>{{ $student->agama ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Alamat</td>
-                            <td>:</td>
-                            <td>{{ $student->alamat ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Hobi</td>
-                            <td>:</td>
-                            <td>{{ $student->hobi ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Penyakit yang pernah diderita</td>
-                            <td>:</td>
-                            <td>{{ $student->kesehatan->riwayat_sakit ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Beasiswa yang pernah diterima</td>
-                            <td>:</td>
-                            <td>{{ $student->akademik->beasiswa ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Orang Tua</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <ul class=" mb-0">Nama Ayah</ul>
-                            </td>
-                            <td>:</td>
-                            <td>{{ $student->wali->nama_ayah ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <ul class=" mb-0">Pekerjaan Ayah</ul>
-                            </td>
-                            <td>:</td>
-                            <td>{{ $student->wali->pekerjaan_ayah ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <ul class=" mb-0">Alamat </ul>
-                            </td>
-                            <td>:</td>
-                            <td>{{ $student->wali->alamat_ayah ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <ul class=" mb-0">Nama Ibu</ul>
-                            <td>:</td>
-                            <td>{{ $student->wali->nama_ibu ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <ul class=" mb-0">Pekerjaan Ibu</ul>
-                            <td>:</td>
-                            <td>{{ $student->wali->pekerjaan_ibu ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <ul class=" mb-0">Alamat</ul>
-                            <td>:</td>
-                            <td>{{ $student->wali->alamat_ibu ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Jarak tempuh ke sekolah</td>
-                            <td>:</td>
-                            <td>{{ $student->akademik->jrk_sklh ?? '' }}</td>
-                        </tr>
+        <div class="header text-center mb-4">
+            <h5 style="font-weight: bold; text-decoration: underline;">BIODATA DIRI SISWA</h5>
+        </div>
 
-                        <tr>
-                            <td>No. HP Ayah</td>
-                            <td>:</td>
-                            <td>{{ $student->wali->no_hp_ayah ?? '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>No. HP Ibu</td>
-                            <td>:</td>
-                            <td>{{ $student->wali->no_hp_ibu ?? '' }}</td>
-                        </tr>
+        <div class="content-siswa">
+            <table class="table table-borderless mb-4">
+                <tbody>
+                    <tr>
+                        <td width="30%">Nama Lengkap</td>
+                        <td width="2%">:</td>
+                        <td style="font-weight: bold;">{{ $student->nama ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tempat/Tanggal Lahir</td>
+                        <td>:</td>
+                        <td>{{ $student->ttl ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Agama</td>
+                        <td>:</td>
+                        <td>{{ $student->agama ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Alamat</td>
+                        <td>:</td>
+                        <td>{{ $student->alamat ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Hobi</td>
+                        <td>:</td>
+                        <td>{{ $student->hobi ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Asal Sekolah</td>
+                        <td>:</td>
+                        <td>
+                            SD: {{ $student->akademik->asal_sd ?? '-' }}<br>
+                            TK: {{ $student->akademik->asal_tk ?? '-' }}<br>
+                            PAUD: {{ $student->akademik->asal_paud ?? '-' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Jarak ke Sekolah</td>
+                        <td>:</td>
+                        <td>{{ $student->akademik->jrk_sklh ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Beasiswa</td>
+                        <td>:</td>
+                        <td>{{ $student->akademik->beasiswa ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Riwayat Kesehatan</td>
+                        <td>:</td>
+                        <td>{{ $student->kesehatan->riwayat_sakit ?? 'Tidak Ada' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Ekstrakurikuler</td>
+                        <td>:</td>
+                        <td>
+                            @if($student->masterEkskuls->isNotEmpty())
+                                {{ $student->masterEkskuls->pluck('nama')->implode(', ') }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-                        <tr>
-                            <td>Prestasi Akademi dan Non Akademik</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <table class="table border-2 ml-auto text-center mt-2">
-                            <thead>
-                                <tr>
-                                    <th scope="col">No</th>
-                                    <th scope="col">kegiatan</th>
-                                    <th scope="col">juara</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for ($i = 1; $i <= 5; $i++)
-                                    @if ($student->prestasis->{"kegiatan$i"} && $student->prestasis->{"juara$i"})
-                                        <tr>
-                                            <td>{{ $i }}</td>
-                                            <td>{{ $student->prestasis->{"kegiatan$i"} }}</td>
-                                            <td>{{ $student->prestasis->{"juara$i"} }}</td>
-                                        </tr>
-                                    @endif
-                                @endfor
-                            </tbody>
-                        </table>
-                    </tbody>
-                </table>
-            </div>
+            <h6 style="font-weight: bold;" class="mb-2">Data Orang Tua / Wali</h6>
+            <table class="table table-bordered mb-4">
+                <thead>
+                    <tr class="text-center bg-light">
+                        <th>Keterangan</th>
+                        <th>Ayah</th>
+                        <th>Ibu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: bold;">Nama</td>
+                        <td>{{ $student->wali->nama_ayah ?? '-' }}</td>
+                        <td>{{ $student->wali->nama_ibu ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Pekerjaan</td>
+                        <td>{{ $student->wali->pekerjaan_ayah ?? '-' }}</td>
+                        <td>{{ $student->wali->pekerjaan_ibu ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">No. HP</td>
+                        <td>{{ $student->wali->no_hp_ayah ?? '-' }}</td>
+                        <td>{{ $student->wali->no_hp_ibu ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Alamat</td>
+                        <td>{{ $student->wali->alamat_ayah ?? '-' }}</td>
+                        <td>{{ $student->wali->alamat_ibu ?? '-' }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <div class="page-break"></div>
-            <div class="header mb-4 text-center">
-                <h4> PENANGANAN MASALAH SISWA </h4>
-            </div>
-            <div class="table-responsive">
-                @if ($discipline->isEmpty())
-                    <p>Data disiplin tidak tersedia.</p>
-                @else
-                    <table class="table-borderless">
-                        <tbody>
-                            <tr>
-                                <td>Nama</td>
-                                <td>:</td>
-                                <td>{{ $student->nama }}</td>
-                            </tr>
-                            <tr>
-                                <td>Kelas</td>
-                                <td>:</td>
-                                <td>{{ $discipline->isEmpty() ? 'Kelas tidak tersedia' : $discipline->first()->kelas }}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table table-bordered table-sm ">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Tanggal</th>
-                                <th>Masalah</th>
-                                <th>Solusi</th>
-                                <th>Foto</th>
-                                <th>Keterangan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($discipline as $item)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->tanggal }}</td>
-                                    <td>{{ $item->masalah }}</td>
-                                    <td>{{ $item->solusi }}</td>
-                                    <td>
-                                        @if ($item->foto)
-                                            <a href="{{ Storage::url($item->foto) }}" target="_blank">
-                                                <img src="{{ Storage::url($item->foto) }}" alt="Foto"
-                                                    class="img img-fluid" width="150" height="150">
-                                            </a>
-                                        @else
-                                            <span>No Image</span>
-                                        @endif
-                                    </td>
-                                    <td>{{ $item->keterangan }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @endif
+            @if($student->prestasis->isNotEmpty())
+            <h6 style="font-weight: bold;" class="mb-2">Prestasi Akademik & Non-Akademik</h6>
+            <table class="table table-bordered mb-4">
+                <thead>
+                    <tr class="text-center bg-light">
+                        <th width="10%">No</th>
+                        <th>Kegiatan / Lomba</th>
+                        <th>Capaian / Juara</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($student->prestasis as $index => $prestasi)
+                        <tr>
+                            <td class="text-center">{{ $index + 1 }}</td>
+                            <td>{{ $prestasi->kegiatan ?? '-' }}</td>
+                            <td>{{ $prestasi->juara ?? '-' }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            @endif
+        </div>
+
+        <div class="signature-section mt-5">
+            <div class="row">
+                <div class="col-8"></div>
+                <div class="col-4 text-center">
+                    <p class="mb-0">Padang, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+                    <p class="mb-5">Petugas Administrasi,</p>
+                    <br>
+                    <p class="mb-0" style="font-weight: bold; text-decoration: underline;">( ................................... )</p>
+                    <p>NIP. .............................</p>
+                </div>
             </div>
         </div>
-    </div>
 
+        @if (!$discipline->isEmpty())
+        <div class="page-break"></div>
+        @include('components.kop-surat')
+        <div class="header text-center mb-4">
+            <h5 style="font-weight: bold; text-decoration: underline;">LAPORAN PENANGANAN MASALAH SISWA</h5>
+        </div>
+        
+        <table class="table table-borderless mb-2">
+            <tr>
+                <td width="15%">Nama</td>
+                <td width="2%">:</td>
+                <td style="font-weight: bold;">{{ $student->nama }}</td>
+            </tr>
+            <tr>
+                <td>Kelas</td>
+                <td>:</td>
+                <td>{{ $discipline->first()->kelas ?? '-' }}</td>
+            </tr>
+        </table>
+
+        <table class="table table-bordered">
+            <thead class="bg-light text-center">
+                <tr>
+                    <th width="5%">No</th>
+                    <th width="15%">Tanggal</th>
+                    <th width="25%">Masalah</th>
+                    <th width="25%">Solusi</th>
+                    <th width="30%">Keterangan</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($discipline as $item)
+                    <tr>
+                        <td class="text-center">{{ $loop->iteration }}</td>
+                        <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d/m/Y') }}</td>
+                        <td>{{ $item->masalah }}</td>
+                        <td>{{ $item->solusi }}</td>
+                        <td>{{ $item->keterangan }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+        @endif
+    </div>
 
     <script>
         window.onload = function() {

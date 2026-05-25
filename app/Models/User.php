@@ -21,21 +21,20 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 
-    public function siswas()
+    public function siswas(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Siswa::class);
     }
 
-    public function disiplins()
+    public function disiplins(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Disiplin::class, 'user_id');
     }
 
-    public function ekstrakurikulers()
+    public function ekstrakurikulers(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Ekstrakurikuler::class, 'user_id');
     }

@@ -3,18 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Prestasi;
-use App\Models\Disiplin;
 use App\Models\Kesehatan;
 use App\Models\Akademik;
 use App\Models\Siswa;
 use App\Models\Wali;
+use App\Http\Requests\SiswaRequest;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SiswaExport;
 use Exception;
 
 class SiswaController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * Display a listing of students.
+     */
+    public function index(Request $request): View
     {
         $search = $request->input('search');
         $tahun = $request->input('tahun');
@@ -38,46 +46,62 @@ class SiswaController extends Controller
         ]);
     }
 
-    public function createStep1()
+    /**
+     * Show form for step 1.
+     */
+    public function createStep1(): View
     {
         return view('tambah.add-step1-siswa', [
-            'today' => date('Y-m-d'),
+            'today' => now()->format('Y-m-d'),
         ]);
     }
 
-    public function createStep2()
+    /**
+     * Show form for step 2.
+     */
+    public function createStep2(): View
     {
+        $masterEkskuls = \App\Models\MasterEkskul::all();
         return view('tambah.add-step2-siswa', [
-            'today' => date('Y-m-d'),
+            'today' => now()->format('Y-m-d'),
+            'masterEkskuls' => $masterEkskuls,
         ]);
     }
 
-    public function createStep3()
+    /**
+     * Show form for step 3.
+     */
+    public function createStep3(): View
     {
         return view('tambah.add-step3-siswa', [
-            'today' => date('Y-m-d'),
+            'today' => now()->format('Y-m-d'),
         ]);
     }
 
-    public function storeStep1(Request $request)
+    /**
+     * Store step 1 in session.
+     */
+    public function storeStep1(SiswaRequest $request): RedirectResponse
     {
-        // Sesuaikan dengan input dari form UI saat ini
-        $data = $request->except('_token');
-        session()->put('siswa_step1', $data);
+        session()->put('siswa_step1', $request->validated());
         return redirect()->route('siswa.create2');
     }
 
-    public function storeStep2(Request $request)
+    /**
+     * Store step 2 in session.
+     */
+    public function storeStep2(SiswaRequest $request): RedirectResponse
     {
-        $data = $request->except('_token');
-        session()->put('siswa_step2', $data);
+        session()->put('siswa_step2', $request->validated());
         return redirect()->route('siswa.create3');
     }
 
-    public function store(Request $request)
+    /**
+     * Store all data from steps in database.
+     */
+    public function store(SiswaRequest $request): RedirectResponse
     {
-        // Data step 3 (Wali) dikirim langsung via POST dari form terakhir
-        $step3 = $request->except('_token');
+        $step3 = $request->validated();
         $step1 = session()->get('siswa_step1', []);
         $step2 = session()->get('siswa_step2', []);
 
@@ -97,14 +121,14 @@ class SiswaController extends Controller
 
             // 2. Simpan Siswa
             $siswa = Siswa::create([
-                'user_id' => auth()->id(), // Staff yang menginput
+                'user_id' => auth()->id(),
                 'wali_id' => $wali->id,
                 'nisn' => $step1['nisn'] ?? '-',
                 'nama' => $step1['nama'] ?? '-',
                 'ttl' => $step1['ttl'] ?? '-',
                 'agama' => $step1['agama'] ?? '-',
                 'hobi' => $step1['hobi'] ?? null,
-                'thn_msk' => $step1['thn_msk'] ?? date('Y'),
+                'thn_msk' => $step1['thn_msk'] ?? now()->year,
                 'alamat' => $step1['alamat'] ?? '-',
             ]);
 
@@ -126,7 +150,7 @@ class SiswaController extends Controller
                 'riwayat_sakit' => $step2['sakit'] ?? null,
             ]);
 
-            // 5. Simpan Prestasi (Loop 3 kali sesuai UI)
+            // 5. Simpan Prestasi
             for ($i = 1; $i <= 3; $i++) {
                 if (!empty($step2["kegiatan{$i}"]) && !empty($step2["juara{$i}"])) {
                     Prestasi::create([
@@ -135,6 +159,11 @@ class SiswaController extends Controller
                         'juara' => $step2["juara{$i}"],
                     ]);
                 }
+            }
+
+            // 6. Simpan Keanggotaan Ekskul
+            if (!empty($step2['master_ekskul_ids'])) {
+                $siswa->masterEkskuls()->sync($step2['master_ekskul_ids']);
             }
 
             DB::commit();
@@ -147,7 +176,10 @@ class SiswaController extends Controller
         }
     }
 
-    public function show1(string $id)
+    /**
+     * Display student details (view).
+     */
+    public function show1(string $id): View
     {
         $siswa = Siswa::with(['kesehatan', 'akademik', 'wali', 'prestasis', 'disiplins'])->findOrFail($id);
         return view('main.view-siswa', [
@@ -155,57 +187,65 @@ class SiswaController extends Controller
         ]);
     }
 
-    public function show2(string $id)
+    /**
+     * Display student details (print).
+     */
+    public function show2(string $id): View
     {
-        $siswa = Siswa::with(['kesehatan', 'akademik', 'wali', 'prestasis', 'disiplins'])->findOrFail($id);
+        $siswa = Siswa::with(['kesehatan', 'akademik', 'wali', 'prestasis', 'disiplins' => function($query) {
+            $query->where('status_validasi', Disiplin::STATUS_APPROVED);
+        }])->findOrFail($id);
+
         return view('cetak.cetak-siswa', [
             'student' => $siswa,
             'discipline' => $siswa->disiplins,
         ]);
     }
 
-    public function editStep1(string $id)
+    public function editStep1(string $id): View
     {
         $siswa = Siswa::with(['kesehatan'])->findOrFail($id);
         return view('tambah.edit-step1-siswa', [
             'siswa' => $siswa,
-            'today' => date('Y-m-d'),
+            'today' => now()->format('Y-m-d'),
         ]);
     }
 
-    public function editStep2(string $id)
+    public function editStep2(string $id): View
     {
-        $siswa = Siswa::with(['akademik', 'prestasis', 'kesehatan'])->findOrFail($id);
+        $siswa = Siswa::with(['akademik', 'prestasis', 'kesehatan', 'masterEkskuls'])->findOrFail($id);
+        $masterEkskuls = \App\Models\MasterEkskul::all();
         return view('tambah.edit-step2-siswa', [
             'siswa' => $siswa,
-            'today' => date('Y-m-d'),
+            'today' => now()->format('Y-m-d'),
+            'masterEkskuls' => $masterEkskuls,
         ]);
     }
 
-    public function editStep3(string $id)
+    public function editStep3(string $id): View
     {
         $siswa = Siswa::with(['wali'])->findOrFail($id);
         return view('tambah.edit-step3-siswa', [
             'siswa' => $siswa,
-            'today' => date('Y-m-d'),
+            'today' => now()->format('Y-m-d'),
         ]);
     }
 
-    public function updateStep1(Request $request, $id)
+    public function updateStep1(SiswaRequest $request, int $id): RedirectResponse
     {
-        session()->put('siswa_edit_step1', $request->except('_token'));
+        session()->put('siswa_edit_step1', $request->validated());
         return redirect()->route('siswa.edit2', $id);
     }
 
-    public function updateStep2(Request $request, $id)
+    public function updateStep2(SiswaRequest $request, int $id): RedirectResponse
     {
-        session()->put('siswa_edit_step2', $request->except('_token'));
+        session()->put('siswa_edit_step2', $request->validated());
         return redirect()->route('siswa.edit3', $id);
     }
 
-    public function update(Request $request, Siswa $siswa)
+    public function update(SiswaRequest $request, Siswa $siswa): RedirectResponse
     {
-        $step3 = $request->except('_token');
+        $step3 = $request->validated();
         $step1 = session()->get('siswa_edit_step1', []);
         $step2 = session()->get('siswa_edit_step2', []);
 
@@ -256,7 +296,7 @@ class SiswaController extends Controller
                 ]);
             }
 
-            // Update Prestasi: Hapus yang lama dan buat baru dari input Step 2
+            // Update Prestasi
             $siswa->prestasis()->delete();
             for ($i = 1; $i <= 3; $i++) {
                 if (!empty($step2["kegiatan{$i}"]) && !empty($step2["juara{$i}"])) {
@@ -266,6 +306,11 @@ class SiswaController extends Controller
                         'juara' => $step2["juara{$i}"],
                     ]);
                 }
+            }
+
+            // Update Keanggotaan Ekskul
+            if (isset($step2['master_ekskul_ids'])) {
+                $siswa->masterEkskuls()->sync($step2['master_ekskul_ids']);
             }
 
             DB::commit();
@@ -278,16 +323,15 @@ class SiswaController extends Controller
         }
     }
 
-    public function destroy(string $id)
+    public function destroy(int $id): RedirectResponse
     {
         $siswa = Siswa::findOrFail($id);
-        // Cascade delete akan menghapus Akademik, Kesehatan, Prestasi, Disiplin, Pivot Ekskul
         $siswa->delete();
 
         return redirect()->route('siswa.index')->with('success', 'Data Berhasil Dihapus');
     }
 
-    public function updateStts(Request $request, $id)
+    public function updateStts(Request $request, int $id): RedirectResponse
     {
         $siswa = Siswa::findOrFail($id);
         if ($siswa->akademik) {
@@ -301,7 +345,7 @@ class SiswaController extends Controller
     public function exportExcel(Request $request)
     {
         $tahun = $request->input('tahun');
-        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\SiswaExport($tahun), 'Data_Siswa_SMP43.xlsx');
+        return Excel::download(new SiswaExport($tahun), 'Data_Siswa_SMP43.xlsx');
     }
 
     public function exportPdf(Request $request)
@@ -313,7 +357,7 @@ class SiswaController extends Controller
             })
             ->get();
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
+        $pdf = Pdf::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])
             ->loadView('cetak.laporan-siswa-pdf', compact('siswa', 'tahun'))
             ->setPaper('a4', 'landscape');
         

@@ -10,14 +10,24 @@ class Ekstrakurikuler extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    
+    const STATUS_PENDING = 'Pending';
+    const STATUS_APPROVED = 'Approved';
+    const STATUS_REJECTED = 'Rejected';
+    const STATUS_ACCEPTED = 'ACCEPTED';
 
-    public function siswas()
+    public function siswas(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Siswa::class, 'anggota_ekskuls');
     }
 
-    public function pembina()
+    public function pembina(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function masterEkskul(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(MasterEkskul::class, 'master_ekskul_id');
     }
 }
